@@ -91,6 +91,8 @@ func (s *Suite) registerWhenSteps(sc *godog.ScenarioContext) {
 	sc.Step("^ich den Verbindungsstatus von einem entfernten Peer mit lokalen Headern prüfe$", s.foreignPeerStatus)
 	sc.Step("^ich den Settings-Handler mit der Bind-Adresse \"([^\"]*)\" initialisiere$", s.configureBind)
 	sc.Step("^ich die Gerätecode-Anmeldung über localhost starte$", s.localhostStart)
+	sc.Step("^ich die Gerätecode-Anmeldung über 127.0.0.2 starte$", s.alternateLoopbackStart)
+	sc.Step("^ich den Verbindungsstatus über 127.0.0.2 prüfe$", s.alternateLoopbackStatus)
 }
 
 func (s *Suite) registerThenSteps(sc *godog.ScenarioContext) {
@@ -227,6 +229,26 @@ func (s *Suite) localhostStart() error {
 
 	if s.response.code != http.StatusOK {
 		return fmt.Errorf("lokaler Browser erhielt HTTP %d", s.response.code)
+	}
+
+	return nil
+}
+
+func (s *Suite) alternateLoopbackStart() error {
+	return s.alternateLoopbackRequest(http.MethodPost, "/settings/modelle/codex/device/start")
+}
+
+func (s *Suite) alternateLoopbackStatus() error {
+	return s.alternateLoopbackRequest(http.MethodGet, "/settings/modelle/codex/device/status")
+}
+
+func (s *Suite) alternateLoopbackRequest(method, path string) error {
+	if err := s.recordRequest(method, path, "127.0.0.2:8080", "http://127.0.0.2:8080"); err != nil {
+		return err
+	}
+
+	if s.response.code != http.StatusOK {
+		return fmt.Errorf("zweite Loopback-Adresse erhielt HTTP %d", s.response.code)
 	}
 
 	return nil

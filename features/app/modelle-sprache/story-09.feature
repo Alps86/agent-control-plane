@@ -236,3 +236,11 @@ Funktionalität: Codex-Abo per Gerätecode verbinden
     Wenn ich den Settings-Handler mit der Bind-Adresse "localhost:8080" initialisiere
     Und ich die Gerätecode-Anmeldung über localhost starte
     Dann erhalte ich die Anmeldeseite des Anbieters und einen Gerätecode
+
+  Szenario: Weitere numerische Loopback-Adresse erlaubt Codex-Status und Start
+    Angenommen die Codex-Abo-Verbindung ist nicht eingerichtet
+    Wenn ich den Settings-Handler mit der Bind-Adresse "127.0.0.2:8080" initialisiere
+    Und ich die Gerätecode-Anmeldung über 127.0.0.2 starte
+    Dann erhalte ich die Anmeldeseite des Anbieters und einen Gerätecode
+    Wenn ich den Verbindungsstatus über 127.0.0.2 prüfe
+    Dann wird der Versuch als laufend angezeigt

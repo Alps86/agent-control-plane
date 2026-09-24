@@ -3,11 +3,8 @@ package installation
 import (
 	"encoding/json"
 	"fmt"
-	"io"
-	"net"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/cucumber/godog"
 )
@@ -20,72 +17,6 @@ func (s *Suite) registerAPISteps(sc *godog.ScenarioContext) {
 	sc.Step(`^eine Organisation "([^"]*)" wurde über die öffentliche API ohne App-Anmeldung angelegt$`, s.createViaAPI)
 	sc.Step(`^ich sie ohne Cookie oder Authorization-Header über die öffentliche Organisations-API lese$`, s.readViaAPI)
 	sc.Step(`^antwortet die API mit der Organisation "([^"]*)"$`, s.apiName)
-	sc.Step(`^ich über eine Nicht-Loopback-Adresse ohne Origin mit Host "localhost" eine Organisation "([^"]*)" anlege$`, s.remoteCreate)
-	sc.Step(`^ich über Loopback ohne Origin mit Host "localhost" eine Organisation "([^"]*)" anlege$`, s.wildcardCreate)
-	sc.Step(`^wird der Schreibzugriff mit HTTP 403 abgewiesen$`, s.remoteForbidden)
-}
-
-func (s *Suite) remoteCreate(name string) error {
-	remote, err := s.nonLoopbackAddress()
-	if err != nil {
-		return err
-	}
-
-	return s.createWithHost(remote, name)
-}
-
-func (s *Suite) wildcardCreate(name string) error {
-	return s.createWithHost("127.0.0.1", name)
-}
-
-func (s *Suite) createWithHost(target, name string) error {
-	_, port, _ := net.SplitHostPort(s.bindAddress)
-	payload := fmt.Sprintf(`{"name":%q,"description":"Fremdzugriff"}`, name)
-	request, err := http.NewRequest(http.MethodPost, "http://"+net.JoinHostPort(target, port)+"/api/organisationen", strings.NewReader(payload))
-	if err != nil {
-		return err
-	}
-
-	request.Host = "localhost:" + port
-	request.Header.Set("Content-Type", "application/json")
-	return s.remotePost(request)
-}
-
-func (s *Suite) nonLoopbackAddress() (string, error) {
-	addresses, err := net.InterfaceAddrs()
-	if err != nil {
-		return "", err
-	}
-
-	for _, address := range addresses {
-		ip, _, err := net.ParseCIDR(address.String())
-		if err == nil && ip.To4() != nil && ip.IsGlobalUnicast() {
-			return ip.String(), nil
-		}
-	}
-
-	return "", fmt.Errorf("keine Nicht-Loopback-Adresse für öffentlichen HTTP-Test verfügbar")
-}
-
-func (s *Suite) remotePost(request *http.Request) error {
-	client := &http.Client{Timeout: time.Second, Transport: &http.Transport{Proxy: nil}}
-	response, err := client.Do(request)
-	if err != nil {
-		return err
-	}
-
-	defer response.Body.Close()
-	s.status, s.header = response.StatusCode, response.Header.Clone()
-	s.body, err = io.ReadAll(response.Body)
-	return err
-}
-
-func (s *Suite) remoteForbidden() error {
-	if s.status != http.StatusForbidden || !strings.Contains(string(s.body), "access_denied") {
-		return fmt.Errorf("entfernter POST: HTTP %d, Antwort %s", s.status, s.body)
-	}
-
-	return nil
 }
 
 func (s *Suite) createWithBudget(name, extra string) error {

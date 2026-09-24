@@ -82,13 +82,11 @@ Funktionalität: Stammziele einer Organisation dauerhaft anlegen und auflisten
       | von Origin "https://fremd.example"       |
       | über Host "fremd.example"                 |
 
-  Szenario: Ein Wildcard-Listener erlaubt auch mit gefälschtem localhost-Host keinen Zielschreibzugriff
+  Szenario: Wildcard-Bind verhindert den Start vor dem Zielschreibzugriff
     Angenommen ich starte den lokalen Server mit einer neuen SQLite-Datenbank als Betreiberin
     Und ich lege die Organisation "Nordstern" über HTTP an
-    Wenn ich den Server beende und mit derselben SQLite-Datenbank auf der Wildcard-Adresse "0.0.0.0" erneut starte
-    Und ein entfernter Client das Stammziel "Fremdes Ziel" in "Nordstern" mit dem gefälschten HTTP-Host "localhost" samt tatsächlichem Listener-Port anlegt
-    Dann antwortet der Server mit dem HTTP-Status 403
-    Wenn ein lokaler Client das Stammziel "Lokales Ziel" in "Nordstern" über den Wildcard-Listener anlegt
-    Dann antwortet der Server ebenfalls mit dem HTTP-Status 403
+    Wenn ich den Server beende und einen Start mit derselben SQLite-Datenbank auf der Wildcard-Adresse "0.0.0.0" versuche
+    Dann wird der Zielserver wegen der nicht lokalen APP_ADDR-Konfiguration nicht gestartet
+    Und auf dem Wildcard-Port ist kein Zielserver erreichbar
     Wenn ich den Server beende und mit derselben SQLite-Datenbank auf der Loopback-Adresse erneut starte
     Dann bleibt die Zielübersicht von "Nordstern" leer
