@@ -3,10 +3,30 @@ package modellpruefung
 import (
 	"context"
 	"sync"
+
+	"agentcontrolplane/app/internal/app/modellverbindung"
 )
 
 // StatusAktion ist die einzige in diesem Prüfpfad registrierbare Fachaktion.
 const StatusAktion = "Projektstatus lesen"
+
+// VerbindungsstatusAktion ist die freigegebene reine Leseaktion der HTTP-Probe.
+const VerbindungsstatusAktion = "Verbindungsstatus lesen"
+
+// VerbindungsstatusQuelle liefert den öffentlichen Zustand ohne Zugangsdaten.
+type VerbindungsstatusQuelle interface {
+	Status(context.Context) (modellverbindung.Status, error)
+}
+
+// Verbindungszustand enthält nur den redigierten öffentlichen Zustand.
+type Verbindungszustand struct {
+	Zustand string `json:"zustand"`
+}
+
+// Verbindungspruefung begrenzt die Probe auf eine benannte Leseaktion.
+type Verbindungspruefung struct {
+	quelle VerbindungsstatusQuelle
+}
 
 // StatusQuelle liefert den fachlichen Projektstatus nach der Rechteprüfung.
 type StatusQuelle interface {

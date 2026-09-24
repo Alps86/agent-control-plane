@@ -149,3 +149,42 @@ Funktionalität: Codex-Abo als eigener Eino-Chatmodell-Adapter
     Dann wird der Symlink abgelehnt und sein Ziel bleibt unverändert
     Und bleibt keine temporäre Berichtsdatei zurück
     Aber die echte Abo-Abnahme bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Gerätecode-Verbindung trägt denselben Zugang durch die öffentliche Eino-Probe
+    Angenommen ein lokaler Gerätecode-Anbieter und eine lokale Responses-Gegenstelle sind eingerichtet
+    Wenn ich die Gerätecode-Anmeldung und ihren Abschluss über HTTP aufrufe
+    Dann meldet der öffentliche Verbindungsstatus "connected"
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann erreichen derselbe gespeicherte Zugang und das Konto die feste Responses-Route
+    Und die Gegenstelle erhält eine Toolrunde mit redigiertem Verbindungszustand
+    Und die HTTP-Probe meldet zwei Anbieteraufrufe und ein redigiertes Ergebnis
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Anbieterlimit der lokalen HTTP-Probe bleibt redigiert
+    Angenommen ein lokaler Gerätecode-Anbieter und eine lokale Responses-Gegenstelle mit Limitfehler sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann meldet sie den Anbieterlimitfehler ohne Zugangsdaten oder Rohprompt
+    Und die Gegenstelle erhält nur einen Modellaufruf
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Abbruch der öffentlichen HTTP-Probe schließt den laufenden Providerstream
+    Angenommen ein lokaler Gerätecode-Anbieter und eine offene Responses-Gegenstelle sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die laufende öffentliche Eino-Probe nach dem ersten Antwortteil abbreche
+    Dann endet der lokale Providerstream vor einem Abschlussereignis
+    Und die Gegenstelle erhält keinen Folgeaufruf
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Provider-Metadaten mit Zugangswerten bleiben aus der öffentlichen SSE entfernt
+    Angenommen ein lokaler Gerätecode-Anbieter und eine Responses-Gegenstelle mit Zugangswerten in Provider-Metadaten sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann hat die Gegenstelle Konto und Token als Provider-Metadaten gesendet
+    Und die öffentliche SSE nennt nur redigierte Request-IDs und das konfigurierte Modell
+    Und die Gegenstelle erhält eine Toolrunde mit redigiertem Verbindungszustand
+    Aber das echte Abo-Gate bleibt offen
