@@ -1,0 +1,121 @@
+{{define "modelle/codex/page"}}
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <title>Codex-Abo · Modelleinstellungen</title>
+    <style>
+      :root { font-family: system-ui, sans-serif; color: #24342b; background: #f6f8f6; }
+      * { box-sizing: border-box; }
+      body { margin: 0; }
+      main { max-width: 760px; margin: 0 auto; padding: 48px 24px; }
+      h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); margin: 0 0 10px; }
+      p { line-height: 1.6; }
+      .intro { color: #65746b; margin-bottom: 28px; }
+      .connection { background: #fff; border: 1px solid #dce8df; border-radius: 16px; padding: 28px; box-shadow: 0 8px 28px #24342b0a; }
+      .provider { color: #54705e; font-size: .8rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+      .status { margin: 12px 0 18px; font-size: 1.35rem; font-weight: 750; }
+      .verification { padding: 18px; border: 1px solid #cbded0; border-radius: 12px; background: #f4faf5; margin-bottom: 18px; }
+      .verification a { color: #246a48; font-weight: 700; overflow-wrap: anywhere; }
+      .code { display: inline-block; margin: 12px 0 0; padding: 9px 13px; border: 1px solid #b8d1bf; border-radius: 8px; background: #fff; font: 700 1.3rem ui-monospace, monospace; letter-spacing: .08em; }
+      .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+      button { border: 1px solid #2b6f4d; border-radius: 8px; padding: 10px 15px; background: #2b6f4d; color: #fff; font: inherit; font-weight: 700; cursor: pointer; }
+      button.secondary { background: #fff; color: #2b6f4d; }
+      button:focus-visible, a:focus-visible { outline: 3px solid #77b990; outline-offset: 2px; }
+      button:disabled { opacity: .6; cursor: wait; }
+      [hidden] { display: none !important; }
+      .notice { color: #805132; background: #fff6e9; border-radius: 8px; padding: 12px; }
+    </style>
+  </head>
+  <body>
+    {{template "modelle/codex/content" .}}
+    <script src="/assets/htmx.min.js"></script>
+    <script>
+      (() => {
+        const root = document.getElementById('codex-connection');
+        const status = document.getElementById('codex-status');
+        const verification = document.getElementById('codex-verification');
+        const link = document.getElementById('codex-verification-link');
+        const code = document.getElementById('codex-user-code');
+        const notice = document.getElementById('codex-notice');
+        const start = document.getElementById('codex-start');
+        const refresh = document.getElementById('codex-refresh');
+        const cancel = document.getElementById('codex-cancel');
+        const poller = document.getElementById('codex-poller');
+        const serials = new WeakMap();
+        let issued = 0;
+        let applied = 0;
+        let actionIntent = '';
+        let pollQueued = false;
+        const labels = {
+          idle: 'Nicht verbunden', pending: 'Anmeldung läuft', connected: 'Verbunden',
+          cancelled: 'Anmeldung abgebrochen', expired: 'Gerätecode abgelaufen',
+          denied: 'Anmeldung nicht zugelassen', unavailable: 'Verbindung nicht verfügbar',
+          reauthentication_required: 'Erneute Anmeldung erforderlich'
+        };
+
+        function safeURL(value) {
+          try {
+            const url = new URL(value);
+            if (url.protocol === 'https:' || (url.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(url.hostname))) return url.href;
+          } catch (_) {}
+          return '';
+        }
+
+        function render(data) {
+          const state = Object.hasOwn(labels, data.state) ? data.state : 'unavailable';
+          status.dataset.state = state;
+          status.textContent = labels[state];
+          const href = state === 'pending' ? safeURL(data.verificationUrl) : '';
+          const userCode = state === 'pending' ? String(data.userCode || '') : '';
+          verification.hidden = !(href && userCode);
+          link.href = href || '#';
+          link.textContent = href;
+          code.textContent = userCode;
+          start.hidden = state === 'pending' || state === 'connected';
+          start.textContent = state === 'reauthentication_required' ? 'Erneut verbinden' : 'Codex-Abo verbinden';
+          refresh.hidden = state !== 'pending' && state !== 'connected';
+          cancel.hidden = state !== 'pending';
+          notice.hidden = data.reason !== 'device_code_disabled';
+          root.dataset.state = state;
+        }
+
+        function response(event) {
+          const serial = serials.get(event.detail.xhr) || 0;
+          const source = event.detail.elt.id;
+          if (source === 'codex-poller') pollQueued = false;
+          if (serial < applied || (actionIntent && source !== actionIntent)) return;
+          if (source === actionIntent) actionIntent = '';
+          applied = serial;
+          try {
+            if (!event.detail.successful) throw new Error('request failed');
+            render(JSON.parse(event.detail.xhr.responseText));
+          } catch (_) {
+            render({state: 'unavailable', reason: 'transport_unavailable'});
+          }
+        }
+
+        function prepare(action) {
+          actionIntent = action;
+          issued++;
+          if (action === 'codex-cancel') render({state: 'cancelled'});
+        }
+
+        start.addEventListener('click', () => prepare('codex-start'), true);
+        cancel.addEventListener('click', () => prepare('codex-cancel'), true);
+        root.addEventListener('htmx:beforeRequest', event => {
+          serials.set(event.detail.xhr, ++issued);
+        });
+        root.addEventListener('htmx:afterRequest', response);
+        window.setInterval(() => {
+          if (pollQueued || actionIntent || !['pending', 'connected'].includes(status.dataset.state)) return;
+          pollQueued = true;
+          htmx.trigger(poller, 'codex:poll');
+        }, 5000);
+      })();
+    </script>
+  </body>
+</html>
+{{end}}

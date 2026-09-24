@@ -1,0 +1,34 @@
+{{define "modelle/codex/content"}}
+<main>
+  <p class="provider">Modelleinstellungen · Codex-Abo</p>
+  <h1>Codex-Abo verbinden</h1>
+  <p class="intro">Verbinde dein ChatGPT-Konto mit einem Gerätecode. Bestätige die Anmeldung auf der Seite des Anbieters und prüfe anschließend den Status.</p>
+  <section id="codex-connection" class="connection" data-state="{{.state}}" aria-label="Codex-Abo-Verbindung">
+    <p class="provider">Verbindungsstatus</p>
+    <div id="codex-status" class="status" role="status" aria-live="polite" data-state="{{.state}}">
+      {{if eq .state "pending"}}Anmeldung läuft
+      {{else if eq .state "connected"}}Verbunden
+      {{else if eq .state "cancelled"}}Anmeldung abgebrochen
+      {{else if eq .state "expired"}}Gerätecode abgelaufen
+      {{else if eq .state "denied"}}Anmeldung nicht zugelassen
+      {{else if eq .state "reauthentication_required"}}Erneute Anmeldung erforderlich
+      {{else if eq .state "unavailable"}}Verbindung nicht verfügbar
+      {{else}}Nicht verbunden{{end}}
+    </div>
+    <div id="codex-verification" class="verification" {{if ne .state "pending"}}hidden{{end}}>
+      <p>Öffne die Anmeldeseite des Anbieters und gib diesen Code ein:</p>
+      <a id="codex-verification-link" href="{{.verificationUrl}}" target="_blank" rel="noopener noreferrer">{{.verificationUrl}}</a><br>
+      <span id="codex-user-code" class="code">{{.userCode}}</span>
+    </div>
+    <p id="codex-notice" class="notice" {{if ne .reason "device_code_disabled"}}hidden{{end}}>
+      Die Gerätecode-Anmeldung ist beim Anbieter nicht freigegeben. Aktiviere sie in den Konto- oder Workspace-Einstellungen.
+    </p>
+    <div class="actions">
+      <button id="codex-start" type="button" hx-post="/settings/modelle/codex/device/start" hx-swap="none" hx-sync="#codex-connection:queue all" {{if or (eq .state "pending") (eq .state "connected")}}hidden{{end}}>{{if eq .state "reauthentication_required"}}Erneut verbinden{{else}}Codex-Abo verbinden{{end}}</button>
+      <button id="codex-refresh" class="secondary" type="button" hx-get="/settings/modelle/codex/device/status" hx-swap="none" hx-sync="#codex-connection:queue all" {{if and (ne .state "pending") (ne .state "connected")}}hidden{{end}}>Status aktualisieren</button>
+      <button id="codex-cancel" class="secondary" type="button" hx-post="/settings/modelle/codex/device/cancel" hx-swap="none" hx-sync="#codex-connection:queue all" {{if ne .state "pending"}}hidden{{end}}>Anmeldung abbrechen</button>
+    </div>
+    <div id="codex-poller" hx-get="/settings/modelle/codex/device/status" hx-trigger="codex:poll" hx-swap="none" hx-sync="#codex-connection:queue all" hidden></div>
+  </section>
+</main>
+{{end}}
