@@ -944,6 +944,7 @@
       "catalog": "spec/planung/kern/storykatalog.md",
       "dependsOn": [
         "Story-42",
+        "Story-48",
         "Story-64"
       ]
     },
