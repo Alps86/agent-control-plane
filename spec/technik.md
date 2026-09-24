@@ -48,7 +48,7 @@
 - Go-HTML-Templates sind sauber strukturiert, vernünftig eingerückt und lesbar. Frühere minifizierte Einzeiler aus dem entfernten UI-Vorlauf sind kein Stilvorbild.
 - Das bestehende Trading-Projekt dient als **nur lesend** betrachtetes Strukturvorbild; Belege stehen in spec/trading-referenz.md.
 
-Aktuell wird zuerst die vollständige Feature- und Story-Planung mit unabhängigem Planungsreview abgeschlossen. Produktimplementierung und Implementierungsreviews beginnen erst danach. Die früheren Produktbäume `app/` und `ui/` sind gesichert und aus dem Arbeitsbaum entfernt; ihr unvalidierter Vorlauf legt die Architektur nicht zusätzlich fest. Die Git-Neuanlage übernimmt später der Nutzer.
+Aktuell wird zuerst die vollständige Feature- und Story-Planung mit unabhängigem Planungsreview abgeschlossen. Produktimplementierung und Implementierungsreviews beginnen erst danach. Die früheren Produktbäume `app/` und `ui/` sind gesichert und aus dem Arbeitsbaum entfernt; ihr unvalidierter Vorlauf legt die Architektur nicht zusätzlich fest. Git wurde nach dem Zurücksetzen durch den Nutzer verwaltet; diese Planungsarbeit hat keine Git-Aktionen ausgeführt. Versionierung und Entwicklungsstart werden separat geklärt.
 
 ## Modellanbieter und Anmeldung
 
@@ -83,7 +83,7 @@ Aktuell wird zuerst die vollständige Feature- und Story-Planung mit unabhängig
 - Alle neuen Chats und Dateiarbeiten für Agent Control Plane gehören ausschließlich in das gespeicherte Projekt Agent Control Plane; keine globalen oder projektlosen Aufgaben.
 - Regelmäßige Code Reviews erfolgen durch einen separaten Subagenten. Konkrete Befunde werden behoben.
 - Der Hauptagent koordiniert mehrere echte Chats ausschließlich im gespeicherten Projekt. Sinnvolle hohe Parallelität setzt klare Dateibesitzer und integrierbare Schnittstellen voraus; Routineprobleme lösen die jeweiligen Agenten eigenständig.
-- Die Hauptkoordination pflegt `PLANUNG.md` mit Story, Status, zuständigem Chat/Subagenten, Review und Blockade. Git ist derzeit nicht eingerichtet; die Neuanlage übernimmt später der Nutzer. Nach der Git-Neuanlage kann jede Entwicklungsstory in einem eigenen Feature-Branch und isolierten Worktree bearbeitet werden. Ein fertiger Story-Branch wird separat gegen `main` geprüft und nach behobenen Befunden zeitnah integriert; Routinekonflikte lösen die Besitzer, echte Blockaden gehen an die Hauptkoordination.
+- Die Hauptkoordination pflegt `PLANUNG.md` mit Story, Status, zuständigem Chat/Subagenten, Review und Blockade. Git wurde nach dem Zurücksetzen durch den Nutzer verwaltet; diese Planungsarbeit führt keine Git-Aktionen aus. Nach gesondert geklärter Versionierung und Entwicklungsfreigabe kann jede Entwicklungsstory in einem eigenen Feature-Branch und isolierten Worktree bearbeitet werden. Ein fertiger Story-Branch wird separat gegen `main` geprüft und nach behobenen Befunden zeitnah integriert; Routinekonflikte lösen die Besitzer, echte Blockaden gehen an die Hauptkoordination.
 - Nach relevanten Änderungen oder konkreten verbleibenden Risiken gezielt nachprüfen. Keine endlosen Review-Schleifen ohne neuen Anlass.
 - Alle ausführenden und Review-Agenten dieses Projekts verwenden GPT-6 Sol / Medium und halten die Architektur-, Stil- und Godog-Vorgaben ein.
 - Diese Arbeitsweise gilt ab dem freigegebenen Implementierungsstart. Zusätzliche Chats und Subagenten werden für konkret abgegrenzte Arbeit eingesetzt.

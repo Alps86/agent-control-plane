@@ -243,6 +243,8 @@
       "group": "Modell/Voice/CHV",
       "catalog": "spec/planung/modelle-sprache/stories.md",
       "dependsOn": [
+        "Story-11",
+        "Story-15",
         "Story-23"
       ]
     },
@@ -279,6 +281,7 @@
       "group": "Kern",
       "catalog": "spec/planung/kern/storykatalog.md",
       "dependsOn": [
+        "Story-04",
         "Story-08",
         "Story-15",
         "Story-16",
@@ -415,10 +418,16 @@
       "group": "Kern",
       "catalog": "spec/planung/kern/storykatalog.md",
       "dependsOn": [
-        "Story-15",
-        "Story-16",
         "Story-31"
-      ]
+      ],
+      "pathGates": {
+        "eino": [
+          "Story-15"
+        ],
+        "codexCli": [
+          "Story-16"
+        ]
+      }
     },
     {
       "story": "Story-38",
@@ -963,7 +972,20 @@
       "fachId": "ZA-02",
       "group": "Zusammenarbeit",
       "catalog": "spec/planung/zusammenarbeit/stories.md",
-      "dependsOn": []
+      "dependsOn": [
+        "Story-11",
+        "Story-17",
+        "Story-19",
+        "Story-37"
+      ],
+      "pathGates": {
+        "eino": [
+          "Story-15"
+        ],
+        "codexCli": [
+          "Story-16"
+        ]
+      }
     },
     {
       "story": "Story-91",
@@ -1005,6 +1027,7 @@
       "group": "Zusammenarbeit",
       "catalog": "spec/planung/zusammenarbeit/stories.md",
       "dependsOn": [
+        "Story-64",
         "Story-90",
         "Story-91",
         "Story-92"
@@ -1016,6 +1039,8 @@
       "group": "Zusammenarbeit",
       "catalog": "spec/planung/zusammenarbeit/stories.md",
       "dependsOn": [
+        "Story-48",
+        "Story-75",
         "Story-90",
         "Story-91",
         "Story-92",

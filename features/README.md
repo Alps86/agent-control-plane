@@ -1,6 +1,6 @@
 # Künftige ausführbare Features
 
-Diese Verzeichnisstruktur ist die Zielablage für später entstehende Gherkin-Features. Hier liegen derzeit bewusst keine `.feature`-Dateien; die vorhandenen Beispiele unter `spec/features/` bleiben Planungsmaterial bis zu einer zentralen Migrations- oder Archiventscheidung. Diese README-Dateien belegen weder eine Implementierung noch bestandene Tests.
+Diese Verzeichnisstruktur ist die Zielablage für später entstehende Gherkin-Features. Hier liegen derzeit bewusst keine `.feature`-Dateien. Die 31 früheren Quellen aus `spec/features/` mit 177 Szenarien sind als Markdown im [Archiv der Akzeptanzbeispiele](../spec/planung/akzeptanzbeispiele/README.md) unter `spec/planung/akzeptanzbeispiele/bestand/` gesichert; die ursprünglichen `.feature`-Dateien wurden nach verifiziertem TAR entfernt. Diese README-Dateien belegen weder eine Implementierung noch bestandene Tests.
 
 - [`app/`](app/README.md): fachliche Abnahme über öffentliche Anwendungsgrenzen.
 - [`ui/`](ui/README.md): sichtbare Bedienfälle über die reale Oberfläche.
