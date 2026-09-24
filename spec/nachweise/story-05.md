@@ -10,6 +10,7 @@ Stand: 24. September 2026. Prüfung der statischen Vite-Vorschau und des ausgeli
 - Die gebaute Vite-Vorschau wurde unter `http://127.0.0.1:4173/` im echten Browser geprüft. Organisation „Atelier Nord“ mit Übersicht, Projektansicht mit drei Projekten, Agentenansicht mit vier Agenten und Aufgabenansicht mit vier Aufgaben waren sichtbar; die Navigation führte zu den jeweiligen Seiten und zeigte die aktuelle Ansicht.
 - Mit `fixture=empty` zeigten Projekt-, Agenten- und Aufgabenansicht jeweils den passenden Text „Noch keine …“ und einen Rückweg zur Übersicht. Mit `view=tasks&fixture=error` erschien „Aufgaben nicht verfügbar“ samt verständlichem Hinweis und Rücklink. Mit `view=organization&fixture=alternate` erschien „Küstenwerk“ statt „Atelier Nord“.
 - Bei 390 × 844 Pixeln blieben alle vier Navigationsziele erreichbar; ein Klick auf Aufgaben öffnete die Aufgabenansicht. Die Dokumentbreite lag bei 375 Pixeln bei 390 Pixeln Viewport; die breite Aufgabentabelle hatte einen eigenen horizontalen Scrollbereich. Kein horizontaler Dokumentüberlauf.
+- `cd app && go test ./cucumber/ui-bootstrap -count=1 -v` bestand mit 5/5 Godog-Szenarien und 27/27 Schritten. Die Szenarien bedienten die gebaute statische Vite-Oberfläche über HTTP und echten Chrome 154. Der lokale Testserver benötigte eine Sandbox-Eskalation für die Portfreigabe. Die schmale Ansicht mit 375 Pixeln hielt die Navigation in einem horizontalen Scrollcontainer erreichbar, ohne globalen Seitenüberlauf.
 
 ## Gezielte Nachprüfung nach Korrektur
 
@@ -19,4 +20,4 @@ Die nachgebesserte Navigation wurde für `fixture=empty` in Projekt-, Agenten- u
 
 ## Abnahmegrenze
 
-Die fünf fachlichen Gherkin-Szenarien wurden im Browser manuell über die öffentliche Vite-Oberfläche nachvollzogen. Ein ausführbarer Godog-Lauf über die Go-UI-Grenze ist in UI-01 noch nicht möglich, weil `ui/bridge` und `ui/cmd/preview` erst Story-06 und Story-07 gehören. Die erfolgreiche isolierte Go-Template-Map-Prüfung ersetzt diesen späteren öffentlichen End-to-End-Nachweis nicht.
+Die fünf fachlichen Gherkin-Szenarien sind sowohl manuell als auch ausführbar über die öffentliche statische Vite-HTTP-Grenze im Browser nachgewiesen. Der End-to-End-Nachweis über `ui/bridge` und die geschützte Go-Vorschau bleibt Story-06 und Story-07 zugeordnet. Die isolierte Go-Template-Map-Prüfung belegt die Renderbarkeit des Vertrags, aber noch keine eingebettete Go-Auslieferung.
