@@ -1,0 +1,33 @@
+{{define "projects"}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">ARBEITSBEREICH / PROJEKTE</div>
+      <h1>Projekte</h1>
+      <p>Alle Vorhaben Ihrer Organisation an einem Ort.</p>
+    </div>
+    <span class="heading-count">{{len .View.Projects}} Projekte</span>
+  </div>
+  {{if .View.Projects}}
+    <div class="project-grid">
+      {{range .View.Projects}}
+        <article class="project-card">
+          <div class="project-top"><div class="project-icon {{.Color}}">{{.Code}}</div><span class="badge">{{.Status}}</span></div>
+          <h2>{{.Name}}</h2>
+          <p>{{.Description}}</p>
+          <div class="project-progress">
+            <div><span>Fortschritt</span><strong>{{.Progress}}%</strong></div>
+            <div class="progress-track"><span style="width:{{.Progress}}%"></span></div>
+          </div>
+          <div class="project-footer"><span>☷ &nbsp; {{.Tasks}} Aufgaben</span><span aria-hidden="true">↗</span></div>
+        </article>
+      {{end}}
+    </div>
+  {{else}}
+    <section class="empty-state">
+      <div class="empty-icon">▦</div>
+      <h2>Noch keine Projekte</h2>
+      <p>Für diese Organisation sind noch keine Projekte vorhanden.</p>
+      {{range .Navigation}}{{if eq .Key "organization"}}<a class="text-link" href="{{.Href}}">Zur Übersicht →</a>{{end}}{{end}}
+    </section>
+  {{end}}
+{{end}}

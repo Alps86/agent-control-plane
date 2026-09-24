@@ -1,0 +1,54 @@
+{{define "organization"}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">ORGANISATION · {{.View.Organization.Update}}</div>
+      <h1>Guten Tag, {{.View.Organization.Name}}</h1>
+      <p>{{.View.Organization.Summary}}</p>
+    </div>
+  </div>
+  <section class="hero">
+    <div>
+      <div class="hero-kicker">IHRE ORGANISATION</div>
+      <h2>{{.View.Organization.Name}}</h2>
+      <p>{{.View.Organization.Description}}</p>
+      {{range .Navigation}}{{if eq .Key "projects"}}<a class="hero-link" href="{{.Href}}">Projekte ansehen ↗</a>{{end}}{{end}}
+    </div>
+    <div class="hero-decoration" aria-hidden="true"><span>✳</span></div>
+  </section>
+  <div class="section-heading"><h2>Auf einen Blick</h2><span>Aktueller Stand</span></div>
+  <div class="stats-grid">
+    {{range .View.Highlights}}
+      <article class="stat-card">
+        <div class="stat-top"><span class="stat-icon">▦</span><span class="stat-arrow">↗</span></div>
+        <strong>{{.Value}}</strong>
+        <div class="stat-label">{{.Label}}</div>
+        <small>{{.Description}}</small>
+      </article>
+    {{else}}
+      <article class="stat-card"><strong>0</strong><div class="stat-label">Noch keine Einträge</div><small>Ihre Arbeitsbereiche erscheinen hier.</small></article>
+    {{end}}
+  </div>
+  <div class="section-heading recent-heading"><h2>Aktuelle Aufgaben</h2>{{range .Navigation}}{{if eq .Key "tasks"}}<a class="text-link" href="{{.Href}}">Alle Aufgaben ansehen →</a>{{end}}{{end}}</div>
+  {{if .View.RecentTasks}}
+    <div class="table-card"><div class="table-scroll"><table>
+      <thead><tr><th>AUFGABE</th><th>PROJEKT</th><th>STATUS</th><th>ZUSTÄNDIG</th></tr></thead>
+      <tbody>
+        {{range .View.RecentTasks}}
+          <tr>
+            <td><span class="task-code">{{.Code}}</span><strong>{{.Title}}</strong></td>
+            <td>{{.Project}}</td>
+            <td><span class="badge">{{.Status}}</span></td>
+            <td><span class="small-avatar">{{.Initials}}</span>{{.Assignee}}</td>
+          </tr>
+        {{end}}
+      </tbody>
+    </table></div></div>
+  {{else}}
+    <section class="empty-state">
+      <div class="empty-icon">☷</div>
+      <h2>Noch keine Aufgaben</h2>
+      <p>Sobald Aufgaben angelegt werden, sehen Sie sie hier.</p>
+      {{range .Navigation}}{{if eq .Key "organization"}}<a class="text-link" href="{{.Href}}">Zur Übersicht →</a>{{end}}{{end}}
+    </section>
+  {{end}}
+{{end}}
