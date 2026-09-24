@@ -153,3 +153,86 @@ Funktionalität: Codex-Abo per Gerätecode verbinden
       | Datei           |
       | Masterschlüssel |
       | Secret-Datei    |
+
+  Szenario: Fremde Browser-Herkunft startet keine Gerätecode-Anmeldung
+    Angenommen die Codex-Abo-Verbindung ist nicht eingerichtet
+    Wenn ich die Gerätecode-Anmeldung mit fremder Browser-Herkunft starte
+    Dann wird die Settings-Anfrage untersagt
+    Und beim Anbieter wurde kein Gerätecode angefordert
+    Und die Antwort enthält keine Anmeldegeheimnisse
+
+  Szenario: Fremder Host startet keine Gerätecode-Anmeldung
+    Angenommen die Codex-Abo-Verbindung ist nicht eingerichtet
+    Wenn ich die Gerätecode-Anmeldung mit fremdem Host starte
+    Dann wird die Settings-Anfrage untersagt
+    Und beim Anbieter wurde kein Gerätecode angefordert
+
+  Szenario: Fremde Browser-Herkunft bricht keine Anmeldung ab
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn ich den Verbindungsversuch mit fremder Browser-Herkunft abbreche
+    Dann wird die Settings-Anfrage untersagt
+    Und der Verbindungsversuch bleibt laufend
+
+  Szenario: Fremder Host bricht keine Anmeldung ab
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn ich den Verbindungsversuch mit fremdem Host abbreche
+    Dann wird die Settings-Anfrage untersagt
+    Und der Verbindungsversuch bleibt laufend
+
+  Szenario: Ohne Browser-Herkunft keine Anmeldung starten
+    Angenommen die Codex-Abo-Verbindung ist nicht eingerichtet
+    Wenn ich die Gerätecode-Anmeldung ohne Browser-Herkunft starte
+    Dann wird die Settings-Anfrage untersagt
+    Und beim Anbieter wurde kein Gerätecode angefordert
+
+  Szenario: Ohne Browser-Herkunft keine Anmeldung abbrechen
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn ich den Verbindungsversuch ohne Browser-Herkunft abbreche
+    Dann wird die Settings-Anfrage untersagt
+    Und der Verbindungsversuch bleibt laufend
+
+  Szenario: Fremder Host liest keinen laufenden Gerätecode
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn ich den Verbindungsstatus mit fremdem Host prüfe
+    Dann wird die Settings-Anfrage untersagt
+    Und die Antwort enthält keinen Gerätecode
+    Und der Verbindungsversuch bleibt laufend
+
+  Szenario: Entfernter Peer startet trotz lokaler Header keine Anmeldung
+    Angenommen die Codex-Abo-Verbindung ist nicht eingerichtet
+    Wenn ich die Gerätecode-Anmeldung von einem entfernten Peer mit lokalen Headern starte
+    Dann wird die Settings-Anfrage untersagt
+    Und beim Anbieter wurde kein Gerätecode angefordert
+
+  Szenario: Entfernter Peer bricht trotz lokaler Header keine Anmeldung ab
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn ich den Verbindungsversuch von einem entfernten Peer mit lokalen Headern abbreche
+    Dann wird die Settings-Anfrage untersagt
+    Und der Verbindungsversuch bleibt laufend
+
+  Szenario: Entfernter Peer liest trotz lokaler Header keinen Gerätecode
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn ich den Verbindungsstatus von einem entfernten Peer mit lokalen Headern prüfe
+    Dann wird die Settings-Anfrage untersagt
+    Und die Antwort enthält keinen Gerätecode
+    Und der Verbindungsversuch bleibt laufend
+
+  Szenariogrundriss: Unsichere Listener-Bind-Adresse vor Browser-Anfragen ablehnen
+    Angenommen die Codex-Abo-Verbindung ist nicht eingerichtet
+    Wenn ich den Settings-Handler mit der Bind-Adresse "<Adresse>" initialisiere
+    Dann wird die unsichere Bind-Adresse abgelehnt
+    Und beim Anbieter wurde kein Gerätecode angefordert
+
+    Beispiele:
+      | Adresse            |
+      | 0.0.0.0:8080       |
+      | [::]:8080          |
+      | 192.0.2.1:8080     |
+      | :8080              |
+      | 127.0.0.1:ungueltig |
+
+  Szenario: Lokaler Browser verwendet vertrauenswürdige Listener-Bind-Adresse
+    Angenommen die Codex-Abo-Verbindung ist nicht eingerichtet
+    Wenn ich den Settings-Handler mit der Bind-Adresse "localhost:8080" initialisiere
+    Und ich die Gerätecode-Anmeldung über localhost starte
+    Dann erhalte ich die Anmeldeseite des Anbieters und einen Gerätecode

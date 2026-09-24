@@ -22,6 +22,7 @@ type Suite struct {
 	secretPath  string
 	keyPath     string
 	openErr     error
+	bindErr     error
 	accessToken string
 	accountID   string
 	accessErr   error

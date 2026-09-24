@@ -23,7 +23,7 @@ func main() {
 }
 
 func (b *Bootstrap) Run() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), b.path(), sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration())
+	db, err := sqlite.OpenWithMigrations(context.Background(), b.path(), sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration())
 	if err != nil {
 		return fmt.Errorf("database startup: %w", err)
 	}
@@ -35,10 +35,11 @@ func (b *Bootstrap) Run() error {
 	}
 
 	service := apporganisation.NewService(sqlite.NewOrganizationStore(db), apporganisation.NewLocalIdentity())
-	organizations := weborganisation.NewHandler(service, ui)
+	organizations := weborganisation.NewHandler(service, ui, b.address())
 	server := web.NewServer(system.NewProbe(), db)
 	b.mount(server, organizations, ui)
 	b.mountGoals(server, db, service, ui)
+	b.mountAgents(server, db, ui)
 	return http.ListenAndServe(b.address(), server.Handler())
 }
 
