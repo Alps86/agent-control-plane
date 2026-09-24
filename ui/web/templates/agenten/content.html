@@ -61,6 +61,7 @@
     <section class="stat-card"><h2>Profil</h2><p><strong>Ausführungsart:</strong> {{.View.Agent.ExecutionKindLabel}}</p><p><strong>Rolle:</strong> {{.View.Agent.Role}}</p><p><strong>Anweisung:</strong> {{.View.Agent.Instructions}}</p><h3>Benannte Fachfähigkeiten</h3><ul>{{range .View.Agent.Capabilities}}<li>{{.}}</li>{{end}}</ul></section>
     <section class="stat-card"><h2>Bereitschaft</h2><p>{{.View.Agent.ModelStatus}}</p><p>{{.View.Agent.ReadinessLabel}}</p>{{if .View.Agent.ReadinessReason}}<p>{{.View.Agent.ReadinessReason}}</p>{{end}}</section>
     <form action="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.Agent.ID}}/start" method="post"><button type="submit">Starten</button></form>
+    <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.Agent.ID}}/datenbereich">Datenbereich verwalten →</a></p>
     <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}/agenten">Zur Agentenübersicht →</a></p>
   {{end}}
 {{end}}
