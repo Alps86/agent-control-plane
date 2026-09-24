@@ -94,7 +94,16 @@ func (d *Direct) interval(raw string) (int, error) {
 		return 0, nil
 	}
 
-	return strconv.Atoi(strings.TrimSpace(raw))
+	seconds, err := strconv.ParseUint(strings.TrimSpace(raw), 10, 64)
+	if err != nil {
+		return 0, err
+	}
+
+	if seconds > 900 {
+		return 900, nil
+	}
+
+	return int(seconds), nil
 }
 
 func (d *Direct) Poll(ctx context.Context, challenge modellverbindung.Challenge) (modellverbindung.PollResult, error) {
