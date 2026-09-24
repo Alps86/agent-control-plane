@@ -22,7 +22,7 @@ func (s *Suite) startNegative() error {
 		return nil
 	}
 	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath,
-		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.RunMigration(4), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration())
+		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.RunMigration(4), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(), sqlite.TaskMigration())
 	if err != nil {
 		return err
 	}
@@ -91,7 +91,7 @@ func (s *Suite) noAgentData() error {
 
 func (s *Suite) remotePeerSpoofedPost() error {
 	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath,
-		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.RunMigration(4), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration())
+		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.RunMigration(4), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(), sqlite.TaskMigration())
 	if err != nil {
 		return err
 	}

@@ -1,39 +1,34 @@
-package projekt
+package aufgabe
 
 import (
 	"net/http"
 
+	appagent "agentcontrolplane/app/internal/app/agent"
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
-	appziel "agentcontrolplane/app/internal/app/ziel"
-	domainprojekt "agentcontrolplane/app/internal/domain/projekt"
 	"agentcontrolplane/ui/bridge"
 )
 
-// Handler bindet Projekte an die öffentlichen JSON- und HTML-Routen.
+// Handler verbindet Aufgaben-Anwendungsfälle mit JSON und Browserseiten.
 type Handler struct {
-	projects      *appprojekt.Service
 	tasks         *appaufgabe.Service
+	projects      *appprojekt.Service
+	agents        *appagent.Service
 	organizations *apporganisation.Service
-	goals         *appziel.Service
 	bridge        *bridge.Bridge
 	bindAddress   string
 	mux           *http.ServeMux
 }
 
 type createRequest struct {
-	Name        string `json:"name"`
+	Title       string `json:"title"`
 	Description string `json:"description"`
-	GoalID      string `json:"goal_id"`
+	Priority    string `json:"priority"`
+	AssigneeID  string `json:"assignee_id"`
 }
 
 type listResponse struct {
-	Projects any `json:"projects"`
-}
-
-type detailResponse struct {
-	domainprojekt.Project
 	Tasks any `json:"tasks"`
 }
 

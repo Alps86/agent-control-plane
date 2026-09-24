@@ -15,6 +15,7 @@ var ErrNameConflict = portagent.ErrNameConflict
 var ErrTemplateNotFound = errors.New("Vorlage nicht gefunden")
 var ErrExecutionKind = errors.New("Ausführungsart passt nicht zur Vorlage")
 var ErrCapabilityDenied = domainagent.ErrCapabilityDenied
+var ErrInvalidStatus = domainagent.ErrInvalidStatus
 
 // CreateInput enthält nur vom Bediener wählbare Profilfelder.
 type CreateInput struct {
