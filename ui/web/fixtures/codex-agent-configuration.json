@@ -1,0 +1,27 @@
+{
+  "PageTitle": "Kai · Codex CLI",
+  "Navigation": [
+    {
+      "Key": "organisation",
+      "Label": "Organisationen",
+      "Href": "/organisationen",
+      "Icon": "✳"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Kind": "detail",
+    "Agent": {
+      "ID": "agent-kai",
+      "Name": "Kai",
+      "ReadinessReason": "Die erforderliche Codex-CLI-Konfiguration fehlt.",
+      "Capabilities": [],
+      "ExecutionKindLabel": "Codex CLI",
+      "ReadinessLabel": "Nicht startbereit"
+    },
+    "OrganizationID": "org-nordstern",
+    "OrganizationName": "Nordstern"
+  }
+}

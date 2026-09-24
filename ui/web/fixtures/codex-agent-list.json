@@ -1,0 +1,29 @@
+{
+  "PageTitle": "Agenten von Nordstern",
+  "Navigation": [
+    {
+      "Key": "organisation",
+      "Label": "Organisationen",
+      "Href": "/organisationen",
+      "Icon": "✳"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [
+    "agent.create"
+  ],
+  "View": {
+    "Kind": "list",
+    "Agents": [
+      {
+        "ID": "agent-kai",
+        "Name": "Kai",
+        "ExecutionKindLabel": "Codex CLI",
+        "ReadinessLabel": "Nicht startbereit"
+      }
+    ],
+    "OrganizationID": "org-nordstern",
+    "OrganizationName": "Nordstern"
+  }
+}

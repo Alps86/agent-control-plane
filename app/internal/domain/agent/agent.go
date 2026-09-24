@@ -13,7 +13,7 @@ func NewAgent(id, organizationID, name string, template Template) (Agent, error)
 		ID: id, OrganizationID: organizationID, Name: name,
 		Role: template.Role, Instructions: template.Instructions,
 		ExecutionKind: template.Kind, TemplateID: template.ID,
-		Capabilities: append([]string(nil), template.Capabilities...),
+		Capabilities: append([]string{}, template.Capabilities...),
 	}, nil
 }
 
