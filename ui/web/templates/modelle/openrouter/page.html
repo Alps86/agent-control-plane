@@ -1,0 +1,32 @@
+{{define "modelle/openrouter/page"}}
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.PageTitle}}</title>
+    <link rel="stylesheet" href="/assets/index.css">
+    <style>
+      .provider-page { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+      .provider-back { display: inline-block; margin-bottom: 1.5rem; }
+      .provider-card { border: 1px solid #d6dce5; border-radius: 12px; padding: 1.5rem; background: #fff; }
+      .provider-card + .provider-card { margin-top: 1rem; }
+      .provider-card h2 { margin-top: 0; }
+      .provider-fields { display: grid; gap: .75rem; margin: 1.25rem 0; }
+      .provider-fields input { width: 100%; box-sizing: border-box; padding: .7rem; }
+      .provider-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+      .provider-actions button { padding: .65rem 1rem; cursor: pointer; }
+      .provider-status { font-weight: 700; }
+      .provider-note { margin-bottom: 1.25rem; }
+      .provider-message { padding: .8rem 1rem; border-radius: 8px; background: #eef3fb; }
+      .provider-error { background: #fff1ed; }
+      .provider-reference { overflow-wrap: anywhere; }
+    </style>
+  </head>
+  <body>
+    <main class="provider-page" id="content" tabindex="-1">
+      {{template "modelle/openrouter/content" .}}
+    </main>
+  </body>
+</html>
+{{end}}
