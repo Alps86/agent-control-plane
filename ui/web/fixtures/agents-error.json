@@ -1,0 +1,89 @@
+{
+  "PageTitle": "Agenten · Agent Control Plane",
+  "Navigation": [
+    {
+      "Key": "organization",
+      "Label": "Übersicht",
+      "Href": "/?view=organization&fixture=error",
+      "Icon": "◫"
+    },
+    {
+      "Key": "projects",
+      "Label": "Projekte",
+      "Href": "/?view=projects&fixture=error",
+      "Icon": "▦"
+    },
+    {
+      "Key": "agents",
+      "Label": "Agenten",
+      "Href": "/?view=agents&fixture=error",
+      "Icon": "◉"
+    },
+    {
+      "Key": "tasks",
+      "Label": "Aufgaben",
+      "Href": "/?view=tasks&fixture=error",
+      "Icon": "☷"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Organization": {
+      "ID": "org-atlas",
+      "Name": "Atelier Nord",
+      "Initials": "AN",
+      "Description": "Ein Ort für Produkte, Forschung und verlässliche Zusammenarbeit.",
+      "Summary": "Die Arbeit auf einen Blick: Projekte, Agenten und Aufgaben an einem Ort.",
+      "Projects": 3,
+      "Agents": 4,
+      "Tasks": 4,
+      "ActiveTasks": 1,
+      "Update": "Heute aktualisiert"
+    },
+    "Agents": [
+      {
+        "ID": "a1",
+        "Name": "Mira",
+        "Initials": "MI",
+        "Role": "Research & Insights",
+        "Type": "Eino",
+        "Status": "Bereit",
+        "Color": "blue",
+        "Description": "Sammelt Erkenntnisse und bereitet Entscheidungen vor."
+      },
+      {
+        "ID": "a2",
+        "Name": "Jonas",
+        "Initials": "JO",
+        "Role": "Engineering",
+        "Type": "Codex CLI",
+        "Status": "In Arbeit",
+        "Color": "violet",
+        "Description": "Setzt technische Aufgaben im zugewiesenen Arbeitsbereich um."
+      },
+      {
+        "ID": "a3",
+        "Name": "Lena",
+        "Initials": "LE",
+        "Role": "Content",
+        "Type": "Eino",
+        "Status": "Bereit",
+        "Color": "amber",
+        "Description": "Schreibt und prüft Inhalte für das Kundenportal."
+      },
+      {
+        "ID": "a4",
+        "Name": "Noah",
+        "Initials": "NO",
+        "Role": "QA",
+        "Type": "Eino",
+        "Status": "Pausiert",
+        "Color": "green",
+        "Description": "Prüft Ergebnisse anhand der vereinbarten Abnahme."
+      }
+    ],
+    "Kind": "agents"
+  }
+}

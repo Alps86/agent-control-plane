@@ -1,0 +1,79 @@
+{
+  "PageTitle": "Projekte · Agent Control Plane",
+  "Navigation": [
+    {
+      "Key": "organization",
+      "Label": "Übersicht",
+      "Href": "/?view=organization",
+      "Icon": "◫"
+    },
+    {
+      "Key": "projects",
+      "Label": "Projekte",
+      "Href": "/?view=projects",
+      "Icon": "▦"
+    },
+    {
+      "Key": "agents",
+      "Label": "Agenten",
+      "Href": "/?view=agents",
+      "Icon": "◉"
+    },
+    {
+      "Key": "tasks",
+      "Label": "Aufgaben",
+      "Href": "/?view=tasks",
+      "Icon": "☷"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Organization": {
+      "ID": "org-atlas",
+      "Name": "Atelier Nord",
+      "Initials": "AN",
+      "Description": "Ein Ort für Produkte, Forschung und verlässliche Zusammenarbeit.",
+      "Summary": "Die Arbeit auf einen Blick: Projekte, Agenten und Aufgaben an einem Ort.",
+      "Projects": 3,
+      "Agents": 4,
+      "Tasks": 4,
+      "ActiveTasks": 1,
+      "Update": "Heute aktualisiert"
+    },
+    "Projects": [
+      {
+        "ID": "p1",
+        "Name": "Kundenportal",
+        "Code": "KP",
+        "Description": "Ein klarer Zugang zu Anfragen und Aufträgen.",
+        "Status": "Aktiv",
+        "Progress": 72,
+        "Tasks": 2,
+        "Color": "blue"
+      },
+      {
+        "ID": "p2",
+        "Name": "Wissensbasis",
+        "Code": "WB",
+        "Description": "Antworten, auf die sich Team und Agenten verlassen.",
+        "Status": "Aktiv",
+        "Progress": 45,
+        "Tasks": 1,
+        "Color": "violet"
+      },
+      {
+        "ID": "p3",
+        "Name": "Markenauftritt",
+        "Code": "MA",
+        "Description": "Eine konsistente Sprache für alle Kanäle.",
+        "Status": "Planung",
+        "Progress": 20,
+        "Tasks": 1,
+        "Color": "amber"
+      }
+    ],
+    "Kind": "projects"
+  }
+}
