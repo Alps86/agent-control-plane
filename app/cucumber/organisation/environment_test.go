@@ -1,0 +1,143 @@
+package organisation
+
+import (
+	"context"
+	"fmt"
+	"net"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/cucumber/godog"
+)
+
+func NewSuite(t *testing.T) *Suite {
+	client := &http.Client{Timeout: 3 * time.Second, CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
+		return http.ErrUseLastResponse
+	}}
+	return &Suite{t: t, client: client}
+}
+
+func (s *Suite) build() error {
+	s.binary = filepath.Join(s.t.TempDir(), "server")
+	cmd := exec.Command("go", "build", "-o", s.binary, "./cmd/server")
+	cmd.Dir = "../.."
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Errorf("Go-Server bauen: %w: %s", err, output)
+	}
+
+	return nil
+}
+
+func (s *Suite) freshServer() error {
+	s.stopServer()
+	s.dbPath = filepath.Join(s.t.TempDir(), "organisation.sqlite")
+	return s.startServer()
+}
+
+func (s *Suite) startServer() error {
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return err
+	}
+
+	s.address = listener.Addr().String()
+	listener.Close()
+	return s.launch()
+}
+
+func (s *Suite) launch() error {
+	file, err := os.CreateTemp(s.t.TempDir(), "org-server-log-")
+	if err != nil {
+		return err
+	}
+
+	s.logFile = file
+	s.process = exec.Command(s.binary)
+	s.process.Env = append(os.Environ(), "APP_ADDR="+s.address, "APP_DB_PATH="+s.dbPath)
+	s.process.Stdout, s.process.Stderr = file, file
+	if err := s.process.Start(); err != nil {
+		return err
+	}
+
+	s.exited = make(chan error, 1)
+	go func() { s.exited <- s.process.Wait() }()
+	return s.waitHealthy()
+}
+
+func (s *Suite) waitHealthy() error {
+	deadline := time.Now().Add(5 * time.Second)
+	for time.Now().Before(deadline) {
+		response, err := s.client.Get(s.baseURL() + "/health")
+		if err == nil && response.StatusCode == http.StatusOK {
+			response.Body.Close()
+			return nil
+		}
+
+		if response != nil {
+			response.Body.Close()
+		}
+		time.Sleep(20 * time.Millisecond)
+	}
+
+	return fmt.Errorf("Server unter %s nicht erreichbar: %s", s.address, s.serverLog())
+}
+
+func (s *Suite) serverLog() string {
+	if s.logFile == nil {
+		return ""
+	}
+	data, _ := os.ReadFile(s.logFile.Name())
+	return string(data)
+}
+
+func (s *Suite) restartServer() error {
+	s.stopServer()
+	return s.startServer()
+}
+
+func (s *Suite) stopServer() {
+	if s.process == nil {
+		return
+	}
+	_ = s.process.Process.Kill()
+	<-s.exited
+	_ = s.logFile.Close()
+	s.process = nil
+}
+
+func (s *Suite) cleanup() {
+	s.stopServer()
+	s.stopNegative()
+	s.stopBrowser()
+}
+
+func (s *Suite) afterScenario(ctx context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
+	s.stopServer()
+	s.stopNegative()
+	s.dbPath, s.address, s.response, s.unknown = "", "", nil, nil
+	s.organization, s.page = Organization{}, BrowserPage{}
+	return ctx, nil
+}
+
+func (s *Suite) baseURL() string { return "http://" + s.address }
+
+func (s *Suite) request(method, path, body, contentType string) error {
+	req, err := http.NewRequest(method, s.baseURL()+path, strings.NewReader(body))
+	if err != nil {
+		return err
+	}
+	if contentType != "" {
+		req.Header.Set("Content-Type", contentType)
+	}
+	response, err := s.client.Do(req)
+	if err != nil {
+		return err
+	}
+	return s.recordResponse(response)
+}

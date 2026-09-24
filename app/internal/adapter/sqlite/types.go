@@ -11,6 +11,11 @@ type Database struct {
 	migrations []Migration
 }
 
+// OrganizationStore bindet Organisationsoperationen ohne Methodenkollision an die Datenbank.
+type OrganizationStore struct {
+	database *Database
+}
+
 // Migration beschreibt einen geordneten, atomar anzuwendenden Schemaschritt.
 type Migration struct {
 	version    int
