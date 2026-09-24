@@ -80,7 +80,7 @@ func (s *Suite) noIdentity() error {
 
 func (s *Suite) startNegative(identity *FixedIdentity) error {
 	s.stopNegative()
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.database, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration())
+	db, err := sqlite.OpenWithMigrations(context.Background(), s.database, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration())
 	if err != nil {
 		return err
 	}

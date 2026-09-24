@@ -1,0 +1,35 @@
+{{define "agenten/datenbereich/content"}}
+  {{if .Notice}}<div class="notice" role="status">{{.Notice}}</div>{{end}}
+  {{if .Errors}}<div class="notice" role="alert">{{range .Errors}}<p>{{.}}</p>{{end}}</div>{{end}}
+  {{if eq .View.Kind "error"}}
+    <section class="empty-state"><h1>Datenbereich</h1><p>Die Anfrage konnte nicht abgeschlossen werden.</p></section>
+  {{end}}
+  {{if eq .View.Kind "scope"}}
+    <div class="page-heading">
+      <div><div class="eyebrow">AGENTENRECHTE</div><h1>Datenbereich von {{.View.Agent.Name}}</h1><p>Projektzugriff für diesen Agenten ausdrücklich festlegen.</p></div>
+    </div>
+    {{if .View.HasGrants}}
+      <p role="status">Freigegebene Projekte: {{.View.GrantSummary}}</p>
+    {{else}}
+      <p role="status">Keine Projektfreigabe</p>
+    {{end}}
+    <form action="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.Agent.ID}}/datenbereich" method="post">
+      <section class="stat-card">
+        <h2>Projekte dieser Organisation</h2>
+        {{if .View.Projects}}
+          {{range .View.Projects}}
+            <fieldset>
+              <legend>{{.Name}}</legend>
+              <p>{{.AccessLabel}}</p>
+              <label><input type="checkbox" name="read_project_ids" value="{{.ID}}" {{if .CanRead}}checked{{end}}> Lesen</label>
+              <label><input type="checkbox" name="write_project_ids" value="{{.ID}}" {{if .CanWrite}}checked{{end}}> Schreiben</label>
+            </fieldset>
+          {{end}}
+        {{else}}
+          <p>In dieser Organisation gibt es noch keine Projekte.</p>
+        {{end}}
+      </section>
+      <p><button type="submit">Datenbereich speichern</button> <a href="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.Agent.ID}}">Zum Agentenprofil</a></p>
+    </form>
+  {{end}}
+{{end}}

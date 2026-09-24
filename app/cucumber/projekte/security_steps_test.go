@@ -103,7 +103,7 @@ func (s *Suite) negativeIdentity(identity *FixedIdentity) portorganisation.Ident
 func (s *Suite) openNegativeDatabase() (*sqlite.Database, error) {
 	return sqlite.OpenWithMigrations(context.Background(), s.database,
 		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(),
-		sqlite.AgentMigration(), sqlite.ProjectMigration())
+		sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration())
 }
 
 func (s *Suite) stopNegative() {
