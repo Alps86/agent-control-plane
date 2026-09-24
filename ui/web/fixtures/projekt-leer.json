@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Projekte von Nordstern",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Errors": [],
+  "View": {"Kind": "list", "Projects": []}
+}
