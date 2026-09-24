@@ -93,6 +93,35 @@ async function snapshot() {
   return result.result.value
 }
 
+async function closeChrome() {
+  if (chrome.exitCode !== null || chrome.signalCode !== null) return
+  const exited = new Promise(resolve => chrome.once('exit', resolve))
+  if (socket?.readyState === WebSocket.OPEN) {
+    try {
+      socket.send(JSON.stringify({ id: ++id, method: 'Browser.close' }))
+    } catch {
+      chrome.kill('SIGTERM')
+    }
+  } else {
+    chrome.kill('SIGTERM')
+  }
+  const timeout = setTimeout(() => chrome.kill('SIGKILL'), 2000)
+  await exited
+  clearTimeout(timeout)
+}
+
+async function removeProfile() {
+  for (let attempt = 0; attempt < 5; attempt++) {
+    try {
+      await rm(directory, { recursive: true, force: true })
+      return
+    } catch (error) {
+      if (!['ENOTEMPTY', 'EBUSY'].includes(error.code) || attempt === 4) throw error
+      await new Promise(resolve => setTimeout(resolve, 100 * (attempt + 1)))
+    }
+  }
+}
+
 try {
   await connect()
   await send('Emulation.setDeviceMetricsOverride', { width, height: 850, deviceScaleFactor: 1, mobile: width <= 600 })
@@ -102,10 +131,7 @@ try {
   process.stderr.write(`${error.stack || error}\n`)
   process.exitCode = 1
 } finally {
+  await closeChrome()
   socket?.close()
-  if (chrome.exitCode === null) {
-    chrome.kill('SIGKILL')
-    await new Promise(resolve => chrome.once('exit', resolve))
-  }
-  await rm(directory, { recursive: true, force: true })
+  await removeProfile()
 }
