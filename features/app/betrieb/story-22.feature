@@ -82,15 +82,9 @@ Funktionalität: Lokale Anwendung ohne App-Konto und Budgetverwaltung nutzen
     Und die fehlende Modellanbieter-Verbindung hat die lokale Organisationsanlage nicht gesperrt
 
   @gate-story-11
-  Szenario: Entfernter Schreibzugriff mit gefälschtem lokalen Host wird abgewiesen
-    Angenommen der installierte Go-Server ist mit neuer Datenbank auf allen Netzadressen gestartet
-    Wenn ich über eine Nicht-Loopback-Adresse ohne Origin mit Host "localhost" eine Organisation "Fremdzugriff" anlege
-    Dann wird der Schreibzugriff mit HTTP 403 abgewiesen
-    Und es wurde keine Organisation "Fremdzugriff" angelegt
-
-  @gate-story-11
-  Szenario: Wildcard-Listener erlaubt keine lokalen Schreibzugriffe
-    Angenommen der installierte Go-Server ist mit neuer Datenbank auf allen Netzadressen gestartet
-    Wenn ich über Loopback ohne Origin mit Host "localhost" eine Organisation "Wildcard-Zugriff" anlege
-    Dann wird der Schreibzugriff mit HTTP 403 abgewiesen
-    Und es wurde keine Organisation "Wildcard-Zugriff" angelegt
+  Szenario: Eine Wildcard-Adresse verhindert den Start vor dem ersten Schreibzugriff
+    Angenommen der Start des installierten Go-Servers mit neuer Datenbank auf allen Netzadressen wurde versucht
+    Dann ist der Prozess mit einem APP_ADDR-Loopback-Konfigurationsfehler beendet
+    Und auf dem gewählten Wildcard-Port ist kein HTTP-Server erreichbar
+    Wenn ich den Server mit derselben Datenbank auf Loopback starte
+    Dann wurde keine Organisation "Fremdzugriff" angelegt

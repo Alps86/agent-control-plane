@@ -54,6 +54,9 @@ func (s *Suite) startServer() error {
 }
 
 func (s *Suite) launch() error {
+	if s.bindHost == "0.0.0.0" {
+		return s.launchRejected()
+	}
 	file, err := os.CreateTemp(s.t.TempDir(), "ziele-server-")
 	if err != nil {
 		return err
@@ -70,6 +73,19 @@ func (s *Suite) launch() error {
 	s.exited = make(chan error, 1)
 	go func() { s.exited <- s.process.Wait() }()
 	return s.waitHealthy()
+}
+
+func (s *Suite) launchRejected() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, s.binary)
+	command.Env = append(os.Environ(), "APP_ADDR="+net.JoinHostPort(s.bindHost, s.listenerPort()), "APP_DB_PATH="+s.database)
+	output, err := command.CombinedOutput()
+	if ctx.Err() != nil || err == nil {
+		return fmt.Errorf("wildcard server did not fail startup")
+	}
+	s.wildcardRejected = strings.Contains(string(output), "APP_ADDR must be a local loopback address")
+	return nil
 }
 
 func (s *Suite) waitHealthy() error {
@@ -134,6 +150,7 @@ func (s *Suite) afterScenario(ctx context.Context, _ *godog.Scenario, _ error) (
 	s.response, s.createdID, s.active = nil, "", ""
 	s.unknownBody = nil
 	s.organizations = map[string]string{}
+	s.wildcardRejected = false
 	return ctx, nil
 }
 

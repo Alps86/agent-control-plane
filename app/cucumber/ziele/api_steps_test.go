@@ -43,10 +43,9 @@ func (s *Suite) registerAPIAssertions(sc *godog.ScenarioContext) {
 }
 
 func (s *Suite) registerWildcardSteps(sc *godog.ScenarioContext) {
-	sc.Step(`^ich den Server beende und mit derselben SQLite-Datenbank auf der Wildcard-Adresse "0\.0\.0\.0" erneut starte$`, s.restartWildcard)
-	sc.Step(`^ein entfernter Client das Stammziel "([^"]*)" in "([^"]*)" mit dem gefälschten HTTP-Host "localhost" samt tatsächlichem Listener-Port anlegt$`, s.remoteForgedHost)
-	sc.Step(`^ein lokaler Client das Stammziel "([^"]*)" in "([^"]*)" über den Wildcard-Listener anlegt$`, s.localWildcardPost)
-	sc.Step(`^antwortet der Server ebenfalls mit dem HTTP-Status (\d+)$`, s.statusCode)
+	sc.Step(`^ich den Server beende und einen Start mit derselben SQLite-Datenbank auf der Wildcard-Adresse "0\.0\.0\.0" versuche$`, s.restartWildcard)
+	sc.Step(`^wird der Zielserver wegen der nicht lokalen APP_ADDR-Konfiguration nicht gestartet$`, s.wildcardConfigRejected)
+	sc.Step(`^auf dem Wildcard-Port ist kein Zielserver erreichbar$`, s.noWildcardListener)
 	sc.Step(`^ich den Server beende und mit derselben SQLite-Datenbank auf der Loopback-Adresse erneut starte$`, s.restartLoopback)
 	sc.Step(`^bleibt die Zielübersicht von "([^"]*)" leer$`, s.goalsEmpty)
 }
