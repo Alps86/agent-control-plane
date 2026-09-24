@@ -1,0 +1,17 @@
+{
+  "PageTitle": "Organisationsübersicht",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": ["organisation.create"],
+  "View": {
+    "Kind": "list",
+    "Organizations": [{
+      "ID": "org-nordstern",
+      "Name": "Nordstern",
+      "Description": "Wissensarbeit für das Team",
+      "WorkTransitions": [],
+      "DelegationTransitions": []
+    }]
+  }
+}
