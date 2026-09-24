@@ -28,7 +28,12 @@ func (h *Handler) validBind(address string) bool {
 	}
 
 	host = strings.ToLower(host)
-	return host == "localhost" || host == "127.0.0.1" || host == "::1"
+	if host == "localhost" {
+		return true
+	}
+
+	ip := net.ParseIP(host)
+	return ip != nil && ip.IsLoopback()
 }
 
 func (h *Handler) Handler() http.Handler {
@@ -107,7 +112,8 @@ func (h *Handler) localHost(authority string) (string, string, bool) {
 	}
 
 	host = strings.ToLower(host)
-	return host, port, host == "localhost" || host == "127.0.0.1" || host == "::1"
+	address := net.ParseIP(host)
+	return host, port, host == "localhost" || address != nil && address.IsLoopback()
 }
 
 func (h *Handler) validPort(raw string) bool {

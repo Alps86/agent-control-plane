@@ -54,6 +54,22 @@ func (s *Suite) startServer() error {
 
 func (s *Suite) startWildcardServer() error {
 	s.stopServer()
+	if err := s.reserveWildcardAddress(); err != nil {
+		return err
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, s.binary)
+	command.Env = append(os.Environ(), "APP_ADDR="+s.listenAddress, "APP_DB_PATH="+s.dbPath)
+	output, err := command.CombinedOutput()
+	if ctx.Err() != nil || err == nil {
+		return fmt.Errorf("wildcard server did not fail startup")
+	}
+	s.wildcardRejected = strings.Contains(string(output), "APP_ADDR must be a local loopback address")
+	return nil
+}
+
+func (s *Suite) reserveWildcardAddress() error {
 	listener, err := net.Listen("tcp", "0.0.0.0:0")
 	if err != nil {
 		return err
@@ -62,7 +78,23 @@ func (s *Suite) startWildcardServer() error {
 	listener.Close()
 	s.listenAddress = fmt.Sprintf("0.0.0.0:%d", port)
 	s.address = fmt.Sprintf("127.0.0.1:%d", port)
-	return s.launch()
+	return nil
+}
+
+func (s *Suite) wildcardConfigurationRejected() error {
+	if !s.wildcardRejected {
+		return fmt.Errorf("wildcard startup lacked APP_ADDR loopback rejection")
+	}
+	return nil
+}
+
+func (s *Suite) noWildcardListener() error {
+	response, err := s.client.Get(s.baseURL() + "/health")
+	if err != nil {
+		return nil
+	}
+	response.Body.Close()
+	return fmt.Errorf("wildcard startup left HTTP listener reachable")
 }
 
 func (s *Suite) startAlternateLoopbackServer() error {
@@ -149,6 +181,7 @@ func (s *Suite) afterScenario(ctx context.Context, _ *godog.Scenario, _ error) (
 	s.initialProfile = Profile{}
 	s.selectedTeam, s.selectedAgent, s.selectedOrg, s.enteredName = "", "", "", ""
 	s.page = BrowserPage{}
+	s.wildcardRejected = false
 	return ctx, nil
 }
 

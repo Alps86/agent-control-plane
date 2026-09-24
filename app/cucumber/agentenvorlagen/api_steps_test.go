@@ -56,8 +56,11 @@ func (s *Suite) registerAPISecuritySteps(sc *godog.ScenarioContext) {
 func (s *Suite) registerAPIOriginSteps(sc *godog.ScenarioContext) {
 	sc.Step(`^ich "([^"]+)" mit dem Agentennamen "([^"]+)" und der Vorlage "([^"]+)" von Origin "([^"]+)" per HTTP POST aufrufe$`, s.foreignOriginPost)
 	sc.Step(`^antwortet der Server mit dem HTTP-Status (\d+)$`, s.statusCode)
-	sc.Step(`^ich starte denselben Server an einer öffentlichen Listener-Adresse neu$`, s.startWildcardServer)
-	sc.Step(`^ich einen Agenten-POST mit dem Host "localhost" ohne Origin absende$`, s.spoofedLocalHostPost)
+	sc.Step(`^ich denselben Server an einer öffentlichen Listener-Adresse neu starte$`, s.startWildcardServer)
+	sc.Step(`^wird der Serverstart wegen der nicht lokalen APP_ADDR-Konfiguration abgewiesen$`, s.wildcardConfigurationRejected)
+	sc.Step(`^auf dem Wildcard-Port ist kein Server erreichbar$`, s.noWildcardListener)
+	sc.Step(`^ich denselben Server mit derselben SQLite-Datenbank auf Loopback neu starte$`, s.restartServer)
+	sc.Step(`^bleibt die Agentenliste von "([^"]+)" leer$`, s.listEmpty)
 	sc.Step(`^ein entfernter Peer am öffentlichen Agenten-Handler einen POST mit dem Host "localhost" sendet$`, s.remotePeerSpoofedPost)
 	sc.Step(`^ich starte denselben Server an der Loopback-Adresse "127\.0\.0\.2" neu$`, s.startAlternateLoopbackServer)
 }
