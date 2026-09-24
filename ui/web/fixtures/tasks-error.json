@@ -1,0 +1,50 @@
+{
+  "PageTitle": "Aufgaben · Agent Control Plane",
+  "Navigation": [
+    {
+      "Key": "organization",
+      "Label": "Übersicht",
+      "Href": "/?view=organization&fixture=error",
+      "Icon": "◫"
+    },
+    {
+      "Key": "projects",
+      "Label": "Projekte",
+      "Href": "/?view=projects&fixture=error",
+      "Icon": "▦"
+    },
+    {
+      "Key": "agents",
+      "Label": "Agenten",
+      "Href": "/?view=agents&fixture=error",
+      "Icon": "◉"
+    },
+    {
+      "Key": "tasks",
+      "Label": "Aufgaben",
+      "Href": "/?view=tasks&fixture=error",
+      "Icon": "☷"
+    }
+  ],
+  "Notice": "",
+  "Errors": [
+    "Die Aufgaben konnten gerade nicht geladen werden. Bitte versuchen Sie es erneut."
+  ],
+  "AllowedActions": [],
+  "View": {
+    "Organization": {
+      "ID": "org-atlas",
+      "Name": "Atelier Nord",
+      "Initials": "AN",
+      "Description": "Ein Ort für Produkte, Forschung und verlässliche Zusammenarbeit.",
+      "Summary": "Die Arbeit auf einen Blick: Projekte, Agenten und Aufgaben an einem Ort.",
+      "Projects": 3,
+      "Agents": 4,
+      "Tasks": 4,
+      "ActiveTasks": 1,
+      "Update": "Heute aktualisiert"
+    },
+    "Tasks": [],
+    "Kind": "tasks"
+  }
+}
