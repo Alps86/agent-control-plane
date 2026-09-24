@@ -25,8 +25,8 @@ func (UnassignedIdentity) Actors() []rechte.Actor { return nil }
 func (s *Suite) unassignedService() (*appcodexprofil.Service, *sqlite.Database, error) {
 	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath,
 		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(),
-		sqlite.AgentMigration(), sqlite.NewMigration(6, "SELECT 1"),
-		sqlite.NewMigration(7, "SELECT 1"), sqlite.CodexProfileMigration())
+		sqlite.AgentMigration(), sqlite.ProjectMigration(),
+		sqlite.DataScopeMigration(), sqlite.CodexProfileMigration())
 	if err != nil {
 		return nil, nil, err
 	}
