@@ -4,7 +4,7 @@ import { mkdtemp, readFile, rm } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
-const directory = await mkdtemp(join(tmpdir(), 'acp-org-chrome-'))
+const directory = await mkdtemp(join(tmpdir(), 'acp-goals-chrome-'))
 const chrome = spawn('google-chrome', [
   '--headless=new', '--no-sandbox', '--disable-gpu',
   '--remote-debugging-port=0', `--user-data-dir=${directory}`, 'about:blank'
@@ -45,7 +45,6 @@ async function connect() {
   session = (await send('Target.attachToTarget', { targetId: target.targetId, flatten: true }, null)).sessionId
   await send('Page.enable')
   await send('Runtime.enable')
-  await send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.__alertCalls = 0; window.alert = () => { window.__alertCalls++ }' })
 }
 
 const snapshot = `(() => ({
@@ -55,13 +54,8 @@ const snapshot = `(() => ({
   text: document.querySelector('main')?.textContent?.replace(/\\s+/g, ' ').trim() || '',
   alert: document.querySelector('main [role=alert]')?.textContent?.trim() || '',
   name: document.querySelector('input[name=name]')?.value ?? '',
-  description: document.querySelector('textarea[name=description]')?.value ?? '',
-  cards: [...document.querySelectorAll('main article')].map(card => ({
-    name: card.querySelector('h2')?.textContent?.trim() || '',
-    description: card.querySelector('p')?.textContent?.trim() || ''
-  })),
-  alertCalls: window.__alertCalls || 0,
-  images: document.querySelectorAll('main img').length
+  links: [...document.querySelectorAll('main a')].map(link => link.textContent.trim()),
+  goals: [...document.querySelectorAll('main article h2')].map(item => item.textContent.trim())
 }))()`
 
 async function evaluate(expression) {
@@ -70,29 +64,37 @@ async function evaluate(expression) {
   return result.result.value
 }
 
-async function page(mode, previous) {
+async function page(mode, previousEpoch) {
   for (let attempt = 0; attempt < 100; attempt++) {
     const value = await evaluate(snapshot)
-    if (value?.heading && (!previous || value.epoch !== previous) && (!mode || mode === 'error' && value.alert || mode === 'form' && value.heading === 'Organisation anlegen' || mode === 'detail' && value.url.match(/\/organisationen\/[^/]+$/) || mode === 'list' && value.heading === 'Organisationsübersicht')) return value
+    const ready = mode === 'error' ? Boolean(value?.alert)
+      : mode === 'goals' ? value?.heading === 'Zielübersicht'
+      : mode === 'goal-form' ? value?.heading === 'Ziel anlegen'
+      : mode === 'org-form' ? value?.heading === 'Organisation anlegen'
+      : mode === 'org-list' ? value?.heading === 'Organisationsübersicht'
+      : mode === 'org-detail' ? Boolean(value?.url.match(/\/organisationen\/[^/]+$/))
+      : Boolean(value?.heading)
+    if (ready && (!previousEpoch || value.epoch !== previousEpoch || mode === 'error')) return value
     await new Promise(resolve => setTimeout(resolve, 50))
   }
   throw new Error(`Browser page did not render ${mode}`)
 }
 
 async function command(input) {
-  const previous = input.url || input.click || input.submit ? await evaluate('performance.timeOrigin') : undefined
+  const previousEpoch = input.url || input.click || input.submit ? (await evaluate('performance.timeOrigin')) : undefined
   if (input.url) await send('Page.navigate', { url: input.url })
-  if (input.click) await evaluate(`document.querySelector(${JSON.stringify(input.click)})?.click()`)
-  if (input.fill) await evaluate(`(() => {
-    const name = document.querySelector('input[name=name]')
-    const description = document.querySelector('textarea[name=description]')
-    name.value = ${JSON.stringify(input.fill.name)}
-    description.value = ${JSON.stringify(input.fill.description)}
-    name.dispatchEvent(new Event('input', { bubbles: true }))
-    description.dispatchEvent(new Event('input', { bubbles: true }))
+  if (input.click) await evaluate(`(() => {
+    const element = document.querySelector(${JSON.stringify(input.click)})
+    if (!element) throw new Error('Action missing: ' + ${JSON.stringify(input.click)})
+    element.click()
   })()`)
-  if (input.submit) await evaluate(`document.querySelector('form[action="/organisationen"]')?.requestSubmit()`)
-  return { ok: true, page: await page(input.mode, previous) }
+  if (input.fill !== undefined) await evaluate(`(() => {
+    const name = document.querySelector('input[name=name]')
+    name.value = ${JSON.stringify(input.fill)}
+    name.dispatchEvent(new Event('input', { bubbles: true }))
+  })()`)
+  if (input.submit) await evaluate(`document.querySelector('main form')?.requestSubmit()`)
+  return { ok: true, page: await page(input.mode, previousEpoch) }
 }
 
 try {

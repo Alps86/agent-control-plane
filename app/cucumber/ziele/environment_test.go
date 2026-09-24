@@ -1,8 +1,9 @@
-package organisation
+package ziele
 
 import (
 	"context"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -16,10 +17,10 @@ import (
 )
 
 func NewSuite(t *testing.T) *Suite {
-	client := &http.Client{Timeout: 3 * time.Second, CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
+	client := &http.Client{Timeout: 4 * time.Second, Transport: &http.Transport{Proxy: nil}, CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
 		return http.ErrUseLastResponse
 	}}
-	return &Suite{t: t, client: client}
+	return &Suite{t: t, client: client, organizations: map[string]string{}}
 }
 
 func (s *Suite) build() error {
@@ -36,7 +37,8 @@ func (s *Suite) build() error {
 
 func (s *Suite) freshServer() error {
 	s.stopServer()
-	s.dbPath = filepath.Join(s.t.TempDir(), "organisation.sqlite")
+	s.database = filepath.Join(s.t.TempDir(), "ziele.sqlite")
+	s.bindHost = "127.0.0.1"
 	return s.startServer()
 }
 
@@ -52,14 +54,14 @@ func (s *Suite) startServer() error {
 }
 
 func (s *Suite) launch() error {
-	file, err := os.CreateTemp(s.t.TempDir(), "org-server-log-")
+	file, err := os.CreateTemp(s.t.TempDir(), "ziele-server-")
 	if err != nil {
 		return err
 	}
 
 	s.logFile = file
 	s.process = exec.Command(s.binary)
-	s.process.Env = append(os.Environ(), "APP_ADDR="+s.address, "APP_DB_PATH="+s.dbPath)
+	s.process.Env = append(os.Environ(), "APP_ADDR="+net.JoinHostPort(s.bindHost, s.listenerPort()), "APP_DB_PATH="+s.database)
 	s.process.Stdout, s.process.Stderr = file, file
 	if err := s.process.Start(); err != nil {
 		return err
@@ -82,6 +84,7 @@ func (s *Suite) waitHealthy() error {
 		if response != nil {
 			response.Body.Close()
 		}
+
 		time.Sleep(20 * time.Millisecond)
 	}
 
@@ -92,6 +95,7 @@ func (s *Suite) serverLog() string {
 	if s.logFile == nil {
 		return ""
 	}
+
 	data, _ := os.ReadFile(s.logFile.Name())
 	return string(data)
 }
@@ -101,10 +105,16 @@ func (s *Suite) restartServer() error {
 	return s.startServer()
 }
 
+func (s *Suite) listenerPort() string {
+	_, port, _ := net.SplitHostPort(s.address)
+	return port
+}
+
 func (s *Suite) stopServer() {
 	if s.process == nil {
 		return
 	}
+
 	_ = s.process.Process.Kill()
 	<-s.exited
 	_ = s.logFile.Close()
@@ -120,27 +130,37 @@ func (s *Suite) cleanup() {
 func (s *Suite) afterScenario(ctx context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
 	s.stopServer()
 	s.stopNegative()
-	s.dbPath, s.address, s.response, s.unknown = "", "", nil, nil
-	s.organization, s.page = Organization{}, BrowserPage{}
-	s.listPage = BrowserPage{}
-	s.fullPage, s.fragment, s.detailPage = nil, nil, nil
-	s.foreignList, s.foreignDetail = nil, nil
+	s.stopBrowser()
+	s.response, s.createdID, s.active = nil, "", ""
+	s.unknownBody = nil
+	s.organizations = map[string]string{}
 	return ctx, nil
 }
 
 func (s *Suite) baseURL() string { return "http://" + s.address }
 
-func (s *Suite) request(method, path, body, contentType string) error {
-	req, err := http.NewRequest(method, s.baseURL()+path, strings.NewReader(body))
+func (s *Suite) request(method, path, body string, headers http.Header, host string) error {
+	return s.requestTo(method, s.baseURL()+path, body, headers, host)
+}
+
+func (s *Suite) requestTo(method, target, body string, headers http.Header, host string) error {
+	req, err := http.NewRequest(method, target, strings.NewReader(body))
 	if err != nil {
 		return err
 	}
-	if contentType != "" {
-		req.Header.Set("Content-Type", contentType)
+
+	req.Header = headers.Clone()
+	if host != "" {
+		req.Host = host
 	}
+
 	response, err := s.client.Do(req)
 	if err != nil {
 		return err
 	}
-	return s.recordResponse(response)
+
+	defer response.Body.Close()
+	data, err := io.ReadAll(response.Body)
+	s.response = &HTTPResponse{Status: response.StatusCode, Location: response.Header.Get("Location"), Body: data, Header: response.Header}
+	return err
 }

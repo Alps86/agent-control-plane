@@ -1,4 +1,4 @@
-package organisation
+package ziele
 
 import (
 	"testing"
@@ -15,11 +15,10 @@ func TestFeatures(t *testing.T) {
 
 	runner := godog.TestSuite{ScenarioInitializer: suite.initializeScenario,
 		Options: &godog.Options{Format: "pretty", Paths: []string{
-			"../../../features/app/organisation/story-11.feature",
-			"../../../features/ui/organisation/story-11.feature",
-			"../../../features/ui/organisation/story-12.feature",
+			"../../../features/app/ziele/story-13.feature",
+			"../../../features/ui/ziele/story-13.feature",
 		}, TestingT: t}}
 	if runner.Run() != 0 {
-		t.Fatal("ORG-01-Godog-Szenarien fehlgeschlagen")
+		t.Fatal("GOAL-01-Godog-Szenarien fehlgeschlagen")
 	}
 }
