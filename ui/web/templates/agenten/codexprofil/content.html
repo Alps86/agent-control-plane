@@ -1,0 +1,30 @@
+{{define "agenten/codexprofil/content"}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">CODEX CLI · {{.View.OrganizationName}}</div>
+      <h1>Arbeitsprofil für {{.View.AgentName}}</h1>
+      <p>Der private Arbeitsbereich wird für diese Organisation und diesen Agenten ausschließlich auf dem Server abgeleitet.</p>
+    </div>
+  </div>
+  {{if .Notice}}<div class="notice" role="status">{{.Notice}}</div>{{end}}
+  <section class="stat-card" aria-label="Arbeitsbereich">
+    <h2>Privater Arbeitsbereich</h2>
+    <p>Die Anwendung bestimmt den Ort. Es gibt keine Pfadeingabe und keine direkte Systemfähigkeit für den Agenten.</p>
+  </section>
+  <form action="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.AgentID}}/codex-profil" method="post" hx-post="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.AgentID}}/codex-profil" hx-target="#content" hx-swap="innerHTML" novalidate>
+    <section class="stat-card">
+      <h2>Freigaben</h2>
+      <p><label for="workspace-enabled"><input id="workspace-enabled" name="workspace_enabled" type="checkbox" role="switch" {{if .View.WorkspaceEnabled}}checked{{end}}> Arbeitsbereich</label></p>
+      <p><label for="write-enabled"><input id="write-enabled" name="write_enabled" type="checkbox" role="switch" aria-describedby="write-error" {{if .View.WriteEnabled}}checked{{end}}> Schreiben</label></p>
+      {{if .View.WriteError}}<p id="write-error" role="alert">{{.View.WriteError}}</p>{{end}}
+      <p><button type="submit">Profil speichern</button></p>
+    </section>
+  </form>
+  <section class="stat-card" aria-label="Startbereitschaft">
+    <h2>Nicht startbereit</h2>
+    <p>{{.View.ReadinessReason}}</p>
+    <p><button id="codex-profile-check" type="button" data-url="/api/organisationen/{{.View.OrganizationID}}/agenten/{{.View.AgentID}}/codex-profil/pruefen">Profil prüfen</button></p>
+    <p id="codex-profile-check-result" role="status" aria-live="polite"></p>
+  </section>
+  <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.AgentID}}">Zur Agentenseite →</a></p>
+{{end}}
