@@ -51,21 +51,49 @@ func (d *Database) openFile(path string) (string, error) {
 }
 
 func (d *Database) prepareFile(absolute string) error {
-	file, err := os.OpenFile(absolute, os.O_RDWR|os.O_CREATE, 0600)
+	file, err := os.OpenFile(absolute, os.O_RDWR|os.O_CREATE|os.O_EXCL, 0600)
+	if errors.Is(err, os.ErrExist) {
+		return d.openExistingFile(absolute)
+	}
+
 	if err != nil {
 		return fmt.Errorf("Datenbank öffnen: %w", err)
 	}
 
-	if err = file.Chmod(0600); err != nil {
+	return d.secureNewFile(file)
+}
+
+func (d *Database) secureNewFile(file *os.File) error {
+	if err := file.Chmod(0600); err != nil {
 		file.Close()
 		return fmt.Errorf("Datenbankrechte setzen: %w", err)
 	}
 
-	if err = file.Close(); err != nil {
+	if err := file.Close(); err != nil {
 		return fmt.Errorf("Datenbankdatei schließen: %w", err)
 	}
 
 	return nil
+}
+
+func (d *Database) openExistingFile(absolute string) error {
+	file, err := os.OpenFile(absolute, os.O_RDWR, 0)
+	if err != nil {
+		return fmt.Errorf("Datenbank öffnen: %w", err)
+	}
+
+	info, err := file.Stat()
+	if err != nil {
+		file.Close()
+		return fmt.Errorf("Datenbankrechte prüfen: %w", err)
+	}
+
+	if info.Mode().Perm()&0444 == 0 || info.Mode().Perm()&0222 == 0 {
+		file.Close()
+		return errors.New("Datenbank öffnen: vorhandene Datei ist nicht lesbar oder schreibbar")
+	}
+
+	return file.Close()
 }
 
 func (d *Database) connect(ctx context.Context, dsn string) error {
