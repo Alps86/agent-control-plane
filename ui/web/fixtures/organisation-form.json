@@ -1,0 +1,8 @@
+{
+  "PageTitle": "Organisation anlegen",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": ["organisation.create"],
+  "View": {"Kind": "form", "Name": "", "Description": "", "FieldErrors": {}}
+}
