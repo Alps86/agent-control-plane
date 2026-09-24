@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Aufgabe anlegen",
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Errors": [],
+  "View": {"Kind": "form", "Project": {"ID": "projekt-website", "Name": "Website"}, "Title": "", "Description": "", "Priority": "normal", "FieldErrors": {}, "Agents": [{"ID": "agent-mira", "Name": "Mira", "ExecutionKindLabel": "Eino", "Selected": false}, {"ID": "agent-kai", "Name": "Kai", "ExecutionKindLabel": "Codex CLI", "Selected": false}], "Priorities": [{"Value": "low", "Label": "Niedrig", "Selected": false}, {"Value": "normal", "Label": "Normal", "Selected": true}, {"Value": "high", "Label": "Hoch", "Selected": false}, {"Value": "urgent", "Label": "Dringend", "Selected": false}]}
+}

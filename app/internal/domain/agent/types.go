@@ -5,13 +5,20 @@ import "errors"
 // ExecutionKind benennt den getrennten Ausführungsadapter.
 type ExecutionKind string
 
+// Status bezeichnet die fachliche Verfügbarkeit eines Agenten.
+type Status string
+
 const (
-	Eino     ExecutionKind = "eino"
-	CodexCLI ExecutionKind = "codex_cli"
+	Eino         ExecutionKind = "eino"
+	CodexCLI     ExecutionKind = "codex_cli"
+	StatusActive Status        = "active"
+	StatusPaused Status        = "paused"
+	StatusEnded  Status        = "ended"
 )
 
 var ErrNameRequired = errors.New("Agentenname ist erforderlich")
 var ErrCapabilityDenied = errors.New("Fachfähigkeit ist nicht zulässig")
+var ErrInvalidStatus = errors.New("Agentenstatus ist ungültig")
 
 // Agent enthält nur fachliche Konfiguration, keine Zugangsdaten.
 type Agent struct {
@@ -23,6 +30,7 @@ type Agent struct {
 	ExecutionKind  ExecutionKind `json:"execution_kind"`
 	TemplateID     string        `json:"template_id"`
 	Capabilities   []string      `json:"capabilities"`
+	Status         Status        `json:"status"`
 }
 
 // Readiness ist ein serverseitig abgeleiteter Startentscheid.
