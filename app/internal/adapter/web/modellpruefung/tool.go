@@ -107,8 +107,10 @@ func (p *probeRun) checkToolCalls(ctx context.Context, reader *schema.StreamRead
 			return false, ctx.Err()
 		}
 
-		if message != nil && len(message.ToolCalls) > 0 {
-			seen = true
-		}
+		seen = seen || p.hasToolCalls(message)
 	}
+}
+
+func (p *probeRun) hasToolCalls(message *schema.Message) bool {
+	return message != nil && len(message.ToolCalls) > 0
 }
