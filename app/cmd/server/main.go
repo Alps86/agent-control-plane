@@ -35,7 +35,7 @@ func (b *Bootstrap) Run() error {
 	}
 
 	service := apporganisation.NewService(sqlite.NewOrganizationStore(db), apporganisation.NewLocalIdentity())
-	organizations := weborganisation.NewHandler(service, ui)
+	organizations := weborganisation.NewHandler(service, ui, b.address())
 	server := web.NewServer(system.NewProbe(), db)
 	b.mount(server, organizations, ui)
 	b.mountGoals(server, db, service, ui)

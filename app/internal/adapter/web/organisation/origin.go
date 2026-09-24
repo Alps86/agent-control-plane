@@ -8,7 +8,7 @@ import (
 // localWrite erlaubt Änderungen nur über den tatsächlichen lokalen Listener.
 func (h *Handler) localWrite(r *http.Request) bool {
 	host, port, err := net.SplitHostPort(r.Host)
-	if err != nil || !h.localName(host) {
+	if err != nil || !h.localName(host) || !h.loopbackAddr(h.bindAddress) {
 		return false
 	}
 
@@ -17,8 +17,22 @@ func (h *Handler) localWrite(r *http.Request) bool {
 		return false
 	}
 
+	if !h.loopbackAddr(listener.String()) || !h.loopbackAddr(r.RemoteAddr) {
+		return false
+	}
+
 	_, actualPort, err := net.SplitHostPort(listener.String())
 	return err == nil && port == actualPort && h.sameOrigin(r)
+}
+
+func (h *Handler) loopbackAddr(address string) bool {
+	host, _, err := net.SplitHostPort(address)
+	if err != nil {
+		return false
+	}
+
+	ip := net.ParseIP(host)
+	return ip != nil && ip.IsLoopback()
 }
 
 func (h *Handler) localName(host string) bool {
