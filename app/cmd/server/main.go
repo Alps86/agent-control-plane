@@ -4,8 +4,11 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net"
 	"net/http"
 	"os"
+	"strconv"
+	"strings"
 
 	"agentcontrolplane/app/internal/adapter/sqlite"
 	"agentcontrolplane/app/internal/adapter/web"
@@ -23,22 +26,55 @@ func main() {
 }
 
 func (b *Bootstrap) Run() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), b.path(), sqlite.RunMigration(2), sqlite.OrganizationMigration())
+	if err := b.configureAddress(); err != nil {
+		return err
+	}
+
+	db, err := b.openDatabase()
 	if err != nil {
-		return fmt.Errorf("database startup: %w", err)
+		return err
 	}
 
 	defer db.Close()
+	return b.serve(db)
+}
+
+func (b *Bootstrap) openDatabase() (*sqlite.Database, error) {
+	db, err := sqlite.OpenWithMigrations(context.Background(), b.path(), sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration())
+	if err != nil {
+		return nil, fmt.Errorf("database startup: %w", err)
+	}
+
+	return db, nil
+}
+
+func (b *Bootstrap) serve(db *sqlite.Database) error {
 	ui, err := bridge.New()
 	if err != nil {
 		return fmt.Errorf("UI startup: %w", err)
 	}
 
+	server, err := b.assemble(db, ui)
+	if err != nil {
+		return err
+	}
+
+	return http.ListenAndServe(b.address(), server.Handler())
+}
+
+func (b *Bootstrap) assemble(db *sqlite.Database, ui *bridge.Bridge) (*web.Server, error) {
 	service := apporganisation.NewService(sqlite.NewOrganizationStore(db), apporganisation.NewLocalIdentity())
-	organizations := weborganisation.NewHandler(service, ui)
+	organizations := weborganisation.NewHandler(service, ui, b.address())
 	server := web.NewServer(system.NewProbe(), db)
 	b.mount(server, organizations, ui)
-	return http.ListenAndServe(b.address(), server.Handler())
+	b.mountGoals(server, db, service, ui)
+	b.mountAgents(server, db, ui)
+	b.mountSettings(server, ui)
+	if err := b.mountModelProviders(server, ui); err != nil {
+		return nil, err
+	}
+
+	return server, nil
 }
 
 func (b *Bootstrap) mount(server *web.Server, organizations *weborganisation.Handler, ui *bridge.Bridge) {
@@ -53,12 +89,41 @@ func (b *Bootstrap) mount(server *web.Server, organizations *weborganisation.Han
 }
 
 func (b *Bootstrap) address() string {
+	return b.bindAddress
+}
+
+func (b *Bootstrap) configureAddress() error {
 	address := os.Getenv("APP_ADDR")
 	if address == "" {
-		return "127.0.0.1:8080"
+		address = "127.0.0.1:8080"
 	}
 
-	return address
+	host, port, err := net.SplitHostPort(address)
+	if err != nil || !b.validAddressPort(port) {
+		return fmt.Errorf("APP_ADDR must be a local loopback address with a valid port")
+	}
+
+	host = b.normalizedHost(host)
+	ip := net.ParseIP(host)
+	if ip == nil || !ip.IsLoopback() {
+		return fmt.Errorf("APP_ADDR must be a local loopback address")
+	}
+
+	b.bindAddress = net.JoinHostPort(host, port)
+	return nil
+}
+
+func (b *Bootstrap) validAddressPort(raw string) bool {
+	number, err := strconv.Atoi(raw)
+	return err == nil && number > 0 && number <= 65535
+}
+
+func (b *Bootstrap) normalizedHost(host string) string {
+	if strings.EqualFold(host, "localhost") {
+		return "127.0.0.1"
+	}
+
+	return strings.ToLower(host)
 }
 
 func (b *Bootstrap) path() string {
