@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -81,7 +80,7 @@ func (s *Suite) noIdentity() error {
 
 func (s *Suite) startNegative(identity *FixedIdentity) error {
 	s.stopNegative()
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.database, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration())
+	db, err := sqlite.OpenWithMigrations(context.Background(), s.database, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration())
 	if err != nil {
 		return err
 	}
@@ -221,48 +220,24 @@ func (s *Suite) restartWildcard() error {
 	return s.startServer()
 }
 
+func (s *Suite) wildcardConfigRejected() error {
+	if !s.wildcardRejected {
+		return fmt.Errorf("wildcard startup lacked APP_ADDR loopback rejection")
+	}
+	return nil
+}
+
+func (s *Suite) noWildcardListener() error {
+	response, err := s.client.Get(s.baseURL() + "/health")
+	if err != nil {
+		return nil
+	}
+	response.Body.Close()
+	return fmt.Errorf("wildcard startup left HTTP listener reachable")
+}
+
 func (s *Suite) restartLoopback() error {
 	s.stopServer()
 	s.bindHost = "127.0.0.1"
 	return s.startServer()
-}
-
-func (s *Suite) remoteForgedHost(goal, organization string) error {
-	remoteIP, err := s.nonLoopbackIPv4()
-	if err != nil {
-		return err
-	}
-
-	target := "http://" + net.JoinHostPort(remoteIP, s.listenerPort()) + s.goalPath(organization)
-	return s.postGoalTo(target, goal, net.JoinHostPort("localhost", s.listenerPort()))
-}
-
-func (s *Suite) localWildcardPost(goal, organization string) error {
-	return s.postGoalTo(s.baseURL()+s.goalPath(organization), goal, s.address)
-}
-
-func (s *Suite) postGoalTo(target, goal, host string) error {
-	body, err := json.Marshal(map[string]string{"name": goal})
-	if err != nil {
-		return err
-	}
-
-	headers := http.Header{"Content-Type": []string{"application/json"}}
-	return s.requestTo("POST", target, string(body), headers, host)
-}
-
-func (s *Suite) nonLoopbackIPv4() (string, error) {
-	addresses, err := net.InterfaceAddrs()
-	if err != nil {
-		return "", err
-	}
-
-	for _, address := range addresses {
-		network, ok := address.(*net.IPNet)
-		if ok && !network.IP.IsLoopback() && network.IP.To4() != nil {
-			return network.IP.String(), nil
-		}
-	}
-
-	return "", fmt.Errorf("keine Nicht-Loopback-IPv4-Adresse für entfernten Client")
 }

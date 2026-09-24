@@ -24,7 +24,10 @@ func NewSuite(t *testing.T) *Suite {
 func (s *Suite) InitializeScenario(sc *godog.ScenarioContext) {
 	sc.After(s.afterScenario)
 	sc.Step(`^der installierte Go-Server ist mit einer neuen lokalen Datenbank gestartet$`, s.start)
-	sc.Step(`^der installierte Go-Server ist mit neuer Datenbank auf allen Netzadressen gestartet$`, s.startExposed)
+	sc.Step(`^der Start des installierten Go-Servers mit neuer Datenbank auf allen Netzadressen wurde versucht$`, s.startExposed)
+	sc.Step(`^ist der Prozess mit einem APP_ADDR-Loopback-Konfigurationsfehler beendet$`, s.wildcardConfigRejected)
+	sc.Step(`^auf dem gewählten Wildcard-Port ist kein HTTP-Server erreichbar$`, s.noWildcardListener)
+	sc.Step(`^ich den Server mit derselben Datenbank auf Loopback starte$`, s.startExistingLoopback)
 	sc.Step(`^ich ohne Cookie oder Authorization-Header GET "([^"]*)" an den Server sende$`, s.get)
 	sc.Step(`^antwortet der Server mit HTTP 200 und einer Schemaversion$`, s.healthy)
 	sc.Step(`^die Antwort verlangt weder Login noch Registrierung$`, s.noLogin)
@@ -60,6 +63,16 @@ func (s *Suite) startAt(bind string) error {
 	}
 
 	s.freshDB = true
+	if err := s.reserveAddress(bind); err != nil {
+		return err
+	}
+	if bind == "0.0.0.0:0" {
+		return s.launchRejected()
+	}
+	return s.launch()
+}
+
+func (s *Suite) reserveAddress(bind string) error {
 	listener, err := net.Listen("tcp", bind)
 	if err != nil {
 		return fmt.Errorf("Loopback-Port reservieren: %w", err)
@@ -68,6 +81,46 @@ func (s *Suite) startAt(bind string) error {
 	s.bindAddress = listener.Addr().String()
 	_, port, _ := net.SplitHostPort(s.bindAddress)
 	s.address = net.JoinHostPort("127.0.0.1", port)
+	listener.Close()
+	return nil
+}
+
+func (s *Suite) launchRejected() error {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	command := exec.CommandContext(ctx, s.binary)
+	command.Env = append(os.Environ(), "APP_ADDR="+s.bindAddress, "APP_DB_PATH="+s.dbPath)
+	output, err := command.CombinedOutput()
+	if ctx.Err() != nil || err == nil {
+		return fmt.Errorf("wildcard server did not fail startup")
+	}
+	s.wildcardRejected = strings.Contains(string(output), "APP_ADDR must be a local loopback address")
+	return nil
+}
+
+func (s *Suite) wildcardConfigRejected() error {
+	if !s.wildcardRejected {
+		return fmt.Errorf("wildcard startup lacked APP_ADDR loopback rejection")
+	}
+	return nil
+}
+
+func (s *Suite) noWildcardListener() error {
+	client := &http.Client{Timeout: time.Second, Transport: &http.Transport{Proxy: nil}}
+	response, err := client.Get("http://" + s.address + "/health")
+	if err != nil {
+		return nil
+	}
+	response.Body.Close()
+	return fmt.Errorf("wildcard startup left HTTP listener reachable")
+}
+
+func (s *Suite) startExistingLoopback() error {
+	listener, err := net.Listen("tcp4", "127.0.0.1:0")
+	if err != nil {
+		return err
+	}
+	s.bindAddress, s.address = listener.Addr().String(), listener.Addr().String()
 	listener.Close()
 	return s.launch()
 }
@@ -231,5 +284,6 @@ func (s *Suite) afterScenario(ctx context.Context, _ *godog.Scenario, _ error) (
 	s.rejected = nil
 	s.rejectedHeader = nil
 	s.freshDB = false
+	s.wildcardRejected = false
 	return ctx, nil
 }

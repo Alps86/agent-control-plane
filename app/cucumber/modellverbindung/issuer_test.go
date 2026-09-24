@@ -50,7 +50,7 @@ func (f *FakeIssuer) userCode(w http.ResponseWriter, r *http.Request) {
 	}
 
 	f.starts++
-	f.json(w, map[string]string{"device_auth_id": "device-auth-test", "user_code": "ABCD-EFGH", "interval": "0"})
+	f.json(w, map[string]string{"device_auth_id": "device-auth-test", "user_code": "ABCD-EFGH", "interval": f.interval})
 }
 
 func (f *FakeIssuer) poll(w http.ResponseWriter, r *http.Request) {
@@ -67,6 +67,10 @@ func (f *FakeIssuer) poll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (f *FakeIssuer) pollResult(w http.ResponseWriter) {
+	if f.pollOutcome == "outage" {
+		http.Error(w, `{"error":"temporarily_unavailable"}`, http.StatusServiceUnavailable)
+		return
+	}
 	if f.pollOutcome == "expired" {
 		f.problem(w, "expired_token")
 		return

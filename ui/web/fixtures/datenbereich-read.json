@@ -1,0 +1,15 @@
+{
+  "PageTitle": "Datenbereich von Mira",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}, {"Key": "agenten", "Label": "Agenten", "Href": "/organisationen/org-nordstern/agenten", "Icon": "◇"}],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": ["agent.scope.update"],
+  "View": {
+    "Kind": "scope",
+    "OrganizationID": "org-nordstern",
+    "Agent": {"ID": "agent-mira", "Name": "Mira"},
+    "HasGrants": true,
+    "GrantSummary": "Website mit Lesen und ohne Schreiben",
+    "Projects": [{"ID": "project-website", "Name": "Website", "CanRead": true, "CanWrite": false, "AccessLabel": "mit Lesen und ohne Schreiben"}]
+  }
+}

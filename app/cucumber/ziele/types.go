@@ -13,25 +13,26 @@ import (
 )
 
 type Suite struct {
-	t             *testing.T
-	binary        string
-	database      string
-	address       string
-	bindHost      string
-	process       *exec.Cmd
-	exited        chan error
-	logFile       *os.File
-	client        *http.Client
-	response      *HTTPResponse
-	organizations map[string]string
-	active        string
-	createdID     string
-	unknownBody   []byte
-	negative      *NegativeServer
-	browser       *exec.Cmd
-	stdin         *bufio.Writer
-	stdout        *bufio.Scanner
-	page          BrowserPage
+	t                *testing.T
+	binary           string
+	database         string
+	address          string
+	bindHost         string
+	process          *exec.Cmd
+	exited           chan error
+	logFile          *os.File
+	client           *http.Client
+	response         *HTTPResponse
+	organizations    map[string]string
+	active           string
+	createdID        string
+	unknownBody      []byte
+	negative         *NegativeServer
+	browser          *exec.Cmd
+	stdin            *bufio.Writer
+	stdout           *bufio.Scanner
+	page             BrowserPage
+	wildcardRejected bool
 }
 
 type HTTPResponse struct {

@@ -47,6 +47,7 @@ type FakeIssuer struct {
 	starts         int
 	refreshes      int
 	issueLifetime  int64
+	interval       string
 	issuedToken    string
 	rotatedToken   string
 }

@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Projekt anlegen",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Errors": [],
+  "View": {"Kind": "form", "Name": "", "Description": "", "GoalID": "", "Goals": [{"ID": "ziel-1", "Name": "Wissensportal veröffentlichen", "Selected": false}], "FieldErrors": {}}
+}

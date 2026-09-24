@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Website",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Errors": [],
+  "View": {"Kind": "detail", "Project": {"ID": "projekt-website", "Name": "Website", "Description": "Öffentlicher Auftritt", "GoalID": "ziel-1", "GoalName": "Wissensportal veröffentlichen"}, "Tasks": []}
+}
