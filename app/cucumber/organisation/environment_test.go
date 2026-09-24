@@ -122,6 +122,9 @@ func (s *Suite) afterScenario(ctx context.Context, _ *godog.Scenario, _ error) (
 	s.stopNegative()
 	s.dbPath, s.address, s.response, s.unknown = "", "", nil, nil
 	s.organization, s.page = Organization{}, BrowserPage{}
+	s.listPage = BrowserPage{}
+	s.fullPage, s.fragment, s.detailPage = nil, nil, nil
+	s.foreignList, s.foreignDetail = nil, nil
 	return ctx, nil
 }
 
