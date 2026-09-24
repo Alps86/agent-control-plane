@@ -32,7 +32,7 @@ func (s *Suite) InitializeScenario(sc *godog.ScenarioContext) {
 }
 
 func (s *Suite) setupProvider() error {
-	s.issuer = &FakeIssuer{pollOutcome: "pending", issueLifetime: 3600}
+	s.issuer = &FakeIssuer{pollOutcome: "pending", issueLifetime: 3600, interval: "0"}
 	s.issuer.server = httptest.NewServer(s.issuer)
 	s.t.Cleanup(s.issuer.server.Close)
 	if err := s.openFreshStore(); err != nil {
@@ -59,6 +59,8 @@ func (s *Suite) registerSteps(sc *godog.ScenarioContext) {
 	s.registerThenSteps(sc)
 	s.registerStoreSteps(sc)
 	s.registerTokenSteps(sc)
+	s.registerRestartSteps(sc)
+	s.registerTimingSteps(sc)
 }
 
 func (s *Suite) registerGivenSteps(sc *godog.ScenarioContext) {
