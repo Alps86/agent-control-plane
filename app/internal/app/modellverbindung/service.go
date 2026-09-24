@@ -85,14 +85,12 @@ func (s *Service) Cancel(ctx context.Context) (Status, error) {
 		return s.status, nil
 	}
 
-	status, err := s.poll(ctx, true)
-	if err != nil || status.State == "connected" {
-		return status, err
+	status, _ := s.poll(ctx, true)
+	if status.State == "connected" {
+		return status, nil
 	}
 
-	s.pending = nil
-	s.status = Status{State: "cancelled"}
-	return s.status, nil
+	return s.finish("cancelled", ""), nil
 }
 
 func (s *Service) poll(ctx context.Context, force bool) (Status, error) {
@@ -118,7 +116,7 @@ func (s *Service) poll(ctx context.Context, force bool) (Status, error) {
 
 func (s *Service) applyPoll(ctx context.Context, result PollResult) (Status, error) {
 	if result.State == "pending" {
-		s.nextPoll = time.Now().Add(time.Duration(s.pending.IntervalSeconds) * time.Second)
+		s.nextPoll = s.nextPollAt()
 		return s.status, nil
 	}
 
@@ -131,6 +129,19 @@ func (s *Service) applyPoll(ctx context.Context, result PollResult) (Status, err
 	}
 
 	return s.saveConnected(ctx, result)
+}
+
+func (s *Service) nextPollAt() time.Time {
+	seconds := s.pending.IntervalSeconds
+	if seconds > 900 {
+		seconds = 900
+	}
+
+	if seconds < 0 {
+		seconds = 0
+	}
+
+	return time.Now().Add(time.Duration(seconds) * time.Second)
 }
 
 func (s *Service) saveConnected(ctx context.Context, result PollResult) (Status, error) {
