@@ -1,0 +1,12 @@
+{
+  "PageTitle": "Mira",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}, {"Key": "agenten", "Label": "Agenten", "Href": "/organisationen/org-nordstern/agenten", "Icon": "◇"}],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Kind": "detail",
+    "OrganizationID": "org-nordstern",
+    "Agent": {"ID": "agent-mira", "Name": "Mira", "Role": "Rechercheagentin", "Instructions": "Recherchiere und fasse belegte Ergebnisse zusammen.", "ExecutionKindLabel": "Eino", "Capabilities": ["Wissensrecherche", "Zusammenfassung"], "ModelStatus": "Modell nicht verbunden", "ReadinessLabel": "Nicht startbereit", "ReadinessReason": "Modellverbindung fehlt"}
+  }
+}

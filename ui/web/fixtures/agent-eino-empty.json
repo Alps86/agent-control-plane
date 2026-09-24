@@ -1,0 +1,8 @@
+{
+  "PageTitle": "Agentenübersicht",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}, {"Key": "agenten", "Label": "Agenten", "Href": "/organisationen/org-nordstern/agenten", "Icon": "◇"}],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": ["agent.create"],
+  "View": {"Kind": "list", "OrganizationID": "org-nordstern", "Agents": []}
+}

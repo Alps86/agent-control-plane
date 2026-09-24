@@ -15,6 +15,7 @@ func (s *Suite) initializeScenario(sc *godog.ScenarioContext) {
 	sc.After(s.afterScenario)
 	s.registerAPISteps(sc)
 	s.registerBrowserSteps(sc)
+	s.registerStory12Steps(sc)
 }
 
 func (s *Suite) registerAPISteps(sc *godog.ScenarioContext) {

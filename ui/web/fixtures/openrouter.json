@@ -1,0 +1,18 @@
+{
+  "PageTitle": "OpenRouter · Modellanbieter · Settings",
+  "Navigation": [],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Kind": "openrouter",
+    "Settings": {
+      "OpenRouter": {
+        "Connected": false,
+        "Reference": "",
+        "Status": "nicht eingerichtet",
+        "StatusDetail": ""
+      }
+    }
+  }
+}

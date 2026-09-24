@@ -1,0 +1,58 @@
+{{define "modelle/openrouter/content"}}
+  <nav aria-label="Pfad">
+    <a class="provider-back" href="/settings">Settings</a> <span aria-hidden="true">/</span> Modellanbieter
+  </nav>
+  <header>
+    <p class="eyebrow">SETTINGS / MODELLANBIETER</p>
+    <h1>OpenRouter</h1>
+    <p>Eine zentrale Verbindung für diese Installation verwalten.</p>
+  </header>
+
+  <section class="provider-card" aria-labelledby="billing-heading">
+    <h2 id="billing-heading">Separate Abrechnung</h2>
+    <p>OpenRouter rechnet die Nutzung separat ab. Diese Verbindung wird nur auf Ihre ausdrückliche Wahl hin verwendet. Das Einrichten gibt keiner Organisation und keinem Agenten automatisch Zugriff.</p>
+  </section>
+
+  {{if .Notice}}
+    <p class="provider-message" role="status">{{.Notice}}</p>
+  {{end}}
+  {{range .Errors}}
+    <p class="provider-message provider-error" role="alert">{{.}}</p>
+  {{end}}
+
+  <section class="provider-card" aria-labelledby="connection-heading">
+    <h2 id="connection-heading">Zentrale Verbindung</h2>
+    <p class="provider-note">Status: <span class="provider-status" role="status">{{.View.Settings.OpenRouter.Status}}</span></p>
+    {{if .View.Settings.OpenRouter.StatusDetail}}
+      <p>{{.View.Settings.OpenRouter.StatusDetail}}</p>
+    {{end}}
+    {{if .View.Settings.OpenRouter.Connected}}
+      <p class="provider-reference">Verbindungsreferenz: <code>{{.View.Settings.OpenRouter.Reference}}</code></p>
+      <p>Der gespeicherte Schlüssel wird hier nicht angezeigt.</p>
+    {{else}}
+      <p>Keine Verbindung eingerichtet.</p>
+    {{end}}
+
+    <form method="post" action="/settings/modellanbieter/openrouter">
+      <div class="provider-fields">
+        <label for="openrouter-key">{{if .View.Settings.OpenRouter.Connected}}Neuer OpenRouter-Schlüssel{{else}}OpenRouter-Schlüssel{{end}}</label>
+        <input id="openrouter-key" name="key" type="password" autocomplete="new-password" required aria-describedby="key-help">
+        <small id="key-help">Die Eingabe wird nach dem Speichern nicht erneut angezeigt.</small>
+      </div>
+      <div class="provider-actions">
+        <button type="submit">{{if .View.Settings.OpenRouter.Connected}}Schlüssel ersetzen{{else}}Verbindung speichern{{end}}</button>
+      </div>
+    </form>
+
+    {{if .View.Settings.OpenRouter.Connected}}
+      <div class="provider-actions">
+        <form method="post" action="/settings/modellanbieter/openrouter/pruefen">
+          <button type="submit">Status prüfen</button>
+        </form>
+        <form method="post" action="/settings/modellanbieter/openrouter/trennen">
+          <button type="submit">Verbindung trennen</button>
+        </form>
+      </div>
+    {{end}}
+  </section>
+{{end}}

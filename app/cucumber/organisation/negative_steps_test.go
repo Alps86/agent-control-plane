@@ -13,15 +13,23 @@ import (
 	weborganisation "agentcontrolplane/app/internal/adapter/web/organisation"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	"agentcontrolplane/app/internal/domain/rechte"
+	"agentcontrolplane/ui/bridge"
 )
 
 func (s *Suite) noIdentity() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath, sqlite.RunMigration(2), sqlite.OrganizationMigration())
+	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration())
 	if err != nil {
 		return err
 	}
 	service := apporganisation.NewService(sqlite.NewOrganizationStore(db), nil)
-	server := httptest.NewServer(weborganisation.NewHandler(service, nil))
+	ui, err := bridge.New()
+	if err != nil {
+		_ = db.Close()
+		return err
+	}
+	server := httptest.NewUnstartedServer(nil)
+	server.Config.Handler = weborganisation.NewHandler(service, ui, server.Listener.Addr().String())
+	server.Start()
 	s.negative = &NegativeServer{DB: db, Server: server}
 	return nil
 }
@@ -109,14 +117,25 @@ func (s *Suite) unknown404() error {
 }
 
 func (s *Suite) getUnassigned() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath, sqlite.RunMigration(2), sqlite.OrganizationMigration())
+	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration())
 	if err != nil {
 		return err
 	}
 	identity := &FixedIdentity{Actor: rechte.NewActor("other-operator", rechte.Operator)}
 	service := apporganisation.NewService(sqlite.NewOrganizationStore(db), identity)
-	server := httptest.NewServer(weborganisation.NewHandler(service, nil))
+	ui, err := bridge.New()
+	if err != nil {
+		_ = db.Close()
+		return err
+	}
+	server := httptest.NewUnstartedServer(nil)
+	server.Config.Handler = weborganisation.NewHandler(service, ui, server.Listener.Addr().String())
+	server.Start()
 	s.negative = &NegativeServer{DB: db, Server: server}
+	return s.readUnassigned()
+}
+
+func (s *Suite) readUnassigned() error {
 	response, err := s.facadeGet("/api/organisationen/" + s.organization.ID)
 	if err != nil {
 		return err

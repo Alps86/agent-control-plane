@@ -9,9 +9,10 @@ import (
 
 // Handler bindet den Organisationsanwendungsfall an HTTP und die UI-Bridge.
 type Handler struct {
-	service *apporganisation.Service
-	bridge  *bridge.Bridge
-	mux     *http.ServeMux
+	service     *apporganisation.Service
+	bridge      *bridge.Bridge
+	mux         *http.ServeMux
+	bindAddress string
 }
 
 type createRequest struct {
