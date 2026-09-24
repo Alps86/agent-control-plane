@@ -13,8 +13,8 @@ import (
 )
 
 // NewHandler erstellt die öffentlichen JSON- und HTML-Routen.
-func NewHandler(service *apporganisation.Service, ui *bridge.Bridge) *Handler {
-	h := &Handler{service: service, bridge: ui, mux: http.NewServeMux()}
+func NewHandler(service *apporganisation.Service, ui *bridge.Bridge, bindAddress string) *Handler {
+	h := &Handler{service: service, bridge: ui, mux: http.NewServeMux(), bindAddress: bindAddress}
 	h.mux.HandleFunc("GET /api/organisationen", h.apiList)
 	h.mux.HandleFunc("POST /api/organisationen", h.apiCreate)
 	h.mux.HandleFunc("GET /api/organisationen/{id}", h.apiGet)
