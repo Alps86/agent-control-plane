@@ -12,6 +12,7 @@ import (
 // mountAgents bindet die organisationsgebundenen Agentenrouten ein.
 func (b *Bootstrap) mountAgents(server *web.Server, db *sqlite.Database, ui *bridge.Bridge) {
 	service := appagent.NewService(db, apporganisation.NewLocalIdentity(), sqlite.NewOrganizationStore(db))
+	b.registerCodexAgent(service)
 	agents := webagent.NewHandler(service, ui, b.address())
 	for _, pattern := range []string{
 		"/api/organisationen/{id}/agenten",
