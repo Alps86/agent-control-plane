@@ -101,12 +101,13 @@ Funktionalität: Eino-Agent aus einer Vorlage in einer Organisation anlegen
       | "/api/organisationen/{id}/agenten"     |
       | "/organisationen/{id}/agenten"         |
 
-  Szenario: Ein öffentlich gebundener Server ignoriert einen gefälschten lokalen Host
+  Szenario: Eine öffentliche Listener-Adresse verhindert den Agentenserverstart
     Angenommen die Organisation "Nordstern" besteht
-    Und ich starte denselben Server an einer öffentlichen Listener-Adresse neu
-    Wenn ich einen Agenten-POST mit dem Host "localhost" ohne Origin absende
-    Dann antwortet der Server mit dem HTTP-Status 403
-    Und die Agentenliste von "Nordstern" bleibt leer
+    Wenn ich denselben Server an einer öffentlichen Listener-Adresse neu starte
+    Dann wird der Serverstart wegen der nicht lokalen APP_ADDR-Konfiguration abgewiesen
+    Und auf dem Wildcard-Port ist kein Server erreichbar
+    Wenn ich denselben Server mit derselben SQLite-Datenbank auf Loopback neu starte
+    Dann bleibt die Agentenliste von "Nordstern" leer
 
   Szenario: Ein lokal gebundener Server nimmt einen gültigen Agenten-POST an
     Angenommen die Organisation "Nordstern" besteht

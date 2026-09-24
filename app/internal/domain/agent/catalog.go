@@ -18,7 +18,7 @@ func NewCatalog() *Catalog {
 func (c *Catalog) Templates() []Template {
 	result := make([]Template, 0, len(c.templates))
 	for _, template := range c.templates {
-		template.Capabilities = append([]string(nil), template.Capabilities...)
+		template.Capabilities = append([]string{}, template.Capabilities...)
 		result = append(result, template)
 	}
 
@@ -57,7 +57,7 @@ func (c *Catalog) Register(template Template) bool {
 		return false
 	}
 
-	template.Capabilities = append([]string(nil), template.Capabilities...)
+	template.Capabilities = append([]string{}, template.Capabilities...)
 	c.templates = append(c.templates, template)
 	return true
 }
