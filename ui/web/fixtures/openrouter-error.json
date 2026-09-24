@@ -1,0 +1,18 @@
+{
+  "PageTitle": "OpenRouter · Modellanbieter · Settings",
+  "Navigation": [],
+  "Notice": "",
+  "Errors": ["Die Verbindung konnte nicht bestätigt werden."],
+  "AllowedActions": [],
+  "View": {
+    "Kind": "openrouter",
+    "Settings": {
+      "OpenRouter": {
+        "Connected": true,
+        "Reference": "openrouter-central",
+        "Status": "nicht einsatzbereit",
+        "StatusDetail": "OpenRouter hat den Schlüssel abgelehnt. Ersetzen Sie ihn und prüfen Sie erneut."
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "PageTitle": "Settings · Modellanbieter",
+  "Navigation": [],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Kind": "settings-modelle"
+  }
+}

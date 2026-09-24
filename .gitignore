@@ -6,6 +6,7 @@ ui/dist/
 !**/.env.example
 **/auth.json
 **/credentials.json
+**/.agent-control-plane-secrets/
 **/*.db
 **/*.db-shm
 **/*.db-wal

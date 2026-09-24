@@ -1,0 +1,492 @@
+{
+  "sourceAsOf": "24.09.2026",
+  "sourceSha256": "2d05c1d016794d8fb92fcb4efb8e832f432fe9779cba8e87ffa6902566c20796",
+  "groups": [
+    {
+      "key": "experimentell",
+      "heading": "Experimentelle Bedienflächen und Laufzeitfunktionen",
+      "entries": [
+        {
+          "sourceKey": "experimentell-plugin-sdk-und-manager",
+          "name": "Plugin SDK und Manager",
+          "sourceLinks": [
+            {
+              "label": "Plugin SDK und Manager",
+              "url": "https://docs.paperclip.ing/administration/plugins/"
+            }
+          ],
+          "paperclipMaturity": "Alpha; installierbare Pakete mit eigenem Worker, Seiten, Widgets und Einstellungen; API und Runtime können brechen. Referenz- und erste First-Party-Plugins existieren.",
+          "benefit": "Erweiterungen ohne Änderung des Kerns.",
+          "acpDependencies": "INT-05",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. Pluginprozesse, Manifest, Capability-Freigaben, Isolation, Updates und Go-Bridge brauchen einen eigenen Sicherheits- und Schnittstellenvertrag. INT-05 deckt konkrete Connectoren, nicht allgemein ausführbaren Plugin-Code. Keine npm- oder Paperclip-SDK-Kompatibilität aus der Inventarisierung ableiten."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-environments",
+          "name": "Environments",
+          "sourceLinks": [
+            {
+              "label": "Environments",
+              "url": "https://docs.paperclip.ing/experimental/environments/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; benannte lokale, SSH- oder Plugin-Sandbox-Ausführungsziele mit Projekt-/Agentenzuweisung.",
+          "benefit": "Reproduzierbare, getrennte Ausführungsumgebungen.",
+          "acpDependencies": "RUN-01, PROJ-03, PERM-04",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. Benötigt RUN-01, PROJ-03, PERM-04 und einen überprüfbaren Ausführungs-/Isolationsvertrag; SSH und Sandbox-Plugins erweitern Vertrauensgrenzen. Produktagenten erhalten auch dort keinen direkten Shell-, HTTP- oder Dateisystemzugang."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-isolated-workspaces",
+          "name": "Isolated Workspaces",
+          "sourceLinks": [
+            {
+              "label": "Isolated Workspaces",
+              "url": "https://docs.paperclip.ing/experimental/isolated-workspaces/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; pro Run Git-Worktree/Branch statt gemeinsamem Projektcheckout. Flag wirkt laut Guide auch zur Laufzeit als Abschalter.",
+          "benefit": "Parallele Arbeit ohne Überschreiben gemeinsamer Dateien.",
+          "acpDependencies": "PROJ-03 und RUN-01",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. PROJ-03 und RUN-01 liefern Projekt-/Run-Basis, reichen aber nicht für Provisionierung, Lebenszyklus, Dateirechte und Konfliktauflösung. Vor ACP-Freigabe Beweis der Fachfähigkeitsgrenze und konkreter Pfad-/Schreibrechte nötig."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-experimental-file-viewer",
+          "name": "Experimental File Viewer",
+          "sourceLinks": [
+            {
+              "label": "Experimental File Viewer",
+              "url": "https://docs.paperclip.ing/experimental/file-viewer/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; Taskdateien im Browser suchen, anzeigen und herunterladen.",
+          "benefit": "Resultate und Artefakte am Task prüfen.",
+          "acpDependencies": "ART-01/02 und PROJ-03",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. ART-01/02 und PROJ-03 liefern Artefakt-/Workspace-Bezüge; ein allgemeiner Dateibrowser braucht begrenzte Leserechte, Pfadprüfung und Vorschau für erlaubte Formate."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-external-objects",
+          "name": "External Objects",
+          "sourceLinks": [
+            {
+              "label": "External Objects",
+              "url": "https://docs.paperclip.ing/experimental/external-objects/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; erkennt Links in Issues, Kommentaren und Dokumenten; GitHub-Objekte werden live aufgelöst, andere zunächst generisch; Plugins können Detektoren ergänzen.",
+          "benefit": "PR- und Ticketzustand im Task sehen.",
+          "acpDependencies": "TASK-05/ART-01 und INT-01–05",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. TASK-05/ART-01 und INT-01–05 sind Anknüpfungen. URL-Erkennung darf keinen beliebigen HTTP-Abruf durch Agenten erzeugen; Provider, Credentials, Aktualisierung und Fehlerzustände benötigen konkrete Fachaktionen."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-task-plan-decomposition-panel",
+          "name": "Task Plan Decomposition Panel",
+          "sourceLinks": [
+            {
+              "label": "Task Plan Decomposition Panel",
+              "url": "https://docs.paperclip.ing/experimental/plan-decomposition-panel/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; lesende Diagnose je akzeptierter Planrevision und erzeugten Teilaufgaben.",
+          "benefit": "Doppelte oder fehlende Planzerlegung erkennen.",
+          "acpDependencies": "TASK-03 / REVIEW-02",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. TASK-03 / REVIEW-02 sind Anschlussstellen, enthalten aber keinen vollständigen Vertrag für akzeptierte Pläne und idempotente Zerlegung. Bei Übernahme wären diese Semantik und die öffentliche Historienanzeige zu entscheiden; eine bloße Debug-Seite erfüllt das nicht."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-chat-style-tasks",
+          "name": "Chat-Style Tasks",
+          "sourceLinks": [
+            {
+              "label": "Chat-Style Tasks",
+              "url": "https://docs.paperclip.ing/experimental/task-chat/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, standardmäßig aus; alternative Taskdetailseite mit laufendem Stream, Agent/Plan/Ask-Composer und Seitenbereich; Ausschalten stellt alte Ansicht wieder her.",
+          "benefit": "Zusammenhängender Taskdialog mit Run-Aktivität.",
+          "acpDependencies": "TASK-05/07, ACT-02, Work Modes und die geplanten Teamchats",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. TASK-05/07, ACT-02, Work Modes und die geplanten Teamchats liefern Daten/Interaktion, aber keinen identischen Screenvertrag. Sprach-/Teamchat nicht still mit Paperclip-Taskchat gleichsetzen; öffentliche UI-Abnahme nach UI-Bridge nötig."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-task-watchdogs",
+          "name": "Task Watchdogs",
+          "sourceLinks": [
+            {
+              "label": "Task Watchdogs",
+              "url": "https://docs.paperclip.ing/experimental/task-watchdogs/"
+            },
+            {
+              "label": "Guide",
+              "url": "https://docs.paperclip.ing/guides/projects-workflow/task-watchdogs/"
+            }
+          ],
+          "paperclipMaturity": "Experiment trotz zusätzlichem Workflow-Guide; je Task ein prüfender Agent für stillstehende Taskbäume.",
+          "benefit": "Fehlinterpretierte Stopps finden und Arbeit kontrolliert wieder öffnen.",
+          "acpDependencies": "TASK-03, RUN-/SCH-Lebenszyklus, Agentenrechte und Eskalation",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. Benötigt TASK-03, RUN-/SCH-Lebenszyklus, Agentenrechte und Eskalation. Ein Watchdog darf weder eigenmächtig Rechte ausweiten noch blockierte Läufe endlos neu starten."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-status-cards",
+          "name": "Status Cards",
+          "sourceLinks": [
+            {
+              "label": "Status Cards",
+              "url": "https://docs.paperclip.ing/experimental/status-cards/"
+            },
+            {
+              "label": "API",
+              "url": "https://docs.paperclip.ing/reference/api/status-cards/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; Flag sperrt Board und API, benötigt bereitgestellten Summarizer-Agenten.",
+          "benefit": "Gemeinsame, laufend erneuerte Antwort auf eine gespeicherte Statusfrage.",
+          "acpDependencies": "MON-01/02; MS-05/06, Rechte und Aktualisierung",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. MON-01/02 liefern Datenansichten, aber keine gespeicherte Frage, Watch Query, Refresh-Engine oder Summarizer-Route. MS-05/06, Rechte und Aktualisierung sind Voraussetzungen. Statische Dashboard-Karten erfüllen diese Funktion nicht."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-auto-create-recovery-tasks",
+          "name": "Auto-Create Recovery Tasks",
+          "sourceLinks": [
+            {
+              "label": "Auto-Create Recovery Tasks",
+              "url": "https://docs.paperclip.ing/experimental/auto-create-recovery-tasks/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; Scheduler erzeugt bei stockenden Abhängigkeitsketten Recovery Tasks.",
+          "benefit": "Stillstand mit überprüfbarer Folgeaufgabe behandeln.",
+          "acpDependencies": "TASK-03, SCH-01–06, Run-/Blockerzustand und Deduplizierung",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. TASK-03, SCH-01–06, Run-/Blockerzustand und Deduplizierung vorausgesetzt. Automatische Aufgabenerzeugung braucht Ursache, Eigentümer, Wiederholungsgrenze und Auditspur."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-server-info-debug-view",
+          "name": "Server Info Debug View",
+          "sourceLinks": [
+            {
+              "label": "Server Info Debug View",
+              "url": "https://docs.paperclip.ing/experimental/server-info-debug-view/"
+            }
+          ],
+          "paperclipMaturity": "Experiment, Opt-in; Restartzeit, Commit und Checkoutzustand im Paperclip-Accountdrawer.",
+          "benefit": "Versions- und Neustartdiagnose.",
+          "acpDependencies": "OPS-01",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. OPS-01 startet den Go-Server, umfasst aber keine Versions- oder Restartanzeige. Für ACP nur Go-Server-relevante, erlaubte Betriebsmetadaten spezifizieren; kein Accountdrawer oder Git-Checkout im Installationsbetrieb voraussetzen."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-auto-restart-dev-server-when-idle",
+          "name": "Auto-Restart Dev Server When Idle",
+          "sourceLinks": [
+            {
+              "label": "Auto-Restart Dev Server When Idle",
+              "url": "https://docs.paperclip.ing/experimental/auto-restart-dev-server/"
+            }
+          ],
+          "paperclipMaturity": "Experiment für Paperclip-Entwicklung (pnpm dev:once), kein allgemeiner Produktionsneustart.",
+          "benefit": "Entwickler sehen neuen Code nach beendeten lokalen Runs.",
+          "acpDependencies": "ACP ist Go/Vite",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später als Entwicklungswerkzeug evaluieren. ACP ist Go/Vite; eine Übernahme erfordert eigenen lokalen Dev-Serververtrag und geordneten Umgang mit aktiven Runs. Kein Produktionsfeature aus dem Paperclip-Schalter ableiten."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-connections-v3-apps",
+          "name": "Connections v3 (Apps)",
+          "sourceLinks": [
+            {
+              "label": "Connections v3 (Apps)",
+              "url": "https://docs.paperclip.ing/experimental/connections-apps/"
+            }
+          ],
+          "paperclipMaturity": "Zum Kern befördert; Apps-Schalter entfernt, Connectors immer an. Die Seite ist historisch im Experimental-Menü. Separater „Chat connectors“-Schalter bleibt experimentell und zunächst aus.",
+          "benefit": "Stabile Verbindungsidentität, Grants und Connector-Setup; optionale Chatkanäle.",
+          "acpDependencies": "INT-01–05/PERM-02/05; CHV-/INT-Stories",
+          "decisionParts": [
+            {
+              "kind": "zuordnen",
+              "reason": "Zuordnen: Verbindungskern INT-01–05/PERM-02/05; experimentelle Chatkanäle später evaluieren an den einschlägigen CHV-/INT-Stories. Toolconnector, Modellroute und Chatkanal haben unterschiedliche Rechte. Keine deprecated enableApps-Flag in ACP nachbauen."
+            },
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Zuordnen: Verbindungskern INT-01–05/PERM-02/05; experimentelle Chatkanäle später evaluieren an den einschlägigen CHV-/INT-Stories. Toolconnector, Modellroute und Chatkanal haben unterschiedliche Rechte. Keine deprecated enableApps-Flag in ACP nachbauen."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "experimentell-cloud-sync",
+          "name": "Cloud Sync",
+          "sourceLinks": [
+            {
+              "label": "Cloud Sync",
+              "url": "https://docs.paperclip.ing/experimental/cloud-sync/"
+            }
+          ],
+          "paperclipMaturity": "Abgelöst/retired; Overview sagt, Funktion und Toggle wurden upstream entfernt. Die Detailseite ist als veraltete Übergangsdokumentation stehen geblieben.",
+          "benefit": "Früher Host-zu-Host-Umzug.",
+          "acpDependencies": "OPS-04; OPS-03",
+          "decisionParts": [
+            {
+              "kind": "abgeloest",
+              "reason": "Abgelöst durch OPS-04 (Unternehmensexport/-import) und OPS-03 (lokale Sicherung). Keine Cloud-Upstream-Verbindung oder Live-Sync als aktuelle Paperclip-Parität behaupten."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        }
+      ]
+    },
+    {
+      "key": "api",
+      "heading": "Weitere in der API-Navigation sichtbare Flächen",
+      "entries": [
+        {
+          "sourceKey": "api-cases-api",
+          "name": "Cases API",
+          "sourceLinks": [
+            {
+              "label": "Cases API",
+              "url": "https://docs.paperclip.ing/reference/api/cases/"
+            }
+          ],
+          "paperclipMaturity": "Ausdrücklich experimentell, enableCases standardmäßig aus; bei Aus 403.",
+          "benefit": "Dokumentenreiche, unternehmensbezogene Fälle neben Issues.",
+          "acpDependencies": "ORG-01, TASK-01 und ART-01",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. ORG-01, TASK-01 und ART-01 sind mögliche Basis, decken Cases aber nicht ab. Bei Übernahme wären Case-Lebenszyklus, Dokumentzuordnung und Bedienansicht gesondert festzulegen. Cases nicht mit Tasks gleichsetzen."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "api-attention-api",
+          "name": "Attention API",
+          "sourceLinks": [
+            {
+              "label": "Attention API",
+              "url": "https://docs.paperclip.ing/reference/api/attention/"
+            }
+          ],
+          "paperclipMaturity": "API-dokumentiert",
+          "benefit": "lesender, priorisierter Feed hinter Decisions mit Quellen/Gründen.",
+          "acpDependencies": "VIEW-02",
+          "decisionParts": [
+            {
+              "kind": "zuordnen",
+              "reason": "Zuordnen zu VIEW-02; lokale Betreiberentscheidung ohne App-Account, per Nutzer gespeicherte Dismissals nur nach Identitätsentscheid. Budgetalerts bleiben aufgrund Nutzerentscheidung ausgenommen."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "api-decision-training-api",
+          "name": "Decision Training API",
+          "sourceLinks": [
+            {
+              "label": "Decision Training API",
+              "url": "https://docs.paperclip.ing/reference/api/decision-training/"
+            }
+          ],
+          "paperclipMaturity": "API-dokumentiert, nicht als Experiment markiert",
+          "benefit": "unveränderliche Momentaufnahmen menschlicher Entscheidungen, annotierbar und exportierbar; Paperclip-Schreibzugriff verlangt Human-Login.",
+          "acpDependencies": "Story-87; Story-48",
+          "decisionParts": [
+            {
+              "kind": "zuordnen",
+              "reason": "Root-Zuordnung: Story-87 für lokale Betreiberentscheidung, Snapshot, Annotation und Export; Story-48 ist festes Review-Gate. ACP ohne App-Login muss Urheberschaft und Datenschutz in der Abnahme konkretisieren. Noch keine implementierte Parität; Trainingsbeispiele nicht als bloße Review-Historie ausgeben."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "api-summary-slots-api",
+          "name": "Summary Slots API",
+          "sourceLinks": [
+            {
+              "label": "Summary Slots API",
+              "url": "https://docs.paperclip.ing/reference/api/summary-slots/"
+            }
+          ],
+          "paperclipMaturity": "Ausdrücklich experimentell, enableSummaries standardmäßig aus; bei Aus liefern alle Endpunkte 404. Ein bereitgestellter und betriebsbereiter Summarizer-Agent ist für die Erzeugung nötig.",
+          "benefit": "Slots halten Zusammenfassungen mit Revisionshistorie an Projekt-, Projekt-Workspace- oder Workspace-Übersichtsseiten.",
+          "acpDependencies": "PROJ-01/03, ART-01 und Modellroute",
+          "decisionParts": [
+            {
+              "kind": "spaeter-evaluieren",
+              "reason": "Später evaluieren. PROJ-01/03, ART-01 und Modellroute sind mögliche Basis; Slot-Eigentum, Aktualisierung, Revisionshistorie und Herkunft müssen spezifiziert werden. Nicht mit Status Cards gleichsetzen."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "api-resource-memberships-api",
+          "name": "Resource Memberships API",
+          "sourceLinks": [
+            {
+              "label": "Resource Memberships API",
+              "url": "https://docs.paperclip.ing/reference/api/resource-memberships/"
+            }
+          ],
+          "paperclipMaturity": "API-dokumentiert, nicht als Experiment markiert",
+          "benefit": "persönliche Sidebar-Auswahl durch Beitritt/Verlassen von Projekten und Agenten sowie persönliche Dokumentsterne. Das ändert keine fachlichen Rechte und nichts für andere Nutzer.",
+          "acpDependencies": "Story-52; Story-65",
+          "decisionParts": [
+            {
+              "kind": "zuordnen",
+              "reason": "Root-Zuordnung: Story-52 für Sidebar-Auswahl, Story-65 für Dokumentsterne. Lokale Betreiberpräferenzen ohne App-Login sind zu spezifizieren; Beitritt, Verlassen und Sterne verändern keine Zugriffsrechte. Noch keine implementierte Parität."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "api-folders-api",
+          "name": "Folders API",
+          "sourceLinks": [
+            {
+              "label": "Folders API",
+              "url": "https://docs.paperclip.ing/reference/api/folders/"
+            }
+          ],
+          "paperclipMaturity": "API-dokumentiert, nicht als Experiment markiert",
+          "benefit": "getrennte, verschachtelte Bäume für Routinen und Skills mit teils systemverwalteten, schreibgeschützten Ordnern.",
+          "acpDependencies": "Story-63; Story-69",
+          "decisionParts": [
+            {
+              "kind": "zuordnen",
+              "reason": "Root-Zuordnung: Story-63 für Routineordner, Story-69 für Skillordner. Getrennte Bäume, Systemschutz, Zyklus- und Organisationsgrenzen gehören in deren Abnahme. Keine allgemeinen Artefakt-, Projekt- oder Secret-Ordner daraus ableiten; noch keine implementierte Parität."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "api-inbox-agent-policy-api",
+          "name": "Inbox Agent Policy API",
+          "sourceLinks": [
+            {
+              "label": "Inbox Agent Policy API",
+              "url": "https://docs.paperclip.ing/reference/api/inbox-agent-policy/"
+            }
+          ],
+          "paperclipMaturity": "API-dokumentiert",
+          "benefit": "persönliche Richtlinie mit open, allowlist oder disabled für Agentenaktionen an der Inbox; Paperclip verwendet unkonfiguriert open.",
+          "acpDependencies": "Story-51",
+          "decisionParts": [
+            {
+              "kind": "zuordnen",
+              "reason": "Root-Zuordnung: Story-51. ACP-Standard unkonfiguriert disabled; die lokale Bedienperson setzt open oder allowlist ausdrücklich. Key, Agentenanlage, Team oder Import aktivieren die Policy nicht automatisch. Jede benannte Fachaktion prüft Organisations- und Agentenrechte; die Allowlist akzeptiert nur Agenten derselben Organisation. Ungültige oder gelöschte Zuordnungen erweitern nie Rechte. Noch keine implementierte Parität."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen"
+        },
+        {
+          "sourceKey": "api-status-cards-api",
+          "name": "Status Cards API",
+          "sourceLinks": [
+            {
+              "label": "Status Cards API",
+              "url": "https://docs.paperclip.ing/reference/api/status-cards/"
+            }
+          ],
+          "paperclipMaturity": "Experiment",
+          "benefit": "identischer Flag wie Status-Board.",
+          "acpDependencies": "Status-Cards-Evaluation",
+          "decisionParts": [
+            {
+              "kind": "verweis",
+              "reason": "Gehört zur oben genannten späteren Status-Cards-Evaluation; API-Erwähnung macht sie nicht zum Kern."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen",
+          "relatedSourceKey": "experimentell-status-cards"
+        },
+        {
+          "sourceKey": "api-plugins-api",
+          "name": "Plugins API",
+          "sourceLinks": [
+            {
+              "label": "Plugins API",
+              "url": "https://docs.paperclip.ing/reference/api/plugins/"
+            }
+          ],
+          "paperclipMaturity": "Alpha-Vertrag der Pluginlaufzeit",
+          "benefit": "REST-Schnittstelle für Plugininstallation, Aktivierung/Deaktivierung, Upgrades, Konfiguration und die Bridge zwischen Pluginworker und Host.",
+          "acpDependencies": "Plugin-Evaluation",
+          "decisionParts": [
+            {
+              "kind": "verweis",
+              "reason": "Gehört zur oben genannten späteren Plugin-Evaluation."
+            }
+          ],
+          "acpImplementationStatus": "In ACP noch nicht nachgewiesen",
+          "relatedSourceKey": "experimentell-plugin-sdk-und-manager"
+        }
+      ]
+    }
+  ]
+}

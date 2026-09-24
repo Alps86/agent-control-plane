@@ -1,0 +1,21 @@
+{{define "modelle/settings/page"}}
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.PageTitle}}</title>
+    <link rel="stylesheet" href="/assets/index.css">
+    <style>
+      .settings-page { max-width: 760px; margin: 0 auto; padding: 3rem 1rem; }
+      .settings-options { display: grid; gap: 1rem; list-style: none; padding: 0; }
+      .settings-options li { border: 1px solid #d6dce5; border-radius: 12px; padding: 1.25rem; background: #fff; }
+      .settings-options a { font-weight: 700; }
+      .settings-options p { margin-bottom: 0; }
+    </style>
+  </head>
+  <body>
+    {{template "modelle/settings/content" .}}
+  </body>
+</html>
+{{end}}

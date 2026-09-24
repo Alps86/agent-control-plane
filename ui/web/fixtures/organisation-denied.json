@@ -1,0 +1,8 @@
+{
+  "PageTitle": "Organisationen",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Notice": "",
+  "Errors": ["Zugriff verweigert"],
+  "AllowedActions": [],
+  "View": {"Kind": "error"}
+}

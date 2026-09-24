@@ -1,0 +1,18 @@
+{
+  "PageTitle": "Agent anlegen",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}, {"Key": "agenten", "Label": "Agenten", "Href": "/organisationen/org-nordstern/agenten", "Icon": "◇"}],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": ["agent.create"],
+  "View": {
+    "Kind": "form",
+    "OrganizationID": "org-nordstern",
+    "Name": "",
+    "FieldErrors": {},
+    "Templates": [{"ID": "recherche", "Name": "Recherche", "Role": "Rechercheagentin", "Instructions": "Recherchiere und fasse belegte Ergebnisse zusammen.", "ExecutionKind": "eino", "ExecutionKindLabel": "Eino", "Capabilities": ["Wissensrecherche", "Zusammenfassung"]}],
+    "TeamTemplates": [{"ID": "rechercheteam", "Name": "Rechercheteam"}],
+    "SelectedTemplate": null,
+    "SelectedTeam": {"ID": "rechercheteam", "Name": "Rechercheteam"},
+    "TeamTemplatesSelected": [{"ID": "recherche", "Name": "Recherche", "Role": "Rechercheagentin", "Instructions": "Recherchiere und fasse belegte Ergebnisse zusammen."}]
+  }
+}

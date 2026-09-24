@@ -1,0 +1,26 @@
+package main
+
+import (
+	"agentcontrolplane/app/internal/adapter/sqlite"
+	"agentcontrolplane/app/internal/adapter/web"
+	webprojekt "agentcontrolplane/app/internal/adapter/web/projekt"
+	apporganisation "agentcontrolplane/app/internal/app/organisation"
+	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appziel "agentcontrolplane/app/internal/app/ziel"
+	"agentcontrolplane/ui/bridge"
+)
+
+func (b *Bootstrap) mountProjects(server *web.Server, db *sqlite.Database, organizations *apporganisation.Service, ui *bridge.Bridge) {
+	projects := webprojekt.NewHandler(appprojekt.NewService(db, organizations), organizations, appziel.NewService(db, organizations), ui, b.address())
+	for _, pattern := range []string{
+		"GET /api/organisationen/{id}/projekte",
+		"POST /api/organisationen/{id}/projekte",
+		"GET /api/organisationen/{id}/projekte/{projektID}",
+		"GET /organisationen/{id}/projekte",
+		"GET /organisationen/{id}/projekte/neu",
+		"POST /organisationen/{id}/projekte",
+		"GET /organisationen/{id}/projekte/{projektID}",
+	} {
+		server.Handle(pattern, projects)
+	}
+}

@@ -1,0 +1,55 @@
+{{define "projekte/content"}}
+  {{if .Errors}}
+    <div class="notice" role="alert">{{range .Errors}}<p>{{.}}</p>{{end}}</div>
+  {{end}}
+  {{if eq .View.Kind "error"}}
+    <section class="empty-state"><h1>Projekte</h1><p>Die Anfrage konnte nicht abgeschlossen werden.</p><a class="text-link" href="/organisationen">Zur Organisationsübersicht →</a></section>
+  {{end}}
+  {{if eq .View.Kind "list"}}
+    <div class="page-heading"><div><div class="eyebrow">{{.Organization.Name}}</div><h1>Projektübersicht</h1><p>Projekte und ihre Ziele in dieser Organisation.</p></div></div>
+    {{if .View.Projects}}
+      <div class="stats-grid">
+        {{range .View.Projects}}
+          <article class="stat-card">
+            <h2><a href="/organisationen/{{$.Organization.ID}}/projekte/{{.ID}}">{{.Name}}</a></h2>
+            <p>{{.Description}}</p>
+            <small>Ziel: {{.GoalName}}</small>
+          </article>
+        {{end}}
+      </div>
+    {{else}}
+      <section class="empty-state"><div class="empty-icon">▧</div><h2>Noch keine Projekte</h2><p>Legen Sie das erste Projekt für {{.Organization.Name}} an.</p></section>
+    {{end}}
+    <p><a class="hero-link" href="/organisationen/{{.Organization.ID}}/projekte/neu">Projekt anlegen →</a></p>
+    <p><a class="text-link" href="/organisationen/{{.Organization.ID}}">Zur Organisation →</a></p>
+  {{end}}
+  {{if eq .View.Kind "form"}}
+    <div class="page-heading"><div><div class="eyebrow">{{.Organization.Name}}</div><h1>Projekt anlegen</h1><p>Verbinden Sie die geplante Arbeit mit einem Ziel dieser Organisation.</p></div></div>
+    <form action="/organisationen/{{.Organization.ID}}/projekte" method="post" novalidate>
+      <div class="stat-card">
+        <p><label for="projekt-name">Name</label><br><input id="projekt-name" name="name" type="text" value="{{.View.Name}}" aria-describedby="projekt-name-error" required></p>
+        {{with index .View.FieldErrors "name"}}<p id="projekt-name-error" role="alert">{{.}}</p>{{end}}
+        <p><label for="projekt-description">Beschreibung</label><br><textarea id="projekt-description" name="description" rows="5">{{.View.Description}}</textarea></p>
+        <p><label for="projekt-goal">Ziel</label><br><select id="projekt-goal" name="goal_id" aria-describedby="projekt-goal-error" required>
+          <option value="">Ziel auswählen</option>
+          {{range .View.Goals}}<option value="{{.ID}}" {{if .Selected}}selected{{end}}>{{.Name}}</option>{{end}}
+        </select></p>
+        {{with index .View.FieldErrors "goal_id"}}<p id="projekt-goal-error" role="alert">{{.}}</p>{{end}}
+        {{if not .View.Goals}}<p>Für diese Organisation gibt es noch kein Ziel. <a href="/organisationen/{{.Organization.ID}}/ziele/neu">Ziel anlegen →</a></p>{{end}}
+        <p><button type="submit">Projekt speichern</button> <a href="/organisationen/{{.Organization.ID}}/projekte">Abbrechen</a></p>
+      </div>
+    </form>
+  {{end}}
+  {{if eq .View.Kind "detail"}}
+    <div class="page-heading"><div><div class="eyebrow">{{.Organization.Name}} / Projekt</div><h1>{{.View.Project.Name}}</h1><p>{{.View.Project.Description}}</p></div></div>
+    <section class="stat-card"><h2>Ziel</h2><p><a href="/organisationen/{{.Organization.ID}}/ziele">{{.View.Project.GoalName}}</a></p></section>
+    <section class="stat-card" aria-label="Aufgabenliste"><h2>Aufgabenliste</h2>
+      {{if .View.Tasks}}
+        <ul>{{range .View.Tasks}}<li>{{.Title}}</li>{{end}}</ul>
+      {{else}}
+        <p>Noch keine Aufgaben in diesem Projekt.</p>
+      {{end}}
+    </section>
+    <p><a class="text-link" href="/organisationen/{{.Organization.ID}}/projekte">Zur Projektübersicht →</a></p>
+  {{end}}
+{{end}}
