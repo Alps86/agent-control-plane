@@ -1,0 +1,1170 @@
+{
+  "schemaVersion": 1,
+  "stories": [
+    {
+      "story": "Story-01",
+      "fachId": "ARC-01",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": []
+    },
+    {
+      "story": "Story-02",
+      "fachId": "ARC-02",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": [
+        "Story-01"
+      ]
+    },
+    {
+      "story": "Story-03",
+      "fachId": "ARC-03",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": [
+        "Story-01"
+      ]
+    },
+    {
+      "story": "Story-04",
+      "fachId": "ARC-04",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": [
+        "Story-02",
+        "Story-03"
+      ]
+    },
+    {
+      "story": "Story-05",
+      "fachId": "UI-01",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": []
+    },
+    {
+      "story": "Story-06",
+      "fachId": "UI-02",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": [
+        "Story-05"
+      ]
+    },
+    {
+      "story": "Story-07",
+      "fachId": "UI-03",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": [
+        "Story-06"
+      ]
+    },
+    {
+      "story": "Story-08",
+      "fachId": "MS-01",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [],
+      "externalGates": [
+        "Freigegebener echter ChatGPT-/Codex-Abo-Testzugang"
+      ]
+    },
+    {
+      "story": "Story-09",
+      "fachId": "MS-02",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-01"
+      ],
+      "externalGates": [
+        "Gerätecode-Freigabe beim Anbieter und Entscheidung zur geschützten Secret-Speicherung"
+      ]
+    },
+    {
+      "story": "Story-10",
+      "fachId": "OPS-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-02"
+      ]
+    },
+    {
+      "story": "Story-11",
+      "fachId": "ORG-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-10"
+      ]
+    },
+    {
+      "story": "Story-12",
+      "fachId": "UI-04",
+      "group": "Architektur/UI",
+      "catalog": "spec/planung/architektur/bootstrap-stories.md",
+      "dependsOn": [
+        "Story-03",
+        "Story-06",
+        "Story-11"
+      ]
+    },
+    {
+      "story": "Story-13",
+      "fachId": "GOAL-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-11"
+      ]
+    },
+    {
+      "story": "Story-14",
+      "fachId": "PROJ-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-11",
+        "Story-13"
+      ]
+    },
+    {
+      "story": "Story-15",
+      "fachId": "AGT-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-11"
+      ]
+    },
+    {
+      "story": "Story-16",
+      "fachId": "AGT-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-11"
+      ]
+    },
+    {
+      "story": "Story-17",
+      "fachId": "TASK-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-14"
+      ],
+      "pathGates": {
+        "eino": [
+          "Story-15"
+        ],
+        "codexCli": [
+          "Story-16"
+        ]
+      }
+    },
+    {
+      "story": "Story-18",
+      "fachId": "ACT-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-10",
+        "Story-17"
+      ]
+    },
+    {
+      "story": "Story-19",
+      "fachId": "PERM-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-11"
+      ],
+      "pathGates": {
+        "eino": [
+          "Story-15"
+        ],
+        "codexCli": [
+          "Story-16"
+        ]
+      }
+    },
+    {
+      "story": "Story-20",
+      "fachId": "PERM-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-18"
+      ]
+    },
+    {
+      "story": "Story-21",
+      "fachId": "PERM-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-16"
+      ],
+      "externalGates": [
+        "Erlaubter Codex-CLI-Arbeitsbereich und Isolationsentscheidung festgelegt"
+      ]
+    },
+    {
+      "story": "Story-22",
+      "fachId": "OPS-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-10"
+      ]
+    },
+    {
+      "story": "Story-23",
+      "fachId": "MS-03",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-10"
+      ],
+      "externalGates": [
+        "Entscheidung zur geschützten Secret-Speicherung"
+      ]
+    },
+    {
+      "story": "Story-24",
+      "fachId": "MS-04",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-23"
+      ]
+    },
+    {
+      "story": "Story-25",
+      "fachId": "MS-05",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-15"
+      ],
+      "pathGates": {
+        "codexAbo": [
+          "Story-09"
+        ],
+        "openRouter": [
+          "Story-23",
+          "Story-24"
+        ]
+      }
+    },
+    {
+      "story": "Story-26",
+      "fachId": "MS-06",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-25"
+      ]
+    },
+    {
+      "story": "Story-27",
+      "fachId": "RUN-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-08",
+        "Story-15",
+        "Story-16",
+        "Story-17",
+        "Story-19",
+        "Story-20",
+        "Story-21",
+        "Story-25",
+        "Story-26"
+      ],
+      "pathGates": {
+        "codexAbo": [
+          "Story-09"
+        ],
+        "openRouter": [
+          "Story-23",
+          "Story-24"
+        ]
+      }
+    },
+    {
+      "story": "Story-28",
+      "fachId": "OPS-06",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-10",
+        "Story-11",
+        "Story-13",
+        "Story-14",
+        "Story-15",
+        "Story-16",
+        "Story-17",
+        "Story-18",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-29",
+      "fachId": "MS-07",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-10"
+      ],
+      "pathGates": {
+        "codexAbo": [
+          "Story-09"
+        ],
+        "openRouter": [
+          "Story-23"
+        ]
+      },
+      "externalGates": [
+        "Geschützter Secret-Port für wiederverwendbare Verbindungen verfügbar"
+      ]
+    },
+    {
+      "story": "Story-30",
+      "fachId": "MS-08",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-24",
+        "Story-25",
+        "Story-26",
+        "Story-29"
+      ]
+    },
+    {
+      "story": "Story-31",
+      "fachId": "ORG-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-11",
+        "Story-19"
+      ]
+    },
+    {
+      "story": "Story-32",
+      "fachId": "GOAL-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-13",
+        "Story-14"
+      ]
+    },
+    {
+      "story": "Story-33",
+      "fachId": "GOAL-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-31",
+        "Story-32"
+      ]
+    },
+    {
+      "story": "Story-34",
+      "fachId": "PROJ-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-14",
+        "Story-17"
+      ]
+    },
+    {
+      "story": "Story-35",
+      "fachId": "PROJ-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-14",
+        "Story-21"
+      ]
+    },
+    {
+      "story": "Story-36",
+      "fachId": "AGT-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-37",
+      "fachId": "AGT-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-31"
+      ]
+    },
+    {
+      "story": "Story-38",
+      "fachId": "AGT-06",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-39",
+      "fachId": "TASK-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-17",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-40",
+      "fachId": "TASK-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-17",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-41",
+      "fachId": "TASK-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-17",
+        "Story-18"
+      ]
+    },
+    {
+      "story": "Story-42",
+      "fachId": "TASK-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-17",
+        "Story-19"
+      ]
+    },
+    {
+      "story": "Story-43",
+      "fachId": "TASK-07",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-42"
+      ]
+    },
+    {
+      "story": "Story-44",
+      "fachId": "APP-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-18"
+      ]
+    },
+    {
+      "story": "Story-45",
+      "fachId": "REVIEW-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-17",
+        "Story-37"
+      ]
+    },
+    {
+      "story": "Story-46",
+      "fachId": "REVIEW-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-27",
+        "Story-45"
+      ]
+    },
+    {
+      "story": "Story-47",
+      "fachId": "TASK-06",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-17",
+        "Story-27",
+        "Story-46"
+      ]
+    },
+    {
+      "story": "Story-48",
+      "fachId": "REVIEW-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-46"
+      ]
+    },
+    {
+      "story": "Story-49",
+      "fachId": "REVIEW-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-48"
+      ]
+    },
+    {
+      "story": "Story-50",
+      "fachId": "VIEW-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-40",
+        "Story-41"
+      ]
+    },
+    {
+      "story": "Story-51",
+      "fachId": "VIEW-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-27",
+        "Story-44",
+        "Story-48",
+        "Story-50"
+      ]
+    },
+    {
+      "story": "Story-52",
+      "fachId": "NAV-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-31",
+        "Story-34",
+        "Story-39"
+      ]
+    },
+    {
+      "story": "Story-53",
+      "fachId": "RUN-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-54",
+      "fachId": "RUN-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-55",
+      "fachId": "ORG-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-31",
+        "Story-54"
+      ]
+    },
+    {
+      "story": "Story-56",
+      "fachId": "RUN-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-04",
+        "Story-10",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-57",
+      "fachId": "RUN-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-53"
+      ]
+    },
+    {
+      "story": "Story-58",
+      "fachId": "SCH-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-27",
+        "Story-36"
+      ]
+    },
+    {
+      "story": "Story-59",
+      "fachId": "SCH-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-17",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-60",
+      "fachId": "SCH-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-41",
+        "Story-59"
+      ]
+    },
+    {
+      "story": "Story-61",
+      "fachId": "SCH-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-10",
+        "Story-60"
+      ]
+    },
+    {
+      "story": "Story-62",
+      "fachId": "SCH-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-19",
+        "Story-59",
+        "Story-60"
+      ]
+    },
+    {
+      "story": "Story-63",
+      "fachId": "SCH-06",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-60"
+      ]
+    },
+    {
+      "story": "Story-64",
+      "fachId": "ART-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-10",
+        "Story-42"
+      ]
+    },
+    {
+      "story": "Story-65",
+      "fachId": "ART-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-19",
+        "Story-31",
+        "Story-64"
+      ]
+    },
+    {
+      "story": "Story-66",
+      "fachId": "ACT-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-19"
+      ]
+    },
+    {
+      "story": "Story-67",
+      "fachId": "MON-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-53"
+      ]
+    },
+    {
+      "story": "Story-68",
+      "fachId": "MON-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-69",
+      "fachId": "SKL-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-31"
+      ]
+    },
+    {
+      "story": "Story-70",
+      "fachId": "AGT-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-69"
+      ]
+    },
+    {
+      "story": "Story-71",
+      "fachId": "SKL-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-20",
+        "Story-69"
+      ]
+    },
+    {
+      "story": "Story-72",
+      "fachId": "SKL-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-20",
+        "Story-69",
+        "Story-71"
+      ]
+    },
+    {
+      "story": "Story-73",
+      "fachId": "INT-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-15",
+        "Story-16",
+        "Story-57"
+      ]
+    },
+    {
+      "story": "Story-74",
+      "fachId": "PERM-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-19",
+        "Story-20",
+        "Story-37"
+      ]
+    },
+    {
+      "story": "Story-75",
+      "fachId": "DEL-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-37",
+        "Story-40",
+        "Story-74"
+      ]
+    },
+    {
+      "story": "Story-76",
+      "fachId": "DEL-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-36",
+        "Story-75"
+      ]
+    },
+    {
+      "story": "Story-77",
+      "fachId": "DEL-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-75"
+      ]
+    },
+    {
+      "story": "Story-78",
+      "fachId": "ACT-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-20",
+        "Story-27",
+        "Story-48",
+        "Story-75"
+      ]
+    },
+    {
+      "story": "Story-79",
+      "fachId": "OPS-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-09",
+        "Story-23",
+        "Story-25",
+        "Story-29"
+      ]
+    },
+    {
+      "story": "Story-80",
+      "fachId": "INT-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-20",
+        "Story-79"
+      ]
+    },
+    {
+      "story": "Story-81",
+      "fachId": "INT-02",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-44",
+        "Story-80"
+      ]
+    },
+    {
+      "story": "Story-82",
+      "fachId": "INT-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-80",
+        "Story-81"
+      ]
+    },
+    {
+      "story": "Story-83",
+      "fachId": "INT-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-73",
+        "Story-80"
+      ]
+    },
+    {
+      "story": "Story-84",
+      "fachId": "PERM-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-21",
+        "Story-81"
+      ]
+    },
+    {
+      "story": "Story-85",
+      "fachId": "OPS-03",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-10",
+        "Story-64"
+      ]
+    },
+    {
+      "story": "Story-86",
+      "fachId": "OPS-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-31",
+        "Story-59",
+        "Story-69"
+      ]
+    },
+    {
+      "story": "Story-87",
+      "fachId": "FB-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-42",
+        "Story-64"
+      ]
+    },
+    {
+      "story": "Story-88",
+      "fachId": "EXP-01",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": []
+    },
+    {
+      "story": "Story-89",
+      "fachId": "MS-09",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-19",
+        "Story-20",
+        "Story-25",
+        "Story-26",
+        "Story-27"
+      ]
+    },
+    {
+      "story": "Story-90",
+      "fachId": "ZA-02",
+      "group": "Zusammenarbeit",
+      "catalog": "spec/planung/zusammenarbeit/stories.md",
+      "dependsOn": []
+    },
+    {
+      "story": "Story-91",
+      "fachId": "ZA-01",
+      "group": "Zusammenarbeit",
+      "catalog": "spec/planung/zusammenarbeit/stories.md",
+      "dependsOn": [
+        "Story-27",
+        "Story-90"
+      ],
+      "pathGates": {
+        "einoCodexAbo": [
+          "Story-08",
+          "Story-09",
+          "Story-25",
+          "Story-26"
+        ],
+        "einoOpenRouter": [
+          "Story-23",
+          "Story-24",
+          "Story-25",
+          "Story-26"
+        ],
+        "codexCli": []
+      }
+    },
+    {
+      "story": "Story-92",
+      "fachId": "ZA-06",
+      "group": "Zusammenarbeit",
+      "catalog": "spec/planung/zusammenarbeit/stories.md",
+      "dependsOn": [
+        "Story-91"
+      ]
+    },
+    {
+      "story": "Story-93",
+      "fachId": "ZA-03",
+      "group": "Zusammenarbeit",
+      "catalog": "spec/planung/zusammenarbeit/stories.md",
+      "dependsOn": [
+        "Story-90",
+        "Story-91",
+        "Story-92"
+      ]
+    },
+    {
+      "story": "Story-94",
+      "fachId": "ZA-04",
+      "group": "Zusammenarbeit",
+      "catalog": "spec/planung/zusammenarbeit/stories.md",
+      "dependsOn": [
+        "Story-90",
+        "Story-91",
+        "Story-92",
+        "Story-93"
+      ]
+    },
+    {
+      "story": "Story-95",
+      "fachId": "VO-01",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-23",
+        "Story-24",
+        "Story-25",
+        "Story-26"
+      ],
+      "externalGates": [
+        "Freigegebener kontrollierter OpenRouter-Testzugang"
+      ]
+    },
+    {
+      "story": "Story-96",
+      "fachId": "VO-02",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-95"
+      ]
+    },
+    {
+      "story": "Story-97",
+      "fachId": "VO-03",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-92",
+        "Story-96"
+      ]
+    },
+    {
+      "story": "Story-98",
+      "fachId": "VO-04",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-24",
+        "Story-25",
+        "Story-92",
+        "Story-96"
+      ]
+    },
+    {
+      "story": "Story-99",
+      "fachId": "VO-05",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-92",
+        "Story-95",
+        "Story-96"
+      ]
+    },
+    {
+      "story": "Story-100",
+      "fachId": "ZA-07",
+      "group": "Zusammenarbeit",
+      "catalog": "spec/planung/zusammenarbeit/stories.md",
+      "dependsOn": [
+        "Story-90",
+        "Story-91",
+        "Story-92",
+        "Story-93",
+        "Story-94"
+      ]
+    },
+    {
+      "story": "Story-101",
+      "fachId": "VO-06",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-96",
+        "Story-99",
+        "Story-100"
+      ]
+    },
+    {
+      "story": "Story-102",
+      "fachId": "VO-07",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-95"
+      ],
+      "externalGates": [
+        "Belastbarer OpenRouter-API-Vertrag für bidirektionale Echtzeit verfügbar"
+      ]
+    },
+    {
+      "story": "Story-103",
+      "fachId": "CHV-01",
+      "group": "Modell/Voice/CHV",
+      "catalog": "spec/planung/modelle-sprache/stories.md",
+      "dependsOn": [
+        "Story-91",
+        "Story-92",
+        "Story-93",
+        "Story-96",
+        "Story-99"
+      ]
+    },
+    {
+      "story": "Story-104",
+      "fachId": "ZA-05",
+      "group": "Zusammenarbeit",
+      "catalog": "spec/planung/zusammenarbeit/stories.md",
+      "dependsOn": [
+        "Story-90",
+        "Story-91",
+        "Story-92",
+        "Story-93",
+        "Story-95",
+        "Story-96",
+        "Story-97",
+        "Story-98",
+        "Story-99",
+        "Story-103"
+      ]
+    },
+    {
+      "story": "Story-105",
+      "fachId": "ACT-04",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-53"
+      ]
+    },
+    {
+      "story": "Story-106",
+      "fachId": "ACT-05",
+      "group": "Kern",
+      "catalog": "spec/planung/kern/storykatalog.md",
+      "dependsOn": [
+        "Story-18",
+        "Story-27"
+      ]
+    }
+  ]
+}
