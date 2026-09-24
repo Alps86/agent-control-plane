@@ -1,0 +1,99 @@
+{
+  "PageTitle": "Übersicht · Agent Control Plane",
+  "Navigation": [
+    {
+      "Key": "organization",
+      "Label": "Übersicht",
+      "Href": "/?view=organization&fixture=error",
+      "Icon": "◫"
+    },
+    {
+      "Key": "projects",
+      "Label": "Projekte",
+      "Href": "/?view=projects&fixture=error",
+      "Icon": "▦"
+    },
+    {
+      "Key": "agents",
+      "Label": "Agenten",
+      "Href": "/?view=agents&fixture=error",
+      "Icon": "◉"
+    },
+    {
+      "Key": "tasks",
+      "Label": "Aufgaben",
+      "Href": "/?view=tasks&fixture=error",
+      "Icon": "☷"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Organization": {
+      "ID": "org-atlas",
+      "Name": "Atelier Nord",
+      "Initials": "AN",
+      "Description": "Ein Ort für Produkte, Forschung und verlässliche Zusammenarbeit.",
+      "Summary": "Die Arbeit auf einen Blick: Projekte, Agenten und Aufgaben an einem Ort.",
+      "Projects": 3,
+      "Agents": 4,
+      "Tasks": 4,
+      "ActiveTasks": 1,
+      "Update": "Heute aktualisiert"
+    },
+    "Highlights": [
+      {
+        "Label": "Aktive Projekte",
+        "Value": "2",
+        "Description": "Von 3 Projekten"
+      },
+      {
+        "Label": "Agenten im Team",
+        "Value": "4",
+        "Description": "2 derzeit verfügbar"
+      },
+      {
+        "Label": "Aufgaben in Arbeit",
+        "Value": "1",
+        "Description": "1 wartet auf Prüfung"
+      }
+    ],
+    "RecentTasks": [
+      {
+        "ID": "t1",
+        "Code": "KP-24",
+        "Title": "Onboarding-Ablauf vereinfachen",
+        "Project": "Kundenportal",
+        "Assignee": "Jonas",
+        "Initials": "JO",
+        "Status": "In Arbeit",
+        "Priority": "Hoch",
+        "Color": "blue"
+      },
+      {
+        "ID": "t2",
+        "Code": "WB-18",
+        "Title": "Häufige Fragen strukturieren",
+        "Project": "Wissensbasis",
+        "Assignee": "Mira",
+        "Initials": "MI",
+        "Status": "In Prüfung",
+        "Priority": "Mittel",
+        "Color": "violet"
+      },
+      {
+        "ID": "t3",
+        "Code": "KP-25",
+        "Title": "Hilfetexte für neue Nutzer erstellen",
+        "Project": "Kundenportal",
+        "Assignee": "Lena",
+        "Initials": "LE",
+        "Status": "Offen",
+        "Priority": "Mittel",
+        "Color": "amber"
+      }
+    ],
+    "Kind": "organization"
+  }
+}
