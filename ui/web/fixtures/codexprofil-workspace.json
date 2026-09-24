@@ -1,0 +1,18 @@
+{
+  "PageTitle": "Kai · Codex-Arbeitsprofil",
+  "Navigation": [
+    {"Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"},
+    {"Label": "Agenten", "Href": "/organisationen/org-nordstern/agenten", "Icon": "◇"}
+  ],
+  "Notice": "",
+  "View": {
+    "OrganizationID": "org-nordstern",
+    "AgentID": "agent-kai",
+    "OrganizationName": "Nordstern",
+    "AgentName": "Kai",
+    "WorkspaceEnabled": true,
+    "WriteEnabled": false,
+    "ReadinessReason": "Der Durchsetzungsnachweis für die Sperre direkter Shell-, Terminal-, Prozess-, Interpreter-, HTTP- und Dateisystemwege fehlt.",
+    "WriteError": ""
+  }
+}

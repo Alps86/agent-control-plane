@@ -45,11 +45,12 @@
     <section class="stat-card"><h2>Ziel</h2><p><a href="/organisationen/{{.Organization.ID}}/ziele">{{.View.Project.GoalName}}</a></p></section>
     <section class="stat-card" aria-label="Aufgabenliste"><h2>Aufgabenliste</h2>
       {{if .View.Tasks}}
-        <ul>{{range .View.Tasks}}<li>{{.Title}}</li>{{end}}</ul>
+        <ul>{{range .View.Tasks}}<li><a href="/organisationen/{{$.Organization.ID}}/projekte/{{$.View.Project.ID}}/aufgaben/{{.ID}}">{{.Title}}</a></li>{{end}}</ul>
       {{else}}
         <p>Noch keine Aufgaben in diesem Projekt.</p>
       {{end}}
     </section>
+    <p><a class="hero-link" href="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}/aufgaben/neu">Aufgabe anlegen →</a></p>
     <p><a class="text-link" href="/organisationen/{{.Organization.ID}}/projekte">Zur Projektübersicht →</a></p>
   {{end}}
 {{end}}

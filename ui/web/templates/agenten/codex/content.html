@@ -39,6 +39,8 @@
     <section class="stat-card"><h2>Organisationskontext</h2><p>{{.View.OrganizationName}}</p></section>
     <section class="stat-card"><h2>Fachfähigkeiten</h2>{{if .View.Agent.Capabilities}}<ul>{{range .View.Agent.Capabilities}}<li>{{.}}</li>{{end}}</ul>{{else}}<p>Keine Fachfähigkeiten freigegeben</p>{{end}}</section>
     <section class="stat-card" aria-label="Startbereitschaft"><h2>Startbereitschaft</h2>{{if eq .View.Agent.ReadinessLabel "Startbereit"}}<p>Startbereit</p>{{else}}<p><strong>Nicht startbereit</strong></p><p>{{.View.Agent.ReadinessReason}}</p>{{end}}</section>
+    <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.Agent.ID}}/codex-profil">Arbeitsprofil verwalten →</a></p>
+    <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.Agent.ID}}/datenbereich">Datenbereich verwalten →</a></p>
     <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}/agenten">Zur Agentenübersicht →</a></p>
   {{end}}
 {{end}}

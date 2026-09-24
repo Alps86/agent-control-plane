@@ -23,11 +23,40 @@ Funktionalität: Codex-Abo per Gerätecode verbinden
     Und nur der serverseitige Zugangs-Port kann Token und Konto-ID zusammen auflösen
     Und das Tokenbündel liegt verschlüsselt im Verbindungsspeicher
 
+  Szenario: Bestätigte Verbindung nach Neustart der Settings-Grenze wiederverwenden
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn ich die Anmeldung beim Anbieter erfolgreich abschließe
+    Und ich den Verbindungsstatus prüfe
+    Dann wird die Codex-Abo-Verbindung als verbunden angezeigt
+    Und das Tokenbündel liegt verschlüsselt im Verbindungsspeicher
+    Wenn ich die lokale Settings-Grenze mit demselben geschützten Speicher neu aufbaue
+    Und ich den Verbindungsstatus prüfe
+    Dann wird die Codex-Abo-Verbindung ohne neuen Gerätecode als verbunden angezeigt
+    Und der serverseitige Zugangs-Port liefert dasselbe Token und dieselbe Konto-ID
+    Und die Antwort enthält keine Anmeldegeheimnisse
+
   Szenario: Laufenden Gerätecode-Versuch abbrechen
     Angenommen ich habe eine Gerätecode-Anmeldung begonnen
     Wenn ich den Verbindungsversuch abbreche
     Dann wird die Anmeldung als abgebrochen angezeigt
     Und die Verbindung ist noch nicht einsatzbereit
+
+  Szenario: Überhöhtes Anbieterintervall löst keine vorzeitige Statusabfrage aus
+    Angenommen der Anbieter liefert ein überhöhtes Gerätecode-Abfrageintervall
+    Wenn ich die Gerätecode-Anmeldung starte
+    Und ich den Verbindungsstatus zweimal unmittelbar prüfe
+    Dann bleibt die Anmeldung laufend ohne zweite Anbieterabfrage
+    Wenn ich den Verbindungsversuch abbreche
+    Dann wird die Anmeldung als abgebrochen angezeigt
+
+  Szenario: Anbieterfehler verhindert lokalen Abbruch nicht
+    Angenommen ich habe eine Gerätecode-Anmeldung begonnen
+    Wenn der Anbieter beim Abbruch vorübergehend nicht erreichbar ist
+    Und ich den Verbindungsversuch abbreche
+    Dann wird die Anmeldung als abgebrochen angezeigt
+    Wenn ich den Verbindungsstatus prüfe
+    Dann bleibt die Anmeldung abgebrochen ohne weitere Anbieterabfrage
+    Und die Antwort enthält keine Anmeldegeheimnisse
 
   Szenario: Anbieter bestätigt Anmeldung unmittelbar vor dem Abbruch
     Angenommen ich habe eine Gerätecode-Anmeldung begonnen

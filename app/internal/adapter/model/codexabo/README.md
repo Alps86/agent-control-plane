@@ -1,0 +1,13 @@
+# Codex-Abo-Chatmodellkandidat (Story-08)
+
+Dieses Paket implementiert Einos `model.ToolCallingChatModel` für den im OpenAI-Codex-Quellcode belegten Responses-SSE-Transport `POST https://chatgpt.com/backend-api/codex/responses`. `New(modelID, credentialPort, client)` injiziert ein bereits vorhandenes Abo-Credential; das Paket speichert oder erneuert keine Tokens. Es gibt keinen API-Key-Fallback und keinen Codex-CLI-/App-Server-Agentenlauf.
+
+Die Anwendung bindet registrierte Fachtools über Eino. Toolcalls werden erst nach `response.completed` freigegeben. `StreamReader.Close()` und Context-Abbruch schließen den HTTP-Body. Fehlerarten und Anbietergründe werden auf feste Kategorien reduziert. Ein optionaler `ObservationSink` erhält zu **jedem** Provideraufruf eine redigierte Observation; Request-IDs der Tool- und Ergebnisrunde bleiben dadurch getrennt erhalten. `Message.Extra` enthält die gefilterte ID und Modellkennung des jeweiligen Ergebnisses. Fehlende Usage-Felder bleiben unbekannt (`nil`); Einos `ResponseMeta.Usage` wird nur bei vollständig gelieferten Zählwerten gesetzt. Diese Metadaten belegen weder Kontingent noch Abo-Anrechnung.
+
+Die öffentliche Godog-Blackbox unter `app/cucumber/modellzugang/` prüft die Eino-Toolrunde, Folgeaufruf, Streaming-Abbruch, SSE-Limitfehler, fehlende Usage und getrennte Request-IDs. Die kurzzeitig verwendeten Whitebox-Testdateien wurden nach bestandener Blackbox-Abdeckung aus dem Produktpaket entfernt. Der spätere Live-Nachweis läuft über die öffentliche Godog-Grenze und benötigt eine eigene Freigabe.
+
+Am 24.09.2026 wurde genau ein autorisierter Live-Testtreiber-Lauf gestartet. Er endete sofort mit einer generischen Fehlermeldung, ohne klassifizierte Providerantwort oder Modelloutput. Der damalige Runner gab die Requestanzahl noch nicht aus. Ein separater lokaler DNS-Check konnte `chatgpt.com` nicht auflösen (`curl: (6)`), aber der konkrete Fehlerpfad des Testtreibers ist dadurch nicht nachträglich bewiesen. **MS-01 ist nicht abgenommen.** Kein weiterer Live-Modellrequest wurde ausgeführt.
+
+Produktive Modulabhängigkeiten sind noch nicht in `app/go.mod`/`app/go.sum` eingetragen, da diese Dateien einer anderen Story gehören. Die Offline-Prüfung verwendete `/tmp/story08-app.mod` und `/tmp/story08-app.sum`.
+
+Primärbelege: [Codex Responses-Client](https://github.com/openai/codex/blob/main/codex-rs/codex-api/src/endpoint/responses.rs), [Codex Request-Typ](https://github.com/openai/codex/blob/main/codex-rs/codex-api/src/common.rs). Dieser Primärcode belegt den technischen Transport, aber keinen veröffentlichten unabhängigen Drittclient-Vertrag.
