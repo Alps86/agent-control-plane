@@ -1,0 +1,30 @@
+{{define "agents"}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">ARBEITSBEREICH / AGENTEN</div>
+      <h1>Agenten</h1>
+      <p>Ihr Team und seine Aufgabenbereiche im Überblick.</p>
+    </div>
+    <span class="heading-count">{{len .View.Agents}} Agenten</span>
+  </div>
+  {{if .View.Agents}}
+    <div class="agent-grid">
+      {{range .View.Agents}}
+        <article class="agent-card">
+          <div class="agent-card-top"><div class="agent-avatar {{.Color}}">{{.Initials}}</div><span class="badge">{{.Status}}</span></div>
+          <h2>{{.Name}}</h2>
+          <div class="agent-role">{{.Role}}</div>
+          <p>{{.Description}}</p>
+          <div class="agent-footer"><span class="type-pill">{{.Type}}</span><span>Profilvorschau</span></div>
+        </article>
+      {{end}}
+    </div>
+  {{else}}
+    <section class="empty-state">
+      <div class="empty-icon">◉</div>
+      <h2>Noch keine Agenten</h2>
+      <p>Sobald Agenten eingerichtet sind, erscheinen sie hier.</p>
+      {{range .Navigation}}{{if eq .Key "organization"}}<a class="text-link" href="{{.Href}}">Zur Übersicht →</a>{{end}}{{end}}
+    </section>
+  {{end}}
+{{end}}

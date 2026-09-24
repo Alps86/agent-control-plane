@@ -1,0 +1,48 @@
+{
+  "PageTitle": "Agenten · Agent Control Plane",
+  "Navigation": [
+    {
+      "Key": "organization",
+      "Label": "Übersicht",
+      "Href": "/?view=organization&fixture=empty",
+      "Icon": "◫"
+    },
+    {
+      "Key": "projects",
+      "Label": "Projekte",
+      "Href": "/?view=projects&fixture=empty",
+      "Icon": "▦"
+    },
+    {
+      "Key": "agents",
+      "Label": "Agenten",
+      "Href": "/?view=agents&fixture=empty",
+      "Icon": "◉"
+    },
+    {
+      "Key": "tasks",
+      "Label": "Aufgaben",
+      "Href": "/?view=tasks&fixture=empty",
+      "Icon": "☷"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Organization": {
+      "ID": "org-atlas",
+      "Name": "Neues Studio",
+      "Initials": "NS",
+      "Description": "Ein Ort für Produkte, Forschung und verlässliche Zusammenarbeit.",
+      "Summary": "Die Arbeit auf einen Blick: Projekte, Agenten und Aufgaben an einem Ort.",
+      "Projects": 0,
+      "Agents": 0,
+      "Tasks": 0,
+      "ActiveTasks": 0,
+      "Update": "Heute aktualisiert"
+    },
+    "Agents": [],
+    "Kind": "agents"
+  }
+}

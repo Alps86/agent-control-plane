@@ -1,0 +1,93 @@
+{
+  "PageTitle": "Aufgaben · Agent Control Plane",
+  "Navigation": [
+    {
+      "Key": "organization",
+      "Label": "Übersicht",
+      "Href": "/?view=organization",
+      "Icon": "◫"
+    },
+    {
+      "Key": "projects",
+      "Label": "Projekte",
+      "Href": "/?view=projects",
+      "Icon": "▦"
+    },
+    {
+      "Key": "agents",
+      "Label": "Agenten",
+      "Href": "/?view=agents",
+      "Icon": "◉"
+    },
+    {
+      "Key": "tasks",
+      "Label": "Aufgaben",
+      "Href": "/?view=tasks",
+      "Icon": "☷"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Organization": {
+      "ID": "org-atlas",
+      "Name": "Atelier Nord",
+      "Initials": "AN",
+      "Description": "Ein Ort für Produkte, Forschung und verlässliche Zusammenarbeit.",
+      "Summary": "Die Arbeit auf einen Blick: Projekte, Agenten und Aufgaben an einem Ort.",
+      "Projects": 3,
+      "Agents": 4,
+      "Tasks": 4,
+      "ActiveTasks": 1,
+      "Update": "Heute aktualisiert"
+    },
+    "Tasks": [
+      {
+        "ID": "t1",
+        "Code": "KP-24",
+        "Title": "Onboarding-Ablauf vereinfachen",
+        "Project": "Kundenportal",
+        "Assignee": "Jonas",
+        "Initials": "JO",
+        "Status": "In Arbeit",
+        "Priority": "Hoch",
+        "Color": "blue"
+      },
+      {
+        "ID": "t2",
+        "Code": "WB-18",
+        "Title": "Häufige Fragen strukturieren",
+        "Project": "Wissensbasis",
+        "Assignee": "Mira",
+        "Initials": "MI",
+        "Status": "In Prüfung",
+        "Priority": "Mittel",
+        "Color": "violet"
+      },
+      {
+        "ID": "t3",
+        "Code": "KP-25",
+        "Title": "Hilfetexte für neue Nutzer erstellen",
+        "Project": "Kundenportal",
+        "Assignee": "Lena",
+        "Initials": "LE",
+        "Status": "Offen",
+        "Priority": "Mittel",
+        "Color": "amber"
+      },
+      {
+        "ID": "t4",
+        "Code": "MA-09",
+        "Title": "Ton und Sprache abstimmen",
+        "Project": "Markenauftritt",
+        "Assignee": "Mira",
+        "Initials": "MI",
+        "Status": "Offen",
+        "Priority": "Niedrig",
+        "Color": "green"
+      }
+    ],
+    "Kind": "tasks"
+  }
+}

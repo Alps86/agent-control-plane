@@ -1,0 +1,46 @@
+{{define "tasks"}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">ARBEITSBEREICH / AUFGABEN</div>
+      <h1>Aufgaben</h1>
+      <p>Alles, woran Ihr Team gerade arbeitet.</p>
+    </div>
+    <span class="heading-count">{{len .View.Tasks}} Aufgaben</span>
+  </div>
+  {{if .Errors}}
+    <section class="error-state" role="alert">
+      <div class="error-icon">!</div>
+      <div>
+        <h2>Aufgaben nicht verfügbar</h2>
+        <p>{{index .Errors 0}}</p>
+        {{range .Navigation}}{{if eq .Key "organization"}}<a class="text-link" href="{{.Href}}">Zur Übersicht →</a>{{end}}{{end}}
+      </div>
+    </section>
+  {{else if .View.Tasks}}
+    <div class="task-toolbar">
+      <div><span class="toolbar-tab active">Alle Aufgaben <b>{{len .View.Tasks}}</b></span></div>
+      <span class="toolbar-caption">Nach Status sortiert</span>
+    </div>
+    <div class="table-card"><div class="table-scroll"><table>
+      <thead><tr><th>AUFGABE</th><th>PROJEKT</th><th>PRIORITÄT</th><th>STATUS</th><th>ZUSTÄNDIG</th></tr></thead>
+      <tbody>
+        {{range .View.Tasks}}
+          <tr>
+            <td><span class="task-code">{{.Code}}</span><strong>{{.Title}}</strong></td>
+            <td>{{.Project}}</td>
+            <td><span class="priority">● &nbsp;{{.Priority}}</span></td>
+            <td><span class="badge">{{.Status}}</span></td>
+            <td><span class="small-avatar">{{.Initials}}</span>{{.Assignee}}</td>
+          </tr>
+        {{end}}
+      </tbody>
+    </table></div></div>
+  {{else}}
+    <section class="empty-state">
+      <div class="empty-icon">☷</div>
+      <h2>Noch keine Aufgaben</h2>
+      <p>In dieser Organisation gibt es derzeit keine Aufgaben.</p>
+      {{range .Navigation}}{{if eq .Key "organization"}}<a class="text-link" href="{{.Href}}">Zur Übersicht →</a>{{end}}{{end}}
+    </section>
+  {{end}}
+{{end}}
