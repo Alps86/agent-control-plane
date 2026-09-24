@@ -1,0 +1,18 @@
+{
+  "PageTitle": "OpenRouter · Modellanbieter · Settings",
+  "Navigation": [],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [],
+  "View": {
+    "Kind": "openrouter",
+    "Settings": {
+      "OpenRouter": {
+        "Connected": true,
+        "Reference": "openrouter-central",
+        "Status": "einsatzbereit",
+        "StatusDetail": "Die letzte ausdrücklich gestartete Prüfung war erfolgreich."
+      }
+    }
+  }
+}

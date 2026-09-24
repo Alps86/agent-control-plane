@@ -1,0 +1,96 @@
+{{define "experimente/content"}}
+<style>
+  .experiments{max-width:1120px;color:#26352d}
+  .experiments *{overflow-wrap:anywhere}
+  .experiments-intro{max-width:790px;margin:0 0 22px;color:#607067;font-size:13px;line-height:1.7}
+  .experiments-meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 24px}
+  .experiments-meta span{background:#eaf3ed;color:#32634c;border-radius:6px;padding:7px 10px;font-size:11px;font-weight:700}
+  .experiments-legend{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:0 0 35px}
+  .experiments-legend div{background:#fff;border:1px solid #e4ebe5;border-radius:8px;padding:13px 15px}
+  .experiments-legend dt{font-size:12px;font-weight:800;margin:0 0 5px}
+  .experiments-legend dd{margin:0;color:#637168;font-size:11px;line-height:1.6}
+  .experiments-group{margin:0 0 38px}
+  .experiments-group-heading{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;margin:0 0 15px}
+  .experiments-group-heading h2{font:800 18px Manrope,Arial,sans-serif;margin:0}
+  .experiments-group-heading span{color:#6e7d72;font-size:11px}
+  .experiments-list{display:grid;gap:12px}
+  .experiments-card{background:#fff;border:1px solid #e4ebe5;border-radius:10px;padding:19px 21px;box-shadow:0 2px 8px #21342904}
+  .experiments-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:15px}
+  .experiments-card h3{font:800 15px Manrope,Arial,sans-serif;margin:0 0 5px}
+  .experiments-key{color:#738379;font-size:10px;font-weight:700;letter-spacing:.3px}
+  .experiments-status{max-width:235px;background:#f3f6f2;color:#4d6654;border-radius:6px;padding:6px 9px;font-size:10px;font-weight:700;line-height:1.4}
+  .experiments-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 20px;margin:0}
+  .experiments-fields div{min-width:0}
+  .experiments-fields dt{color:#6b7e70;font-size:10px;font-weight:800;letter-spacing:.35px;text-transform:uppercase;margin-bottom:5px}
+  .experiments-fields dd{margin:0;font-size:12px;line-height:1.6;color:#36453c}
+  .experiments-fields .wide{grid-column:1/-1}
+  .experiments-decision{border-left:3px solid #93b69b;background:#f5f9f5;border-radius:0 6px 6px 0;padding:8px 11px;margin:0 0 7px}
+  .experiments-decision:last-child{margin-bottom:0}
+  .experiments-decision strong{display:block;color:#2d6948;font-size:11px;margin-bottom:3px}
+  .experiments-decision p{margin:0}
+  .experiments-decision[data-kind="spaeter-evaluieren"]{background:#fcf8ed;border-color:#d6b36c}
+  .experiments-decision[data-kind="spaeter-evaluieren"] strong{color:#8c6322}
+  .experiments-decision[data-kind="abgeloest"]{background:#f1f2f5;border-color:#a5abb6}
+  .experiments-decision[data-kind="abgeloest"] strong{color:#5d6573}
+  .experiments-decision[data-kind="verweis"]{background:#eef3fa;border-color:#8aa9cc}
+  .experiments-decision[data-kind="verweis"] strong{color:#426b9a}
+  .experiments-sources{display:flex;flex-wrap:wrap;gap:7px}
+  .experiments-sources a,.experiments-related{color:#2c7352;text-decoration:underline;text-underline-offset:2px}
+  .experiments-sources a:focus-visible,.experiments-related:focus-visible{outline:2px solid #326a57;outline-offset:3px}
+  .experiments-related{display:inline-block;margin-top:8px;font-size:11px;font-weight:700}
+  @media(max-width:700px){.experiments-legend,.experiments-fields{grid-template-columns:1fr}.experiments-card{padding:16px}.experiments-card-head{display:block}.experiments-status{display:inline-block;margin-top:9px;max-width:none}.experiments-fields .wide{grid-column:auto}}
+</style>
+<section class="experiments" aria-labelledby="experiments-title">
+  {{if .Notice}}<div class="notice" role="status">{{.Notice}}</div>{{end}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">PAPERCLIP / ENTSCHEIDUNGSINVENTAR</div>
+      <h1 id="experiments-title">Paperclip-Experimente</h1>
+    </div>
+  </div>
+  <p class="experiments-intro">Dieses Inventar zeigt Quellen und Entscheidungen für Agent Control Plane. Paperclip-Reife, fachliche Zuordnung und der nachgewiesene ACP-Stand sind getrennte Angaben. Eine Zuordnung oder Evaluation schaltet keine Funktion frei.</p>
+  <div class="experiments-meta">
+    <span>Quellenstand: {{.View.SourceAsOf}}</span>
+    <span>14 experimentelle Bedien- und Laufzeitflächen</span>
+    <span>9 weitere API-Flächen</span>
+  </div>
+  <dl class="experiments-legend" aria-label="Bedeutung der Entscheidungen">
+    <div><dt>Zuordnen</dt><dd>Das ausdrücklich beschriebene Verhalten gehört zu einer vorhandenen Story. Die Umsetzung ist separat nachzuweisen.</dd></div>
+    <div><dt>Später evaluieren</dt><dd>Nutzen und Risiko bleiben sichtbar. Umfang, Schnittstelle und Abnahme brauchen vor einer Übernahme einen eigenen Folgeentscheid.</dd></div>
+    <div><dt>Abgelöst</dt><dd>Ein upstream entfernter Weg wird durch den genannten Nachfolger ersetzt.</dd></div>
+    <div><dt>Verweis</dt><dd>Eine weitere Primärquelle führt zur bereits genannten Entscheidung; sie ist keine zusätzliche Produktfunktion.</dd></div>
+  </dl>
+  {{range .View.Groups}}
+    <section class="experiments-group" aria-labelledby="group-{{.Key}}" data-group-key="{{.Key}}">
+      <div class="experiments-group-heading"><h2 id="group-{{.Key}}">{{.Heading}}</h2><span>{{len .Entries}} Quellzeilen</span></div>
+      <div class="experiments-list">
+        {{range .Entries}}
+          <article class="experiments-card" id="source-{{.SourceKey}}" data-source-key="{{.SourceKey}}">
+            <div class="experiments-card-head">
+              <div><h3>{{.Name}}</h3><span class="experiments-key">{{.SourceKey}}</span></div>
+              <span class="experiments-status">ACP: {{.ACPImplementationStatus}}</span>
+            </div>
+            <dl class="experiments-fields">
+              <div><dt>Paperclip-Reifegrad</dt><dd>{{.PaperclipMaturity}}</dd></div>
+              <div><dt>Nutzen</dt><dd>{{.Benefit}}</dd></div>
+              <div class="wide"><dt>ACP-Abhängigkeiten</dt><dd>{{.ACPDependencies}}</dd></div>
+              <div class="wide"><dt>Entscheidung und Begründung</dt><dd>
+                {{range .DecisionParts}}
+                  <div class="experiments-decision" data-kind="{{.Kind}}">
+                    <strong>{{if eq .Kind "zuordnen"}}Zuordnen{{end}}{{if eq .Kind "spaeter-evaluieren"}}Später evaluieren{{end}}{{if eq .Kind "abgeloest"}}Abgelöst{{end}}{{if eq .Kind "verweis"}}Verweis{{end}}</strong>
+                    <p>{{.Reason}}</p>
+                  </div>
+                {{end}}
+                {{if .RelatedSourceKey}}<a class="experiments-related" href="#source-{{.RelatedSourceKey}}">Zugehörige Entscheidung ansehen ↗</a>{{end}}
+              </dd></div>
+              <div class="wide"><dt>Primärquellen</dt><dd class="experiments-sources">
+                {{range .SourceLinks}}<a href="{{.URL}}" target="_blank" rel="noopener noreferrer">{{.Label}} ↗</a>{{end}}
+              </dd></div>
+            </dl>
+          </article>
+        {{end}}
+      </div>
+    </section>
+  {{end}}
+</section>
+{{end}}
