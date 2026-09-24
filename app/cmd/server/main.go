@@ -9,6 +9,7 @@ import (
 
 	"agentcontrolplane/app/internal/adapter/sqlite"
 	"agentcontrolplane/app/internal/adapter/web"
+	"agentcontrolplane/app/internal/adapter/web/experimente"
 	weborganisation "agentcontrolplane/app/internal/adapter/web/organisation"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	"agentcontrolplane/app/internal/app/system"
@@ -45,6 +46,7 @@ func (b *Bootstrap) mount(server *web.Server, organizations *weborganisation.Han
 		server.Handle(pattern, organizations)
 	}
 
+	server.Handle("GET /experimente", experimente.NewHandler(ui))
 	server.Handle("GET /{$}", http.RedirectHandler("/organisationen", http.StatusSeeOther))
 	server.Handle("/assets/", ui.Assets())
 	server.Handle("/fragments/", ui.Assets())
