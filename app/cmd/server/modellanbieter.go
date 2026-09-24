@@ -64,7 +64,7 @@ func (b *Bootstrap) mountCodex(server *web.Server, ui *bridge.Bridge, flow *mode
 	server.Handle("GET /settings/modelle/codex", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		b.codexPage(w, r, ui, flow)
 	}))
-	return nil
+	return b.mountModelProbe(server, flow)
 }
 
 func (b *Bootstrap) mountOpenRouter(server *web.Server, ui *bridge.Bridge, store *credentialsadapter.Store) {
