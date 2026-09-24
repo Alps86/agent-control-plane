@@ -2,6 +2,8 @@ package openrouterverbindung
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"strings"
@@ -22,7 +24,12 @@ func (service *Service) Save(ctx context.Context, key string) (View, error) {
 		return View{}, ErrMissingKey
 	}
 
-	entry := record{Key: key, Status: "nicht geprüft"}
+	entry, err := service.loadForSave(ctx)
+	if err != nil {
+		return View{}, ErrStorage
+	}
+
+	entry.Key, entry.Status = key, "nicht geprüft"
 	if service.persist(ctx, entry) != nil {
 		return View{}, ErrStorage
 	}
@@ -30,7 +37,19 @@ func (service *Service) Save(ctx context.Context, key string) (View, error) {
 	return entry.view(), nil
 }
 
+func (service *Service) loadForSave(ctx context.Context) (record, error) {
+	entry, err := service.load(ctx)
+	if errors.Is(err, credentials.ErrNotFound) {
+		return service.newRecord()
+	}
+
+	return entry, err
+}
+
 func (service *Service) Status(ctx context.Context) (View, error) {
+	service.mu.Lock()
+	defer service.mu.Unlock()
+
 	entry, err := service.load(ctx)
 	if errors.Is(err, credentials.ErrNotFound) {
 		return View{Status: "nicht eingerichtet"}, nil
@@ -101,6 +120,33 @@ func (service *Service) load(ctx context.Context) (record, error) {
 
 	var entry record
 	if json.Unmarshal(data, &entry) != nil || entry.Key == "" {
+		return record{}, ErrStorage
+	}
+
+	if entry.Generation == "" {
+		return service.migrate(ctx, entry)
+	}
+
+	return entry, nil
+}
+
+func (service *Service) newRecord() (record, error) {
+	value := make([]byte, 16)
+	if _, err := rand.Read(value); err != nil {
+		return record{}, ErrStorage
+	}
+
+	return record{Generation: hex.EncodeToString(value)}, nil
+}
+
+func (service *Service) migrate(ctx context.Context, entry record) (record, error) {
+	fresh, err := service.newRecord()
+	if err != nil {
+		return record{}, err
+	}
+
+	entry.Generation = fresh.Generation
+	if service.persist(ctx, entry) != nil {
 		return record{}, ErrStorage
 	}
 
