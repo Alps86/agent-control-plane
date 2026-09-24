@@ -52,14 +52,22 @@ async function connect() {
 }
 
 async function snapshot() {
+  for (let attempt = 0; attempt < 100; attempt++) {
+    const expression = `location.href === ${JSON.stringify(address)} && document.readyState === 'complete'`
+    const result = await send('Runtime.evaluate', { expression, returnByValue: true })
+    if (result.result.value) break
+    if (attempt === 99) throw new Error('Inventarseite wurde im Browser nicht vollständig geladen')
+    await new Promise(resolve => setTimeout(resolve, 50))
+  }
+
   const expression = `(async () => {
-    const cards = [...document.querySelectorAll('main [data-source-key]')]
     const required = ['Paperclip-Reifegrad', 'Nutzen', 'ACP-Abhängigkeiten', 'Entscheidung und Begründung', 'Primärquellen']
     const named = ['Plugin SDK und Manager', 'Isolated Workspaces', 'Cases API', 'Chat-Style Tasks', 'Environments', 'External Objects', 'Status Cards']
     const fragment = await fetch(location.href, { headers: { 'HX-Request': 'true' } }).then(response => response.text())
     const parsed = new DOMParser().parseFromString(fragment, 'text/html')
-    const links = [...document.querySelectorAll('article .experiments-sources a')]
     const css = await fetch('/assets/index.css').then(response => response.ok)
+    const cards = [...document.querySelectorAll('main [data-source-key]')]
+    const links = [...document.querySelectorAll('article .experiments-sources a')]
     return {
     title: document.title,
     heading: document.querySelector('main h1')?.textContent?.trim() || '',
@@ -81,12 +89,8 @@ async function snapshot() {
     fragmentSame: parsed.querySelectorAll('[data-source-key]').length === cards.length && [...parsed.querySelectorAll('[data-source-key]')].every((entry, index) => entry.getAttribute('data-source-key') === cards[index].getAttribute('data-source-key')),
     fragmentNoShell: !fragment.toLowerCase().includes('<!doctype') && !fragment.toLowerCase().includes('<html')
   }})()`
-  for (let attempt = 0; attempt < 100; attempt++) {
-    const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })
-    if (result.result.value?.heading) return result.result.value
-    await new Promise(resolve => setTimeout(resolve, 50))
-  }
-  throw new Error('Inventarseite wurde im Browser nicht sichtbar')
+  const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })
+  return result.result.value
 }
 
 try {
