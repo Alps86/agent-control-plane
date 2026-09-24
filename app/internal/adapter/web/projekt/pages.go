@@ -91,11 +91,21 @@ func (h *Handler) pageGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	tasks, err := h.projectTasks(r.Context(), project)
+	if err != nil {
+		h.pageError(w, r, err)
+		return
+	}
+
+	h.renderProjectDetail(w, r, organization, goals, project, tasks)
+}
+
+func (h *Handler) renderProjectDetail(w http.ResponseWriter, r *http.Request, organization domainorganisation.Organization, goals []domainziel.Goal, project domainprojekt.Project, tasks any) {
 	data := h.pageData(organization, "detail")
 	data["PageTitle"] = project.Name
 	view := data["View"].(map[string]any)
 	view["Project"] = h.projectView(project, h.goalName(goals, project.GoalID))
-	view["Tasks"] = []map[string]string{}
+	view["Tasks"] = tasks
 	h.render(w, r, http.StatusOK, data)
 }
 

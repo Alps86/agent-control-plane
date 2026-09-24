@@ -27,11 +27,11 @@ func (d *Database) insertAgent(ctx context.Context, operatorID string, agent dom
 	}
 
 	result, err := d.executor(ctx).ExecContext(ctx, `INSERT INTO agents
-		(id, organization_id, name, name_key, role, instructions, execution_kind, template_id, capabilities)
-		SELECT ?, id, ?, ?, ?, ?, ?, ?, ? FROM organizations
+		(id, organization_id, name, name_key, role, instructions, execution_kind, template_id, capabilities, status)
+		SELECT ?, id, ?, ?, ?, ?, ?, ?, ?, ? FROM organizations
 		WHERE id = ? AND operator_id = ?`, agent.ID, agent.Name, strings.ToLower(agent.Name),
 		agent.Role, agent.Instructions, agent.ExecutionKind, agent.TemplateID,
-		string(capabilities), agent.OrganizationID, operatorID)
+		string(capabilities), agent.Status, agent.OrganizationID, operatorID)
 	return d.agentWriteResult(result, err)
 }
 
@@ -60,7 +60,7 @@ func (d *Database) agentWriteResult(result sql.Result, err error) error {
 // ListAgents liest ausschließlich Agenten der zugeordneten Organisation.
 func (d *Database) ListAgents(ctx context.Context, organizationID, operatorID string) ([]domainagent.Agent, error) {
 	rows, err := d.db.QueryContext(ctx, `SELECT a.id, a.organization_id, a.name, a.role,
-		a.instructions, a.execution_kind, a.template_id, a.capabilities FROM agents a
+		a.instructions, a.execution_kind, a.template_id, a.capabilities, a.status FROM agents a
 		JOIN organizations o ON o.id = a.organization_id
 		WHERE a.organization_id = ? AND o.operator_id = ? ORDER BY a.name_key, a.id`, organizationID, operatorID)
 	if err != nil {
@@ -88,7 +88,7 @@ func (d *Database) collectAgents(rows *sql.Rows) ([]domainagent.Agent, error) {
 // FindAgent verdeckt fremde Organisations- und Agentenkennungen gleichermaßen.
 func (d *Database) FindAgent(ctx context.Context, organizationID, agentID, operatorID string) (domainagent.Agent, error) {
 	row := d.executor(ctx).QueryRowContext(ctx, `SELECT a.id, a.organization_id, a.name, a.role,
-		a.instructions, a.execution_kind, a.template_id, a.capabilities FROM agents a
+		a.instructions, a.execution_kind, a.template_id, a.capabilities, a.status FROM agents a
 		JOIN organizations o ON o.id = a.organization_id
 		WHERE a.organization_id = ? AND a.id = ? AND o.operator_id = ?`, organizationID, agentID, operatorID)
 	return d.scanAgent(row)
@@ -98,7 +98,7 @@ func (d *Database) scanAgent(row interface{ Scan(...any) error }) (domainagent.A
 	var agent domainagent.Agent
 	var capabilities string
 	err := row.Scan(&agent.ID, &agent.OrganizationID, &agent.Name, &agent.Role,
-		&agent.Instructions, &agent.ExecutionKind, &agent.TemplateID, &capabilities)
+		&agent.Instructions, &agent.ExecutionKind, &agent.TemplateID, &capabilities, &agent.Status)
 	if errors.Is(err, sql.ErrNoRows) {
 		return domainagent.Agent{}, portagent.ErrNotFound
 	}
@@ -108,6 +108,28 @@ func (d *Database) scanAgent(row interface{ Scan(...any) error }) (domainagent.A
 	}
 
 	return d.decodeAgent(agent, capabilities)
+}
+
+// UpdateAgentStatus aktualisiert nur einen Agenten der zugeordneten Organisation.
+func (d *Database) UpdateAgentStatus(ctx context.Context, organizationID, agentID, operatorID string, status domainagent.Status) error {
+	result, err := d.executor(ctx).ExecContext(ctx, `UPDATE agents SET status = ?
+		WHERE id = ? AND organization_id = ? AND EXISTS (
+			SELECT 1 FROM organizations o WHERE o.id = agents.organization_id AND o.operator_id = ?
+		)`, status, agentID, organizationID, operatorID)
+	if err != nil {
+		return fmt.Errorf("Agentenstatus speichern: %w", err)
+	}
+
+	count, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("Agentenstatus prüfen: %w", err)
+	}
+
+	if count != 1 {
+		return portagent.ErrNotFound
+	}
+
+	return nil
 }
 
 func (d *Database) decodeAgent(agent domainagent.Agent, capabilities string) (domainagent.Agent, error) {
