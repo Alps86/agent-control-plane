@@ -13,6 +13,7 @@ import (
 	weborganisation "agentcontrolplane/app/internal/adapter/web/organisation"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	"agentcontrolplane/app/internal/domain/rechte"
+	"agentcontrolplane/ui/bridge"
 )
 
 func (s *Suite) noIdentity() error {
@@ -21,7 +22,12 @@ func (s *Suite) noIdentity() error {
 		return err
 	}
 	service := apporganisation.NewService(sqlite.NewOrganizationStore(db), nil)
-	server := httptest.NewServer(weborganisation.NewHandler(service, nil))
+	ui, err := bridge.New()
+	if err != nil {
+		_ = db.Close()
+		return err
+	}
+	server := httptest.NewServer(weborganisation.NewHandler(service, ui))
 	s.negative = &NegativeServer{DB: db, Server: server}
 	return nil
 }
@@ -115,7 +121,12 @@ func (s *Suite) getUnassigned() error {
 	}
 	identity := &FixedIdentity{Actor: rechte.NewActor("other-operator", rechte.Operator)}
 	service := apporganisation.NewService(sqlite.NewOrganizationStore(db), identity)
-	server := httptest.NewServer(weborganisation.NewHandler(service, nil))
+	ui, err := bridge.New()
+	if err != nil {
+		_ = db.Close()
+		return err
+	}
+	server := httptest.NewServer(weborganisation.NewHandler(service, ui))
 	s.negative = &NegativeServer{DB: db, Server: server}
 	response, err := s.facadeGet("/api/organisationen/" + s.organization.ID)
 	if err != nil {
