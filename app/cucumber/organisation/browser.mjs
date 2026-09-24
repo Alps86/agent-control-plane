@@ -45,6 +45,7 @@ async function connect() {
   session = (await send('Target.attachToTarget', { targetId: target.targetId, flatten: true }, null)).sessionId
   await send('Page.enable')
   await send('Runtime.enable')
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.__alertCalls = 0; window.alert = () => { window.__alertCalls++ }' })
 }
 
 const snapshot = `(() => ({
@@ -58,7 +59,9 @@ const snapshot = `(() => ({
   cards: [...document.querySelectorAll('main article')].map(card => ({
     name: card.querySelector('h2')?.textContent?.trim() || '',
     description: card.querySelector('p')?.textContent?.trim() || ''
-  }))
+  })),
+  alertCalls: window.__alertCalls || 0,
+  images: document.querySelectorAll('main img').length
 }))()`
 
 async function evaluate(expression) {

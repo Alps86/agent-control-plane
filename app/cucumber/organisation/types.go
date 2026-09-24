@@ -13,22 +13,28 @@ import (
 )
 
 type Suite struct {
-	t            *testing.T
-	binary       string
-	dbPath       string
-	address      string
-	process      *exec.Cmd
-	exited       chan error
-	logFile      *os.File
-	client       *http.Client
-	response     *HTTPResponse
-	unknown      *HTTPResponse
-	organization Organization
-	negative     *NegativeServer
-	browser      *exec.Cmd
-	stdin        *bufio.Writer
-	stdout       *bufio.Scanner
-	page         BrowserPage
+	t             *testing.T
+	binary        string
+	dbPath        string
+	address       string
+	process       *exec.Cmd
+	exited        chan error
+	logFile       *os.File
+	client        *http.Client
+	response      *HTTPResponse
+	unknown       *HTTPResponse
+	organization  Organization
+	negative      *NegativeServer
+	browser       *exec.Cmd
+	stdin         *bufio.Writer
+	stdout        *bufio.Scanner
+	page          BrowserPage
+	listPage      BrowserPage
+	fullPage      *HTTPResponse
+	fragment      *HTTPResponse
+	detailPage    *HTTPResponse
+	foreignList   *HTTPResponse
+	foreignDetail *HTTPResponse
 }
 
 type HTTPResponse struct {
@@ -79,6 +85,8 @@ type BrowserPage struct {
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
 	Cards       []BrowserCard `json:"cards"`
+	AlertCalls  int           `json:"alertCalls"`
+	Images      int           `json:"images"`
 }
 type BrowserCard struct {
 	Name        string `json:"name"`
