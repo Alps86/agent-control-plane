@@ -18,9 +18,16 @@ func NewHandler(goals *appziel.Service, organizations *apporganisation.Service, 
 	h := &Handler{goals: goals, organizations: organizations, bridge: ui, bindAddress: bindAddress, mux: http.NewServeMux()}
 	h.mux.HandleFunc("GET /api/organisationen/{id}/ziele", h.apiList)
 	h.mux.HandleFunc("POST /api/organisationen/{id}/ziele", h.apiCreate)
+	h.mux.HandleFunc("GET /api/organisationen/{id}/zielbaum", h.apiTree)
+	h.mux.HandleFunc("POST /api/organisationen/{id}/ziele/{zielID}/kinder", h.apiCreateChild)
+	h.mux.HandleFunc("POST /api/organisationen/{id}/ziele/{zielID}/status", h.apiStatus)
+	h.mux.HandleFunc("POST /api/organisationen/{id}/ziele/{zielID}/verschieben", h.apiMove)
 	h.mux.HandleFunc("GET /organisationen/{id}/ziele", h.pageList)
 	h.mux.HandleFunc("GET /organisationen/{id}/ziele/neu", h.pageForm)
 	h.mux.HandleFunc("POST /organisationen/{id}/ziele", h.pageCreate)
+	h.mux.HandleFunc("POST /organisationen/{id}/ziele/{zielID}/kinder", h.pageCreateChild)
+	h.mux.HandleFunc("POST /organisationen/{id}/ziele/{zielID}/status", h.pageStatus)
+	h.mux.HandleFunc("POST /organisationen/{id}/ziele/{zielID}/verschieben", h.pageMove)
 	return h
 }
 
@@ -91,8 +98,32 @@ func (h *Handler) apiError(w http.ResponseWriter, err error) {
 		return
 	}
 
+	h.apiFieldError(w, err)
+}
+
+func (h *Handler) apiFieldError(w http.ResponseWriter, err error) {
 	if errors.Is(err, appziel.ErrNameRequired) {
 		h.json(w, http.StatusUnprocessableEntity, errorResponse{FieldErrors: map[string]string{"name": "Bitte geben Sie einen Namen ein."}})
+		return
+	}
+
+	if errors.Is(err, appziel.ErrInvalidParent) {
+		h.json(w, http.StatusUnprocessableEntity, errorResponse{FieldErrors: map[string]string{"parent_goal_id": "Bitte wählen Sie ein Ziel dieser Organisation aus."}})
+		return
+	}
+
+	if errors.Is(err, appziel.ErrGoalCycle) {
+		h.json(w, http.StatusUnprocessableEntity, errorResponse{FieldErrors: map[string]string{"parent_goal_id": "Diese Zielkante würde einen Kreis bilden."}})
+		return
+	}
+
+	if errors.Is(err, appziel.ErrInvalidStatus) {
+		h.json(w, http.StatusUnprocessableEntity, errorResponse{FieldErrors: map[string]string{"status": "Bitte wählen Sie einen gültigen Status aus."}})
+		return
+	}
+
+	if errors.Is(err, appziel.ErrGoalNotFound) {
+		h.json(w, http.StatusNotFound, errorResponse{Error: "not_found"})
 		return
 	}
 

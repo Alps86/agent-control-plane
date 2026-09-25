@@ -1,0 +1,127 @@
+{
+  "PageTitle": "Modellwahl von Mira",
+  "Navigation": [
+    {
+      "Key": "organisation",
+      "Label": "Organisationen",
+      "Href": "/organisationen",
+      "Icon": "✳"
+    },
+    {
+      "Key": "agenten",
+      "Label": "Agenten",
+      "Href": "/organisationen/org-nordstern/agenten",
+      "Icon": "◇"
+    }
+  ],
+  "Notice": "OpenRouter und openai/gpt-4 wurden für Mira gewählt.",
+  "Errors": [],
+  "AllowedActions": [
+    "agent.model.select"
+  ],
+  "View": {
+    "Kind": "model-selection",
+    "OrganizationID": "org-nordstern",
+    "Agent": {
+      "ID": "agent-mira",
+      "Name": "Mira",
+      "ExecutionKindLabel": "Eino"
+    },
+    "Selection": {
+      "Provider": "openrouter",
+      "ConnectionReference": "openrouter-central",
+      "Model": "openai/gpt-4"
+    },
+    "FieldErrors": {},
+    "Providers": [
+      {
+        "ID": "codex-abo",
+        "Name": "Codex-Abo",
+        "Reason": "",
+        "AuthType": "device_oauth",
+        "Connections": [
+          {
+            "Reference": "codex-chatgpt",
+            "Label": "Codex-Abo-Verbindung"
+          }
+        ],
+        "Models": [
+          {
+            "ID": "gpt-5.3-codex",
+            "Label": "gpt-5.3-codex",
+            "Capabilities": [
+              {
+                "Name": "text",
+                "Status": "unverified",
+                "Source": "Modellkatalog ohne Kontonachweis",
+                "CheckedAt": ""
+              }
+            ],
+            "CheckStatus": "unverified",
+            "Source": "https://developers.openai.com/api/docs/models/all",
+            "ObservedAt": "2026-09-24T12:00:00Z",
+            "AccountVerified": false,
+            "RouteVerified": false
+          }
+        ],
+        "Selectable": true
+      },
+      {
+        "ID": "openrouter",
+        "Name": "OpenRouter",
+        "Reason": "",
+        "AuthType": "api_key",
+        "Connections": [
+          {
+            "Reference": "openrouter-central",
+            "Label": "Zentrale OpenRouter-Verbindung"
+          }
+        ],
+        "Models": [
+          {
+            "ID": "openai/gpt-4",
+            "Label": "openai/gpt-4",
+            "Capabilities": [
+              {
+                "Name": "text",
+                "Status": "verified",
+                "Source": "Kontrollierter Modellkatalog",
+                "CheckedAt": "2026-09-25T08:00:00Z"
+              },
+              {
+                "Name": "tools",
+                "Status": "verified",
+                "Source": "Kontrollierter Modellkatalog",
+                "CheckedAt": "2026-09-25T08:00:00Z"
+              },
+              {
+                "Name": "audio_input",
+                "Status": "unverified",
+                "Source": "Kontrollierter Modellkatalog",
+                "CheckedAt": "2026-09-25T08:00:00Z"
+              },
+              {
+                "Name": "audio_output",
+                "Status": "unverified",
+                "Source": "Kontrollierter Modellkatalog",
+                "CheckedAt": "2026-09-25T08:00:00Z"
+              },
+              {
+                "Name": "realtime",
+                "Status": "unverified",
+                "Source": "Kontrollierter Modellkatalog",
+                "CheckedAt": "2026-09-25T08:00:00Z"
+              }
+            ],
+            "CheckStatus": "unverified",
+            "Source": "https://openrouter.ai/docs/api/api-reference/models/get-models",
+            "ObservedAt": "2026-09-24T12:00:00Z",
+            "AccountVerified": false,
+            "RouteVerified": false
+          }
+        ],
+        "Selectable": true
+      }
+    ]
+  }
+}

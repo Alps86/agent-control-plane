@@ -1,0 +1,14 @@
+{
+  "PageTitle": "OpenRouter-Freigaben · Nord",
+  "Notice": "",
+  "Errors": [],
+  "View": {
+    "Reference": "openrouter-central",
+    "ConnectionStatus": "einsatzbereit",
+    "Organization": {"ID": "nord", "Name": "Nord", "Granted": false},
+    "Agents": [
+      {"ID": "mira", "Name": "Mira", "Granted": false},
+      {"ID": "nora", "Name": "Nora", "Granted": false}
+    ]
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Aktivitätsverlauf",
+  "Organization": {"ID": "", "Name": ""},
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Errors": ["Der Aktivitätsverlauf ist derzeit nicht verfügbar"],
+  "View": {"Kind": "error"}
+}

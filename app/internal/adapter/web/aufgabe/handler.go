@@ -6,11 +6,13 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strings"
 
 	appagent "agentcontrolplane/app/internal/app/agent"
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	domainaktivitaet "agentcontrolplane/app/internal/domain/aktivitaet"
 	domainaufgabe "agentcontrolplane/app/internal/domain/aufgabe"
 	"agentcontrolplane/ui/bridge"
 )
@@ -148,8 +150,13 @@ func (h *Handler) decodeEnd(decoder *json.Decoder) error {
 }
 
 func (h *Handler) input(r *http.Request, request createRequest) appaufgabe.CreateInput {
+	source := domainaktivitaet.SourceBrowser
+	if strings.HasPrefix(r.URL.Path, "/api/organisationen/") {
+		source = domainaktivitaet.SourceAPI
+	}
+
 	return appaufgabe.CreateInput{ProjectID: r.PathValue("projektID"), Title: request.Title,
-		Description: request.Description, Priority: request.Priority, AssigneeID: request.AssigneeID}
+		Description: request.Description, Priority: request.Priority, AssigneeID: request.AssigneeID, Source: source}
 }
 
 func (h *Handler) apiURL(task domainaufgabe.Task) string {

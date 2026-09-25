@@ -12,7 +12,6 @@ func TestFeatures(t *testing.T) {
 		ScenarioInitializer: suite.InitializeScenario,
 		Options: &godog.Options{
 			Paths:    []string{"../../../features/app/modelle-sprache/story-29.feature"},
-			Tags:     "~@pending-openrouter-aufrufgrenze",
 			TestingT: t,
 			Format:   "pretty",
 		},
