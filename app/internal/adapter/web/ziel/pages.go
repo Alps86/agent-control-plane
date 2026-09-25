@@ -11,20 +11,12 @@ import (
 )
 
 func (h *Handler) pageList(w http.ResponseWriter, r *http.Request) {
-	organization, err := h.organizations.Get(r.Context(), r.PathValue("id"))
+	data, err := h.treePageData(r)
 	if err != nil {
 		h.pageError(w, r, err)
 		return
 	}
 
-	goals, err := h.goals.List(r.Context(), organization.ID)
-	if err != nil {
-		h.pageError(w, r, err)
-		return
-	}
-
-	data := h.pageData(organization, "list")
-	data["View"].(map[string]any)["Goals"] = h.projectGoals(goals)
 	h.render(w, r, http.StatusOK, data)
 }
 
@@ -118,6 +110,11 @@ func (h *Handler) pageError(w http.ResponseWriter, r *http.Request, err error) {
 
 	if errors.Is(err, appziel.ErrNotFound) {
 		h.pageFailure(w, r, http.StatusNotFound, "Organisation nicht gefunden")
+		return
+	}
+
+	if errors.Is(err, appziel.ErrGoalNotFound) {
+		h.pageFailure(w, r, http.StatusNotFound, "Ziel nicht gefunden")
 		return
 	}
 

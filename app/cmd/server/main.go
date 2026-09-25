@@ -40,7 +40,7 @@ func (b *Bootstrap) Run() error {
 }
 
 func (b *Bootstrap) openDatabase() (*sqlite.Database, error) {
-	db, err := sqlite.OpenWithMigrations(context.Background(), b.path(), sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(), sqlite.TaskMigration())
+	db, err := sqlite.OpenWithMigrations(context.Background(), b.path(), sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(), sqlite.TaskMigration(), sqlite.GoalTreeMigration())
 	if err != nil {
 		return nil, fmt.Errorf("database startup: %w", err)
 	}
