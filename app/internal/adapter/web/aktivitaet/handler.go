@@ -16,6 +16,7 @@ import (
 func NewHandler(service *appaktivitaet.Service, organizations *apporganisation.Service, ui *bridge.Bridge) *Handler {
 	h := &Handler{service: service, organizations: organizations, bridge: ui, mux: http.NewServeMux()}
 	h.mux.HandleFunc("GET /api/organisationen/{id}/aktivitaet", h.apiList)
+	h.mux.HandleFunc("GET /api/organisationen/{id}/aktivitaet/export.csv", h.apiExport)
 	h.mux.HandleFunc("GET /organisationen/{id}/aktivitaet", h.pageList)
 	return h
 }
@@ -25,7 +26,7 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) apiList(w http.ResponseWriter, r *http.Request) {
-	events, err := h.service.List(r.Context(), r.PathValue("id"))
+	events, err := h.events(r)
 	if err != nil {
 		h.apiError(w, err)
 		return
@@ -38,7 +39,25 @@ func (h *Handler) apiList(w http.ResponseWriter, r *http.Request) {
 	h.json(w, http.StatusOK, listResponse{Events: events})
 }
 
+func (h *Handler) events(r *http.Request) ([]domainaktivitaet.Event, error) {
+	filter, active, err := h.queryFilter(r)
+	if err != nil {
+		return nil, err
+	}
+
+	if !active {
+		return h.service.List(r.Context(), r.PathValue("id"))
+	}
+
+	return h.service.Filter(r.Context(), r.PathValue("id"), filter)
+}
+
 func (h *Handler) apiError(w http.ResponseWriter, err error) {
+	if errors.Is(err, appaktivitaet.ErrInvalidFilter) {
+		h.json(w, http.StatusBadRequest, errorResponse{Error: "invalid_filter"})
+		return
+	}
+
 	if errors.Is(err, appaktivitaet.ErrAccessDenied) {
 		h.json(w, http.StatusForbidden, errorResponse{Error: "access_denied"})
 		return

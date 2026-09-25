@@ -33,3 +33,21 @@ func (e Event) Valid() bool {
 	return e.Kind == KindCreated && e.AssigneeID == "" && e.AssigneeName == "" ||
 		e.Kind == KindAssigned && e.AssigneeID != "" && e.AssigneeName != ""
 }
+
+// Valid prüft Seitengröße und RFC3339-Zeitfenster vor dem Datenzugriff.
+func (f Filter) Valid() bool {
+	if f.Limit < 0 || f.Limit > 200 || f.Offset < 0 {
+		return false
+	}
+	from, fromOK := f.parseTime(f.From)
+	to, toOK := f.parseTime(f.To)
+	return fromOK && toOK && (f.From == "" || f.To == "" || !from.After(to))
+}
+
+func (f Filter) parseTime(value string) (time.Time, bool) {
+	if value == "" {
+		return time.Time{}, true
+	}
+	at, err := time.Parse(time.RFC3339, value)
+	return at, err == nil
+}

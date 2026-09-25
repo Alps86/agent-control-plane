@@ -10,11 +10,17 @@ import (
 
 var ErrInvalidEvent = errors.New("Aktivitätsereignis ist ungültig")
 var ErrInvalidReference = errors.New("Aufgabenbezug ist ungültig")
+var ErrInvalidFilter = errors.New("Aktivitätsfilter ist ungültig")
 
 // Store persistiert und liest organisationsgebundene Fachereignisse.
 type Store interface {
 	Record(context.Context, domainaktivitaet.Event) error
 	ListEvents(context.Context, string) ([]domainaktivitaet.Event, error)
+}
+
+// FilterStore ergänzt den bestehenden Ereignisspeicher um kombinierte Lesefilter.
+type FilterStore interface {
+	FilterEvents(context.Context, string, domainaktivitaet.Filter) ([]domainaktivitaet.Event, error)
 }
 
 // Recorder wird aus dem atomaren Aufgabenanwendungsfall aufgerufen.

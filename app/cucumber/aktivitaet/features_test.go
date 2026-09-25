@@ -13,12 +13,15 @@ func TestFeatures(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	runner := godog.TestSuite{ScenarioInitializer: suite.initialize,
+	story66 := &Story66{Suite: suite}
+	runner := godog.TestSuite{ScenarioInitializer: story66.initialize66,
 		Options: &godog.Options{Format: "pretty", Paths: []string{
 			"../../../features/app/aktivitaet/story-18.feature",
 			"../../../features/ui/aktivitaet/story-18.feature",
+			"../../../features/app/aktivitaet/story-66.feature",
+			"../../../features/ui/aktivitaet/story-66.feature",
 		}, TestingT: t}}
 	if runner.Run() != 0 {
-		t.Fatal("ACT-01-Godog-Szenarien fehlgeschlagen")
+		t.Fatal("Aktivitäts-Godog-Szenarien fehlgeschlagen")
 	}
 }

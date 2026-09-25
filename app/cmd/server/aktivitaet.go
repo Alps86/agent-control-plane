@@ -14,6 +14,7 @@ func (b *Bootstrap) mountActivity(server *web.Server, db *sqlite.Database, organ
 	service := appaktivitaet.NewService(db, organizations, apporganisation.NewLocalIdentity())
 	handler := webaktivitaet.NewHandler(service, organizations, ui)
 	server.Handle("GET /api/organisationen/{id}/aktivitaet", handler)
+	server.Handle("GET /api/organisationen/{id}/aktivitaet/export.csv", handler)
 	server.Handle("GET /organisationen/{id}/aktivitaet", handler)
 	return service
 }

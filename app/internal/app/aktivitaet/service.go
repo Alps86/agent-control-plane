@@ -35,6 +35,28 @@ func (s *Service) List(ctx context.Context, organizationID string) ([]domainakti
 	return events, err
 }
 
+// Filter liest eine stabile, kombinierte Ereignisseite aus einer zugänglichen Organisation.
+func (s *Service) Filter(ctx context.Context, organizationID string, filter domainaktivitaet.Filter) ([]domainaktivitaet.Event, error) {
+	if !filter.Valid() {
+		return nil, ErrInvalidFilter
+	}
+	if s == nil || s.store == nil || s.organizations == nil {
+		return nil, ErrAccessDenied
+	}
+	if _, err := s.organizations.Get(ctx, organizationID); err != nil {
+		return nil, err
+	}
+	store, ok := s.store.(portaktivitaet.FilterStore)
+	if !ok {
+		return nil, ErrAccessDenied
+	}
+	events, err := store.FilterEvents(ctx, organizationID, filter)
+	if events == nil {
+		events = []domainaktivitaet.Event{}
+	}
+	return events, err
+}
+
 // RecordTaskCreation zeichnet Anlage und anfängliche Zuweisung im übergebenen Transaktionskontext auf.
 func (s *Service) RecordTaskCreation(ctx context.Context, task domainaufgabe.Task, assigneeName, source string) error {
 	actor, err := s.operatorID()
