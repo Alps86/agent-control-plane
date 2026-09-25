@@ -57,10 +57,13 @@ const snapshot = `(() => ({
   links: [...document.querySelectorAll('main a')].map(link => link.textContent.trim()),
   goals: [...document.querySelectorAll('main article h2')].map(item => item.textContent.trim()),
   goal_cards: [...document.querySelectorAll('main [data-goal-id]')].filter(item => item.hasAttribute('data-goal-status')).map(item => ({
-    id: item.dataset.goalId, status: item.dataset.goalStatus,
+    id: item.dataset.goalId, status: item.dataset.goalStatus, parent_id: item.dataset.parentGoalId || '',
     name: item.querySelector('h2')?.textContent?.trim() || ''
   })),
   child_errors: [...document.querySelectorAll('main form[data-action="child"]')].map(form => ({
+    id: form.dataset.goalId, message: form.querySelector('[role=alert]')?.textContent?.trim() || ''
+  })),
+  move_errors: [...document.querySelectorAll('main form[data-action="reparent"]')].map(form => ({
     id: form.dataset.goalId, message: form.querySelector('[role=alert]')?.textContent?.trim() || ''
   })),
   project_paths: [...document.querySelectorAll('main [data-project-id]')].map(item => item.textContent.replace(/\\s+/g, ' ').trim())

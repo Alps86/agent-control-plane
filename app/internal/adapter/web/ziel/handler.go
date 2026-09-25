@@ -21,11 +21,13 @@ func NewHandler(goals *appziel.Service, organizations *apporganisation.Service, 
 	h.mux.HandleFunc("GET /api/organisationen/{id}/zielbaum", h.apiTree)
 	h.mux.HandleFunc("POST /api/organisationen/{id}/ziele/{zielID}/kinder", h.apiCreateChild)
 	h.mux.HandleFunc("POST /api/organisationen/{id}/ziele/{zielID}/status", h.apiStatus)
+	h.mux.HandleFunc("POST /api/organisationen/{id}/ziele/{zielID}/verschieben", h.apiMove)
 	h.mux.HandleFunc("GET /organisationen/{id}/ziele", h.pageList)
 	h.mux.HandleFunc("GET /organisationen/{id}/ziele/neu", h.pageForm)
 	h.mux.HandleFunc("POST /organisationen/{id}/ziele", h.pageCreate)
 	h.mux.HandleFunc("POST /organisationen/{id}/ziele/{zielID}/kinder", h.pageCreateChild)
 	h.mux.HandleFunc("POST /organisationen/{id}/ziele/{zielID}/status", h.pageStatus)
+	h.mux.HandleFunc("POST /organisationen/{id}/ziele/{zielID}/verschieben", h.pageMove)
 	return h
 }
 
@@ -107,6 +109,11 @@ func (h *Handler) apiFieldError(w http.ResponseWriter, err error) {
 
 	if errors.Is(err, appziel.ErrInvalidParent) {
 		h.json(w, http.StatusUnprocessableEntity, errorResponse{FieldErrors: map[string]string{"parent_goal_id": "Bitte wählen Sie ein Ziel dieser Organisation aus."}})
+		return
+	}
+
+	if errors.Is(err, appziel.ErrGoalCycle) {
+		h.json(w, http.StatusUnprocessableEntity, errorResponse{FieldErrors: map[string]string{"parent_goal_id": "Diese Zielkante würde einen Kreis bilden."}})
 		return
 	}
 

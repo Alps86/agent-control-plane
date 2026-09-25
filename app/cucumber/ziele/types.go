@@ -105,6 +105,7 @@ type BrowserPage struct {
 	Goals        []string            `json:"goals"`
 	GoalCards    []BrowserGoal       `json:"goal_cards"`
 	ChildErrors  []BrowserChildError `json:"child_errors"`
+	MoveErrors   []BrowserMoveError  `json:"move_errors"`
 	ProjectPaths []string            `json:"project_paths"`
 }
 
@@ -113,8 +114,14 @@ type BrowserChildError struct {
 	Message string `json:"message"`
 }
 
+type BrowserMoveError struct {
+	ID      string `json:"id"`
+	Message string `json:"message"`
+}
+
 type BrowserGoal struct {
-	ID     string `json:"id"`
-	Name   string `json:"name"`
-	Status string `json:"status"`
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Status   string `json:"status"`
+	ParentID string `json:"parent_id"`
 }

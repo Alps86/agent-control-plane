@@ -10,8 +10,10 @@ func (b *Bootstrap) mountGoalTree(server *web.Server, goals *webziel.Handler) {
 		"GET /api/organisationen/{id}/zielbaum",
 		"POST /api/organisationen/{id}/ziele/{zielID}/kinder",
 		"POST /api/organisationen/{id}/ziele/{zielID}/status",
+		"POST /api/organisationen/{id}/ziele/{zielID}/verschieben",
 		"POST /organisationen/{id}/ziele/{zielID}/kinder",
 		"POST /organisationen/{id}/ziele/{zielID}/status",
+		"POST /organisationen/{id}/ziele/{zielID}/verschieben",
 	} {
 		server.Handle(pattern, goals)
 	}

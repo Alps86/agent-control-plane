@@ -12,6 +12,7 @@ var (
 	ErrNotFound      = apporganisation.ErrNotFound
 	ErrInvalidParent = portziel.ErrInvalidParent
 	ErrGoalNotFound  = portziel.ErrGoalNotFound
+	ErrGoalCycle     = portziel.ErrGoalCycle
 	ErrInvalidStatus = domainziel.ErrInvalidStatus
 )
 
