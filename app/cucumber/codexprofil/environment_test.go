@@ -42,10 +42,7 @@ func (s *Suite) fresh() error {
 }
 
 func (s *Suite) start() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath,
-		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(),
-		sqlite.AgentMigration(), sqlite.ProjectMigration(),
-		sqlite.DataScopeMigration(), sqlite.CodexProfileMigration())
+	db, err := sqlite.OpenApplication(context.Background(), s.dbPath)
 	if err != nil {
 		return err
 	}

@@ -24,13 +24,23 @@ func (s *httpE2ESuite) setup(mode string) error {
 	s.issuerServer = httptest.NewServer(s.issuer)
 	s.t.Cleanup(s.issuerServer.Close)
 	s.responses = &e2eResponses{mode: mode, firstDelta: make(chan struct{}), cancelled: make(chan struct{})}
-	if mode == "echo" {
-		s.responses.echoID, s.responses.echoModel = s.issuer.accountID, s.issuer.accessToken
-	}
+	s.configureResponses(mode)
 	s.nachweis = modellpruefung.NewNachweis()
 	s.responseServer = httptest.NewServer(s.responses)
 	s.t.Cleanup(s.responseServer.Close)
 	return s.connectApp()
+}
+
+func (s *httpE2ESuite) configureResponses(mode string) {
+	if mode == "timed" {
+		s.responses.releaseCompletion = make(chan struct{})
+		s.responses.completionSent = make(chan struct{})
+		s.responses.deltaFlushed = make(chan struct{})
+		s.t.Cleanup(s.responses.ReleaseCompletion)
+	}
+	if mode == "echo" {
+		s.responses.echoID, s.responses.echoModel = s.issuer.accountID, s.issuer.accessToken
+	}
 }
 
 func (s *httpE2ESuite) connectApp() error {

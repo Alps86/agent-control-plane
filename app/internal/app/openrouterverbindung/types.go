@@ -39,6 +39,7 @@ type View struct {
 }
 
 type record struct {
-	Key    string `json:"key"`
-	Status string `json:"status"`
+	Key        string `json:"key"`
+	Status     string `json:"status"`
+	Generation string `json:"generation,omitempty"`
 }

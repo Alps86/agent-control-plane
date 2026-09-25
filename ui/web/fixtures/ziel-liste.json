@@ -3,5 +3,9 @@
   "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
   "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
   "Errors": [],
-  "View": {"Kind": "list", "Goals": [{"ID": "ziel-1", "Name": "Wissensportal veröffentlichen"}]}
+  "View": {
+    "Kind": "list",
+    "Tree": [{"ID": "ziel-1", "OrganizationID": "org-nordstern", "Name": "Wissensportal veröffentlichen", "Status": "planned", "StatusLabel": "Geplant", "Children": []}],
+    "ProjectPaths": []
+  }
 }

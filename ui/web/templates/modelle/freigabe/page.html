@@ -1,0 +1,28 @@
+{{define "modelle/freigabe/page"}}
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.PageTitle}}</title>
+    <link rel="stylesheet" href="/assets/index.css">
+    <style>
+      .grant-page { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+      .grant-card { border: 1px solid #d6dce5; border-radius: 12px; padding: 1.5rem; background: #fff; margin-top: 1rem; }
+      .grant-row { display: flex; gap: 1rem; justify-content: space-between; align-items: center; border-top: 1px solid #e1e6ee; padding: 1rem 0; }
+      .grant-row:first-child { border-top: 0; }
+      .grant-row p { margin: .25rem 0; }
+      .grant-actions button { padding: .55rem .8rem; cursor: pointer; }
+      .grant-message { padding: .8rem 1rem; border-radius: 8px; background: #eef3fb; }
+      .grant-error { background: #fff1ed; }
+      .grant-reference { overflow-wrap: anywhere; }
+    </style>
+  </head>
+  <body>
+    <main class="grant-page" id="content" tabindex="-1">
+      {{template "modelle/freigabe/content" .}}
+    </main>
+    <script src="/assets/htmx.min.js" defer></script>
+  </body>
+</html>
+{{end}}

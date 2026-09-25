@@ -2,14 +2,17 @@ package projekt
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"io"
 	"net/http"
 
+	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
 	appziel "agentcontrolplane/app/internal/app/ziel"
+	domainaufgabe "agentcontrolplane/app/internal/domain/aufgabe"
 	domainprojekt "agentcontrolplane/app/internal/domain/projekt"
 	"agentcontrolplane/ui/bridge"
 )
@@ -30,6 +33,9 @@ func NewHandler(projects *appprojekt.Service, organizations *apporganisation.Ser
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.mux.ServeHTTP(w, r)
 }
+
+// SetTasks ergänzt die Aufgabenliste nach dem Server-Bootstrap.
+func (h *Handler) SetTasks(tasks *appaufgabe.Service) { h.tasks = tasks }
 
 func (h *Handler) apiList(w http.ResponseWriter, r *http.Request) {
 	projects, err := h.projects.List(r.Context(), r.PathValue("id"))
@@ -76,7 +82,22 @@ func (h *Handler) apiGet(w http.ResponseWriter, r *http.Request) {
 		h.apiError(w, err)
 		return
 	}
-	h.json(w, http.StatusOK, detailResponse{Project: project, Tasks: []any{}})
+
+	tasks, err := h.projectTasks(r.Context(), project)
+	if err != nil {
+		h.apiError(w, err)
+		return
+	}
+
+	h.json(w, http.StatusOK, detailResponse{Project: project, Tasks: tasks})
+}
+
+func (h *Handler) projectTasks(ctx context.Context, project domainprojekt.Project) ([]domainaufgabe.Task, error) {
+	if h.tasks == nil {
+		return []domainaufgabe.Task{}, nil
+	}
+
+	return h.tasks.List(ctx, project.OrganizationID, project.ID)
 }
 
 func (h *Handler) decode(r *http.Request) (createRequest, error) {

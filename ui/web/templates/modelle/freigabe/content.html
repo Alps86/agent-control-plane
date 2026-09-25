@@ -1,0 +1,67 @@
+{{define "modelle/freigabe/content"}}
+  <nav aria-label="Pfad">
+    <a href="/settings/modellanbieter/openrouter">OpenRouter</a> <span aria-hidden="true">/</span>
+    <a href="/organisationen/{{.View.Organization.ID}}">{{.View.Organization.Name}}</a>
+  </nav>
+  <header>
+    <p class="eyebrow">MODELLANBIETER / FREIGABEN</p>
+    <h1>OpenRouter für {{.View.Organization.Name}}</h1>
+    <p>Die zentrale Verbindung benötigt eine ausdrückliche Freigabe für diese Organisation und jeden Eino-Agenten.</p>
+  </header>
+
+  {{if .Notice}}<p class="grant-message" role="status">{{.Notice}}</p>{{end}}
+  {{range .Errors}}<p class="grant-message grant-error" role="alert">{{.}}</p>{{end}}
+
+  <section class="grant-card" aria-labelledby="connection-heading">
+    <h2 id="connection-heading">Zentrale Verbindung</h2>
+    <p>Status: <strong>{{.View.ConnectionStatus}}</strong></p>
+    {{if .View.Reference}}
+      <p class="grant-reference">Verbindungsreferenz: <code>{{.View.Reference}}</code></p>
+    {{else}}
+      <p>Keine nutzbare Verbindung eingerichtet.</p>
+    {{end}}
+  </section>
+
+  <section class="grant-card" aria-labelledby="organisation-heading">
+    <h2 id="organisation-heading">Organisationsfreigabe</h2>
+    <p>Organisation: <strong>{{.View.Organization.Name}}</strong></p>
+    <p>Status: <strong>{{if .View.Organization.Granted}}freigegeben{{else}}nicht freigegeben{{end}}</strong></p>
+    <div class="grant-actions">
+      {{if .View.Organization.Granted}}
+        <form method="post" action="/organisationen/{{.View.Organization.ID}}/modellfreigabe/openrouter/organisation/entziehen" hx-post="/organisationen/{{.View.Organization.ID}}/modellfreigabe/openrouter/organisation/entziehen" hx-target="#content" hx-swap="innerHTML">
+          <button type="submit">Organisationsfreigabe widerrufen</button>
+        </form>
+      {{else}}
+        <form method="post" action="/organisationen/{{.View.Organization.ID}}/modellfreigabe/openrouter/organisation" hx-post="/organisationen/{{.View.Organization.ID}}/modellfreigabe/openrouter/organisation" hx-target="#content" hx-swap="innerHTML">
+          <button type="submit">Organisation ausdrücklich freigeben</button>
+        </form>
+      {{end}}
+    </div>
+  </section>
+
+  <section class="grant-card" aria-labelledby="agents-heading">
+    <h2 id="agents-heading">Eino-Agenten</h2>
+    {{range .View.Agents}}
+      <div class="grant-row">
+        <div>
+          <p><strong>{{.Name}}</strong></p>
+          <p>Status: {{if .Granted}}freigegeben{{else}}nicht freigegeben{{end}}</p>
+          {{if not $.View.Organization.Granted}}<p>Organisationsfreigabe fehlt; die Verbindung ist nicht nutzbar.</p>{{end}}
+        </div>
+        <div class="grant-actions">
+          {{if .Granted}}
+            <form method="post" action="/organisationen/{{$.View.Organization.ID}}/modellfreigabe/openrouter/agenten/{{.ID}}/entziehen" hx-post="/organisationen/{{$.View.Organization.ID}}/modellfreigabe/openrouter/agenten/{{.ID}}/entziehen" hx-target="#content" hx-swap="innerHTML">
+              <button type="submit">Freigabe für {{.Name}} widerrufen</button>
+            </form>
+          {{else if $.View.Organization.Granted}}
+            <form method="post" action="/organisationen/{{$.View.Organization.ID}}/modellfreigabe/openrouter/agenten/{{.ID}}" hx-post="/organisationen/{{$.View.Organization.ID}}/modellfreigabe/openrouter/agenten/{{.ID}}" hx-target="#content" hx-swap="innerHTML">
+              <button type="submit">{{.Name}} ausdrücklich freigeben</button>
+            </form>
+          {{end}}
+        </div>
+      </div>
+    {{else}}
+      <p>Keine Eino-Agenten in dieser Organisation vorhanden.</p>
+    {{end}}
+  </section>
+{{end}}
