@@ -9,7 +9,7 @@ import (
 
 	credentialsadapter "agentcontrolplane/app/internal/adapter/credentials"
 	"agentcontrolplane/app/internal/adapter/model/codexauth"
-	modelopenrouter "agentcontrolplane/app/internal/adapter/model/openrouter"
+	"agentcontrolplane/app/internal/adapter/sqlite"
 	"agentcontrolplane/app/internal/adapter/web"
 	webcodex "agentcontrolplane/app/internal/adapter/web/modellanbieter"
 	webopenrouter "agentcontrolplane/app/internal/adapter/web/openrouter"
@@ -18,7 +18,7 @@ import (
 	"agentcontrolplane/ui/bridge"
 )
 
-func (b *Bootstrap) mountModelProviders(server *web.Server, ui *bridge.Bridge) error {
+func (b *Bootstrap) mountModelProviders(server *web.Server, db *sqlite.Database, ui *bridge.Bridge) error {
 	secretPath, keyPath := b.credentialPaths()
 	store, err := credentialsadapter.NewStore(secretPath, keyPath)
 	if err != nil {
@@ -35,8 +35,7 @@ func (b *Bootstrap) mountModelProviders(server *web.Server, ui *bridge.Bridge) e
 		return err
 	}
 
-	b.mountOpenRouter(server, ui, store)
-	return nil
+	return b.mountOpenRouter(server, db, ui, store)
 }
 
 func (b *Bootstrap) credentialPaths() (string, string) {
@@ -64,16 +63,22 @@ func (b *Bootstrap) mountCodex(server *web.Server, ui *bridge.Bridge, flow *mode
 	server.Handle("GET /settings/modelle/codex", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		b.codexPage(w, r, ui, flow)
 	}))
-	return nil
+	return b.mountModelProbe(server, flow)
 }
 
-func (b *Bootstrap) mountOpenRouter(server *web.Server, ui *bridge.Bridge, store *credentialsadapter.Store) {
-	service := openrouterverbindung.NewService(store, modelopenrouter.NewProbe(nil))
+func (b *Bootstrap) mountOpenRouter(server *web.Server, db *sqlite.Database, ui *bridge.Bridge, store *credentialsadapter.Store) error {
+	probe, err := b.openRouterProbe()
+	if err != nil {
+		return err
+	}
+	service := openrouterverbindung.NewService(store, probe)
 	handler := webopenrouter.NewHandler(service, ui, b.address())
 	server.Handle("/settings/modellanbieter/openrouter", handler)
 	server.Handle("/settings/modellanbieter/openrouter/", handler)
 	server.Handle("/api/settings/modellanbieter/openrouter", handler)
 	server.Handle("/api/settings/modellanbieter/openrouter/", handler)
+	b.mountModelGrants(server, db, ui, service)
+	return nil
 }
 
 func (b *Bootstrap) codexPage(w http.ResponseWriter, r *http.Request, ui *bridge.Bridge, flow *modellverbindung.Service) {

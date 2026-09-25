@@ -13,6 +13,8 @@ func (s *Suite) initializeScenario(sc *godog.ScenarioContext) {
 	sc.After(s.afterScenario)
 	s.registerAPISteps(sc)
 	s.registerBrowserSteps(sc)
+	s.registerStory32API(sc)
+	s.registerStory32Browser(sc)
 }
 
 func (s *Suite) registerAPISteps(sc *godog.ScenarioContext) {
@@ -129,7 +131,11 @@ func (s *Suite) createGoal(goal, organization string) error {
 	}
 
 	if s.response.Status == http.StatusCreated {
-		return s.rememberGoal()
+		if err := s.rememberGoal(); err != nil {
+			return err
+		}
+
+		s.goals[s.goalKey(organization, goal)] = s.createdID
 	}
 
 	return nil

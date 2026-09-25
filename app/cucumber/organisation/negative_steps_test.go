@@ -17,7 +17,7 @@ import (
 )
 
 func (s *Suite) noIdentity() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration())
+	db, err := sqlite.OpenApplication(context.Background(), s.dbPath)
 	if err != nil {
 		return err
 	}
@@ -117,7 +117,7 @@ func (s *Suite) unknown404() error {
 }
 
 func (s *Suite) getUnassigned() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration())
+	db, err := sqlite.OpenApplication(context.Background(), s.dbPath)
 	if err != nil {
 		return err
 	}

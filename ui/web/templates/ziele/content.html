@@ -6,17 +6,25 @@
     <section class="empty-state"><h1>Ziele</h1><p>Die Anfrage konnte nicht abgeschlossen werden.</p><a class="text-link" href="/organisationen">Zur Organisationsübersicht →</a></section>
   {{end}}
   {{if eq .View.Kind "list"}}
-    <div class="page-heading"><div><div class="eyebrow">{{.Organization.Name}}</div><h1>Zielübersicht</h1><p>Stammziele dieser Organisation.</p></div></div>
-    {{if .View.Goals}}
-      <div class="stats-grid">
-        {{range .View.Goals}}
-          <article class="stat-card"><h2>{{.Name}}</h2><p>Stammziel · Kein übergeordnetes Ziel</p></article>
-        {{end}}
-      </div>
+    <div class="page-heading"><div><div class="eyebrow">{{.Organization.Name}}</div><h1>Zielübersicht</h1><p>Zielbaum und Projektzielpfade dieser Organisation. Der Status wird nur durch eine ausdrückliche Aktion geändert.</p></div></div>
+    {{if .View.Tree}}
+      <div class="goal-tree" aria-label="Zielbaum">{{range .View.Tree}}{{template "ziele/root" .}}{{end}}</div>
     {{else}}
       <section class="empty-state"><div class="empty-icon">◎</div><h2>Noch keine Ziele</h2><p>Legen Sie das erste Stammziel für {{.Organization.Name}} an.</p></section>
     {{end}}
     <p><a class="hero-link" href="/organisationen/{{.Organization.ID}}/ziele/neu">Ziel anlegen →</a></p>
+    <section aria-labelledby="projektpfade-heading">
+      <h2 id="projektpfade-heading">Projektzielpfade</h2>
+      {{if .View.ProjectPaths}}
+        <ul>
+          {{range .View.ProjectPaths}}
+            <li data-project-id="{{.ProjectID}}"><a href="/organisationen/{{$.Organization.ID}}/projekte/{{.ProjectID}}">{{.ProjectName}}</a>: {{range $index, $name := .GoalNames}}{{if $index}} → {{end}}{{$name}}{{end}}</li>
+          {{end}}
+        </ul>
+      {{else}}
+        <p>Noch keine Projektzielpfade.</p>
+      {{end}}
+    </section>
     <p><a class="text-link" href="/organisationen/{{.Organization.ID}}">Zur Organisation →</a></p>
   {{end}}
   {{if eq .View.Kind "form"}}
@@ -29,4 +37,35 @@
       </div>
     </form>
   {{end}}
+{{end}}
+
+{{define "ziele/root"}}
+  <section class="goal-root" aria-label="Stammziel {{.Name}}">
+    <p>Stammziel · Kein übergeordnetes Ziel</p>
+    {{template "ziele/node" .}}
+  </section>
+{{end}}
+
+{{define "ziele/node"}}
+  <article class="stat-card" data-goal-id="{{.ID}}" data-goal-status="{{.Status}}">
+    <h2>{{.Name}}</h2>
+    <p>Status: <strong>{{.StatusLabel}}</strong></p>
+    <form action="/organisationen/{{.OrganizationID}}/ziele/{{.ID}}/status" method="post" data-action="status" data-goal-id="{{.ID}}">
+      <label>Status ändern
+        <select name="status">
+          <option value="planned" {{if eq .Status "planned"}}selected{{end}}>Geplant</option>
+          <option value="active" {{if eq .Status "active"}}selected{{end}}>Aktiv</option>
+          <option value="achieved" {{if eq .Status "achieved"}}selected{{end}}>Erreicht</option>
+          <option value="cancelled" {{if eq .Status "cancelled"}}selected{{end}}>Abgebrochen</option>
+        </select>
+      </label>
+      <button type="submit">Status speichern</button>
+    </form>
+    <form action="/organisationen/{{.OrganizationID}}/ziele/{{.ID}}/kinder" method="post" data-action="child" data-goal-id="{{.ID}}" novalidate>
+      <label>Teilziel anlegen <input name="name" type="text" value="{{.ChildName}}" aria-describedby="ziel-child-error-{{.ID}}" required></label>
+      {{if .ChildError}}<p id="ziel-child-error-{{.ID}}" role="alert">{{.ChildError}}</p>{{end}}
+      <button type="submit">Teilziel speichern</button>
+    </form>
+    {{if .Children}}<div class="goal-children" aria-label="Teilziele von {{.Name}}">{{range .Children}}{{template "ziele/node" .}}{{end}}</div>{{end}}
+  </article>
 {{end}}

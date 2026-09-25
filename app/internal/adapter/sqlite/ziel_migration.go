@@ -10,3 +10,9 @@ func GoalMigration() Migration {
 		CHECK (length(trim(name)) > 0)
 	)`, `CREATE INDEX goals_organization_name ON goals (organization_id, name, id)`)
 }
+
+// GoalTreeMigration ergänzt den eigenständigen Status aller bisherigen Ziele.
+func GoalTreeMigration() Migration {
+	return NewMigration(10, `ALTER TABLE goals ADD COLUMN status TEXT NOT NULL
+		DEFAULT 'planned' CHECK (status IN ('planned', 'active', 'achieved', 'cancelled'))`)
+}

@@ -40,7 +40,7 @@ func (b *Bootstrap) Run() error {
 }
 
 func (b *Bootstrap) openDatabase() (*sqlite.Database, error) {
-	db, err := sqlite.OpenWithMigrations(context.Background(), b.path(), sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration())
+	db, err := sqlite.OpenApplication(context.Background(), b.path())
 	if err != nil {
 		return nil, fmt.Errorf("database startup: %w", err)
 	}
@@ -71,8 +71,9 @@ func (b *Bootstrap) assemble(db *sqlite.Database, ui *bridge.Bridge) (*web.Serve
 	b.mountProjects(server, db, service, ui)
 	b.mountAgents(server, db, ui)
 	b.mountDataScope(server, db, ui)
+	b.mountCodexProfile(server, db, ui)
 	b.mountSettings(server, ui)
-	if err := b.mountModelProviders(server, ui); err != nil {
+	if err := b.mountModelProviders(server, db, ui); err != nil {
 		return nil, err
 	}
 

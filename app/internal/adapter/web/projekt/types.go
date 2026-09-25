@@ -3,6 +3,7 @@ package projekt
 import (
 	"net/http"
 
+	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
 	appziel "agentcontrolplane/app/internal/app/ziel"
@@ -13,6 +14,7 @@ import (
 // Handler bindet Projekte an die öffentlichen JSON- und HTML-Routen.
 type Handler struct {
 	projects      *appprojekt.Service
+	tasks         *appaufgabe.Service
 	organizations *apporganisation.Service
 	goals         *appziel.Service
 	bridge        *bridge.Bridge
@@ -32,7 +34,7 @@ type listResponse struct {
 
 type detailResponse struct {
 	domainprojekt.Project
-	Tasks []any `json:"tasks"`
+	Tasks any `json:"tasks"`
 }
 
 type errorResponse struct {
