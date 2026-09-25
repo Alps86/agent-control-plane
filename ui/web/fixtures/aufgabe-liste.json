@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Aufgaben",
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Errors": [],
+  "View": {"Kind": "list", "Project": {"ID": "projekt-website", "Name": "Website"}, "Tasks": [{"ID": "aufgabe-1", "Title": "Startseite prüfen", "PriorityLabel": "Hoch", "StatusLabel": "Offen"}]}
+}
