@@ -61,14 +61,17 @@ Funktionalität: Modellverbindungen über Neustart und Sitzungswechsel sicher ve
     Dann kann ich die bestehende Verbindung binden und ihren Schlüssel auflösen
     Und dieselbe Bindung bleibt nach erneutem Öffnen des Dienstes gültig
 
-  @pending-openrouter-aufrufgrenze
   Szenario: Entfernte OpenRouter-Verbindung blockiert neue Anbieteraufrufe
-    Angenommen die zentrale OpenRouter-Verbindung ist eingerichtet
-    Wenn ich sie über die öffentliche Settings-Grenze trenne
-    Und ich einen neuen OpenRouter-Anbieteraufruf anfordere
-    Dann wird der Aufruf vor dem Anbieter wegen fehlender Verbindung abgelehnt
-    Und der kontrollierte OpenRouter-Anbieter erhält nach der Trennung keine Anfrage
-    Und die öffentliche Settings-Ansicht zeigt keine eingerichtete Verbindung
+    Angenommen eine geprüfte OpenRouter-Verbindung ist für eine Organisation und ihren Eino-Agenten freigegeben
+    Wenn dieser Agent einen neuen Modellzugangsaufruf über die öffentliche Anwendungsgrenze startet
+    Dann erhält der kontrollierte Modellanbieter genau einen neuen Aufruf
+    Wenn ich die Verbindung über die öffentliche Settings-Grenze trenne
+    Und derselbe Agent erneut einen Modellzugangsaufruf startet
+    Dann wird der neue Aufruf vor dem Anbieter wegen fehlender Verbindung abgelehnt
+    Und der kontrollierte Modellanbieter erhält keinen weiteren Aufruf
+    Wenn ich dieselbe zentrale Verbindung mit einem neuen Schlüssel ohne neue Freigaben einrichte
+    Und derselbe Agent erneut einen Modellzugangsaufruf startet
+    Dann bleiben die alten Freigaben unwirksam und der Anbieter erhält keinen weiteren Aufruf
 
   Szenario: Geheimnisse bleiben an allen öffentlichen Lebenszyklusantworten verborgen
     Angenommen eine Codex-Abo-Sitzung und eine OpenRouter-Verbindung mit eindeutigen Testgeheimnissen bestehen
