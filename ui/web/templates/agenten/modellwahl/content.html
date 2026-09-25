@@ -9,15 +9,16 @@
   {{if .Notice}}<div class="notice" role="status">{{.Notice}}</div>{{end}}
   {{range .Errors}}<div class="notice" role="alert">{{.}}</div>{{end}}
 
-  <section class="stat-card" aria-label="Aktuelle Modellwahl">
-    <h2>Aktuelle Auswahl</h2>
+  <section class="stat-card" aria-label="Modellwahlstatus">
     {{if .View.Selection.Provider}}
+      <h2>Aktuelle Auswahl</h2>
       <p>Anbieter: <strong>{{if eq .View.Selection.Provider "codex-abo"}}Codex-Abo{{else if eq .View.Selection.Provider "openrouter"}}OpenRouter{{else}}{{.View.Selection.Provider}}{{end}}</strong></p>
       <p>Verbindungsreferenz: <code>{{.View.Selection.ConnectionReference}}</code></p>
       <p>Modell: <strong>{{.View.Selection.Model}}</strong></p>
       <p role="status">Modellroute nicht nachgewiesen; Startbereitschaft offen.</p>
     {{else}}
-      <p>Codex-Abo ist der Standardanbieter. Wählen Sie eine verfügbare Verbindung und ein Modell.</p>
+      <h2>Noch keine Modellwahl</h2>
+      <p>Codex-Abo ist Standardanbieter; noch kein Modell konfiguriert oder auswählbar.</p>
     {{end}}
   </section>
 
@@ -25,8 +26,8 @@
     <section class="stat-card" aria-labelledby="provider-{{.ID}}">
       <h2 id="provider-{{.ID}}">{{.Name}}{{if eq .ID "codex-abo"}} · Standard{{end}}</h2>
       {{if eq .ID $.View.Selection.Provider}}<p role="status">Aktuell gewählt</p>{{end}}
-      <p>Authentifizierung: {{if eq .AuthType "device_oauth"}}Gerätecode über das ChatGPT-Konto{{else if eq .AuthType "api_key"}}Zentral verwahrter API-Schlüssel{{else}}{{.AuthType}}{{end}}</p>
-      <p role="status">Modellroute nicht nachgewiesen; Startbereitschaft offen.</p>
+      <p>Authentifizierung: {{if eq .AuthType "device_code"}}Gerätecode{{else if eq .AuthType "device_oauth"}}Gerätecode über das ChatGPT-Konto{{else if eq .AuthType "api_key"}}Zentral verwahrter API-Schlüssel{{else}}{{.AuthType}}{{end}}</p>
+      {{if .Models}}<p role="status">Modellroute nicht nachgewiesen; Startbereitschaft offen.</p>{{else}}<p role="status">Noch kein Modell im Katalog konfiguriert.</p>{{end}}
       {{if .Selectable}}
         <form action="/organisationen/{{$.View.OrganizationID}}/agenten/{{$.View.Agent.ID}}/modellwahl" method="post">
           <input type="hidden" name="provider" value="{{.ID}}">

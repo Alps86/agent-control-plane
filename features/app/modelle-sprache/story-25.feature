@@ -22,6 +22,15 @@ Funktionalität: Registrierten Modellzugang für einen Eino-Agenten auswählen
     Dann endet der Start mit einem verständlichen Hinweis auf die fehlende OpenRouter-Verbindung
     Und es entsteht keine öffentliche Modellwahl-Grenze aus dieser Konfiguration
 
+  Szenario: Ohne Modellkatalog bleibt der lokale Server erreichbar
+    Angenommen ich starte den lokalen Server ohne Modellkatalog-Konfiguration neu
+    Wenn ich öffentliche OpenRouter-Settings und Miras Modellwahl über HTTP abrufe
+    Dann bleiben Settings und Modellwahl mit HTTP 200 erreichbar
+    Und der Katalog enthält keinen auswählbaren Modellkandidaten
+    Wenn ich für "Mira" das nicht katalogisierte Modell "fremd/neu" über HTTP speichere
+    Dann wird die Modellwahl mit einem verständlichen Kataloghinweis abgelehnt
+    Und die öffentliche Antwort hat HTTP-Status 422
+
   Szenario: Freigegebenes OpenRouter-Modell bewusst auswählen
     Angenommen die zentrale OpenRouter-Verbindung ist einsatzbereit und für "Nord" und "Mira" freigegeben
     Wenn ich für "Mira" die OpenRouter-Verbindung und das Modell "openai/gpt-4" über HTTP speichere

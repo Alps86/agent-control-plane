@@ -77,12 +77,12 @@ func (s *Service) openRouterAllowed(ctx context.Context, organizationID, agentID
 
 func (s *Service) defaultSelection() domain.Selection {
 	for _, provider := range s.catalog.Providers {
-		if provider.ID == "codex-abo" && len(provider.Connections) > 0 {
+		if provider.ID == "codex-abo" && len(provider.Connections) > 0 && len(provider.Models) > 0 {
 			return domain.Selection{Provider: provider.ID, ConnectionReference: provider.Connections[0].Reference, Model: provider.FirstModel()}
 		}
 	}
 
-	return domain.Selection{Provider: "codex-abo"}
+	return domain.Selection{}
 }
 
 func (s *Service) availableProviders(ctx context.Context, organizationID, agentID string) []domain.Provider {

@@ -1,0 +1,53 @@
+{
+  "PageTitle": "Modellwahl von Mira",
+  "Navigation": [
+    {
+      "Key": "organisation",
+      "Label": "Organisationen",
+      "Href": "/organisationen",
+      "Icon": "✳"
+    },
+    {
+      "Key": "agenten",
+      "Label": "Agenten",
+      "Href": "/organisationen/org-nordstern/agenten",
+      "Icon": "◇"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [
+    "agent.model.select"
+  ],
+  "View": {
+    "Kind": "model-choice",
+    "OrganizationID": "org-nordstern",
+    "Agent": {
+      "ID": "agent-mira",
+      "Name": "Mira",
+      "ExecutionKindLabel": "Eino"
+    },
+    "Selection": {
+      "Provider": "",
+      "ConnectionReference": "",
+      "Model": ""
+    },
+    "FieldErrors": {},
+    "Providers": [
+      {
+        "ID": "codex-abo",
+        "Name": "Codex-Abo",
+        "Selectable": false,
+        "Reason": "Kein Modell konfiguriert",
+        "AuthType": "device_code",
+        "Connections": [
+          {
+            "Reference": "codex-chatgpt",
+            "Label": "Codex-Abo"
+          }
+        ],
+        "Models": []
+      }
+    ]
+  }
+}

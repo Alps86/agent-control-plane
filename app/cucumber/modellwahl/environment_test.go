@@ -30,10 +30,17 @@ func (s *Suite) build() error {
 func (s *Suite) fresh() error {
 	s.stopServer()
 	s.dbPath = filepath.Join(s.t.TempDir(), "modellwahl.sqlite")
+	s.credentialDir = filepath.Join(filepath.Dir(s.dbPath), "secrets")
+	if err := os.Mkdir(s.credentialDir, 0700); err != nil {
+		return err
+	}
 	s.catalogPath = filepath.Join(s.t.TempDir(), "catalog.json")
 	s.secret = "sk-story25-synthetic-never-display"
 	s.secretStored = false
 	if err := os.WriteFile(s.catalogPath, []byte(catalogFixture), 0600); err != nil {
+		return err
+	}
+	if err := s.startProvider(); err != nil {
 		return err
 	}
 	return s.start()
@@ -46,13 +53,35 @@ func (s *Suite) start() error {
 	}
 	s.address = listener.Addr().String()
 	listener.Close()
+	return s.launchProcess()
+}
+
+func (s *Suite) launchProcess() error {
 	s.process = exec.Command(s.binary)
-	s.process.Env = append(os.Environ(), "APP_ADDR="+s.address, "APP_DB_PATH="+s.dbPath, "APP_MODEL_CATALOG_PATH="+s.catalogPath)
+	s.process.Env = append(s.serverEnv(), "APP_ADDR="+s.address, "APP_DB_PATH="+s.dbPath,
+		"APP_CREDENTIALS_PATH="+filepath.Join(s.credentialDir, "credentials.enc"),
+		"APP_CREDENTIAL_KEY_PATH="+filepath.Join(s.credentialDir, "master.key"),
+		"APP_OPENROUTER_PROBE_URL="+s.providerServer.URL+"/api/v1/key", "HTTPS_PROXY="+s.providerServer.URL, "HTTP_PROXY="+s.providerServer.URL,
+		"NO_PROXY=localhost,127.0.0.1")
+	if s.catalogPath != "" {
+		s.process.Env = append(s.process.Env, "APP_MODEL_CATALOG_PATH="+s.catalogPath)
+	}
 	s.process.Stdout, s.process.Stderr = os.Stderr, os.Stderr
 	if err := s.process.Start(); err != nil {
 		return err
 	}
 	return s.healthy()
+}
+
+func (s *Suite) serverEnv() []string {
+	result := make([]string, 0, len(os.Environ()))
+	for _, item := range os.Environ() {
+		if strings.HasPrefix(item, "APP_MODEL_CATALOG_PATH=") {
+			continue
+		}
+		result = append(result, item)
+	}
+	return result
 }
 
 func (s *Suite) healthy() error {
@@ -79,13 +108,17 @@ func (s *Suite) stopServer() {
 	s.process = nil
 }
 
-func (s *Suite) cleanup() { s.stopServer(); s.stopBrowser() }
+func (s *Suite) cleanup() { s.stopServer(); s.stopBrowser(); s.stopProvider() }
 func (s *Suite) after(ctx context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
 	s.stopServer()
 	s.stopBrowser()
+	s.stopProvider()
 	s.orgID, s.agentID, s.secret, s.initial = "", "", "", nil
 	s.secretStored = false
 	s.invalidCatalogPath, s.invalidOutput, s.invalidExited = "", nil, false
+	s.credentialDir, s.settingsStatus = "", 0
+	s.providerCalls.Store(0)
+	s.blockedExternal.Store(0)
 	s.last, s.page = Response{}, BrowserPage{}
 	return ctx, nil
 }

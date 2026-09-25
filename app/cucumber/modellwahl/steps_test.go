@@ -16,6 +16,7 @@ func (s *Suite) initialize(sc *godog.ScenarioContext) {
 	s.registerChecks(sc)
 	s.registerEvidence(sc)
 	s.registerInvalidCatalog(sc)
+	s.registerNoCatalog(sc)
 	s.registerBrowser(sc)
 }
 
@@ -373,10 +374,3 @@ func (s *Suite) sameUnknown() error {
 	}
 	return nil
 }
-
-func (s *Suite) openRouterReady() error {
-	return fmt.Errorf("Story-24-Prozesssetup wartet auf öffentliche Verbindungs-/Freigabe-API; kein Anbieteraufruf erfolgt")
-}
-
-func (s *Suite) openRouterGranted() error    { return s.openRouterReady() }
-func (s *Suite) missingGrant(_ string) error { return s.openRouterReady() }

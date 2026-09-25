@@ -33,7 +33,10 @@ func (s *Suite) startInvalidCatalog() error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 	cmd := exec.CommandContext(ctx, s.binary)
-	cmd.Env = append(os.Environ(), "APP_ADDR="+s.address, "APP_DB_PATH="+s.dbPath, "APP_MODEL_CATALOG_PATH="+s.invalidCatalogPath)
+	cmd.Env = append(s.serverEnv(), "APP_ADDR="+s.address, "APP_DB_PATH="+s.dbPath, "APP_MODEL_CATALOG_PATH="+s.invalidCatalogPath,
+		"APP_CREDENTIALS_PATH="+filepath.Join(s.credentialDir, "credentials.enc"), "APP_CREDENTIAL_KEY_PATH="+filepath.Join(s.credentialDir, "master.key"),
+		"APP_OPENROUTER_PROBE_URL="+s.providerServer.URL+"/api/v1/key", "HTTPS_PROXY="+s.providerServer.URL, "HTTP_PROXY="+s.providerServer.URL,
+		"NO_PROXY=localhost,127.0.0.1")
 	output, err := cmd.CombinedOutput()
 	if ctx.Err() != nil {
 		return fmt.Errorf("ungültiger Katalog startete Server statt abzubrechen: %s", output)

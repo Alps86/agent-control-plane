@@ -3,7 +3,9 @@ package modellwahl
 import (
 	"bufio"
 	"net/http"
+	"net/http/httptest"
 	"os/exec"
+	"sync/atomic"
 	"testing"
 )
 
@@ -11,6 +13,7 @@ type Suite struct {
 	t                                                            *testing.T
 	client                                                       *http.Client
 	binary, dbPath, catalogPath, address, orgID, agentID, secret string
+	credentialDir                                                string
 	process, browser                                             *exec.Cmd
 	input                                                        *bufio.Writer
 	output                                                       *bufio.Scanner
@@ -22,6 +25,9 @@ type Suite struct {
 	invalidCatalogPath                                           string
 	invalidOutput                                                []byte
 	invalidExited                                                bool
+	settingsStatus                                               int
+	providerServer                                               *httptest.Server
+	providerCalls, blockedExternal                               atomic.Int64
 }
 
 type Response struct {
@@ -53,6 +59,7 @@ type ChoiceView struct {
 type Provider struct {
 	ID          string       `json:"id"`
 	AuthType    string       `json:"auth_type"`
+	Selectable  bool         `json:"selectable"`
 	Connections []Connection `json:"connections"`
 	Models      []Model      `json:"models"`
 }
@@ -70,6 +77,19 @@ type Capability struct {
 	Status    string `json:"status"`
 	Source    string `json:"source"`
 	CheckedAt string `json:"checked_at"`
+}
+
+type OpenRouterStatus struct {
+	Reference string `json:"reference"`
+	Status    string `json:"status"`
+}
+type GrantStatus struct {
+	Reference           string `json:"reference"`
+	ConnectionStatus    string `json:"connection_status"`
+	OrganizationGranted bool   `json:"organization_granted"`
+	AgentGranted        bool   `json:"agent_granted"`
+	Allowed             bool   `json:"allowed"`
+	Reason              string `json:"reason"`
 }
 
 type BrowserReply struct {
