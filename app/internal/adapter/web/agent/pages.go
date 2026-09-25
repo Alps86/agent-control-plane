@@ -229,6 +229,10 @@ func (h *Handler) profileData(r *http.Request, profile appagent.Profile) (map[st
 
 	data := h.detailData(organizationID, profile)
 	data["View"].(map[string]any)["OrganizationName"] = organization.Name
+	if err := h.projectReporting(r, profile, data); err != nil {
+		return nil, err
+	}
+
 	return data, nil
 }
 

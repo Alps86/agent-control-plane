@@ -1,0 +1,23 @@
+{
+  "PageTitle": "Mira",
+  "Notice": "",
+  "Errors": [],
+  "View": {
+    "Kind": "detail",
+    "OrganizationID": "org-nordstern",
+    "Agent": {
+      "ID": "agent-mira",
+      "Name": "Mira",
+      "Role": "Rechercheagentin",
+      "Instructions": "Recherchiere und fasse belegte Ergebnisse zusammen.",
+      "ExecutionKind": "eino",
+      "ExecutionKindLabel": "Eino",
+      "Capabilities": ["Wissensrecherche"],
+      "ModelStatus": "Modell nicht verbunden",
+      "ReadinessLabel": "Nicht startbereit",
+      "ReadinessReason": "Modellverbindung fehlt",
+      "ParentID": "agent-kai",
+      "ParentName": "Kai"
+    }
+  }
+}
