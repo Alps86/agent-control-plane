@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"net/http"
+	"net/url"
 	"strings"
 
 	appaktivitaet "agentcontrolplane/app/internal/app/aktivitaet"
@@ -13,7 +14,7 @@ import (
 )
 
 func (h *Handler) pageList(w http.ResponseWriter, r *http.Request) {
-	events, err := h.service.List(r.Context(), r.PathValue("id"))
+	events, err := h.events(r)
 	if err != nil {
 		h.pageError(w, r, err)
 		return
@@ -27,7 +28,25 @@ func (h *Handler) pageList(w http.ResponseWriter, r *http.Request) {
 
 	data := h.pageData(organization, "list")
 	data["View"].(map[string]any)["Events"] = h.eventViews(events)
+	data["View"].(map[string]any)["Filter"] = h.filterView(r)
+	data["View"].(map[string]any)["ExportURL"] = h.exportURL(r)
 	h.render(w, r, http.StatusOK, data)
+}
+
+func (h *Handler) filterView(r *http.Request) map[string]string {
+	query := r.URL.Query()
+	return map[string]string{"Agent": query.Get("agent"), "Action": query.Get("action"),
+		"From": query.Get("from"), "To": query.Get("to"), "Object": query.Get("object"),
+		"Limit": query.Get("limit"), "Offset": query.Get("offset")}
+}
+
+func (h *Handler) exportURL(r *http.Request) string {
+	base := "/api/organisationen/" + url.PathEscape(r.PathValue("id")) + "/aktivitaet/export.csv"
+	if r.URL.RawQuery == "" {
+		return base
+	}
+
+	return base + "?" + r.URL.Query().Encode()
 }
 
 func (h *Handler) eventViews(events []domainaktivitaet.Event) []map[string]string {
@@ -87,6 +106,11 @@ func (h *Handler) pageData(organization domainorganisation.Organization, kind st
 }
 
 func (h *Handler) pageError(w http.ResponseWriter, r *http.Request, err error) {
+	if errors.Is(err, appaktivitaet.ErrInvalidFilter) {
+		h.pageFailure(w, r, http.StatusBadRequest, "Ungültiger Aktivitätsfilter")
+		return
+	}
+
 	if errors.Is(err, appaktivitaet.ErrAccessDenied) || errors.Is(err, apporganisation.ErrAccessDenied) {
 		h.pageFailure(w, r, http.StatusForbidden, "Zugriff verweigert")
 		return

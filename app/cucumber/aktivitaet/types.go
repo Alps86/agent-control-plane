@@ -6,6 +6,7 @@ import (
 	"errors"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"os/exec"
 	"testing"
 
@@ -37,6 +38,20 @@ type Suite struct {
 	fixtureServer *httptest.Server
 	fixtureDB     *sqlite.Database
 	failingStore  *FailSecondStore
+}
+
+type Story66 struct {
+	*Suite
+	query       url.Values
+	pageEvents  []Event
+	allEvents   []Event
+	csvRows     [][]string
+	csvBody     []byte
+	contentType string
+	disposition string
+	pageBefore  []Event
+	rowsBefore  [][]string
+	selected    Event
 }
 
 // FailSecondStore injiziert nur im HTTP-Abnahmefixture den zweiten Schreibfehler.
@@ -89,7 +104,8 @@ type Page struct {
 }
 
 type BrowserReply struct {
-	OK    bool   `json:"ok"`
-	Error string `json:"error"`
-	Page  Page   `json:"page"`
+	OK       bool   `json:"ok"`
+	Error    string `json:"error"`
+	Page     Page   `json:"page"`
+	Download string `json:"download"`
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	domainaktivitaet "agentcontrolplane/app/internal/domain/aktivitaet"
@@ -58,6 +59,60 @@ func (d *Database) ListEvents(ctx context.Context, organizationID string) ([]dom
 
 	defer rows.Close()
 	return d.collectEvents(rows)
+}
+
+// FilterEvents kombiniert alle Filter mit einer verpflichtenden Organisationsgrenze.
+func (d *Database) FilterEvents(ctx context.Context, organizationID string, filter domainaktivitaet.Filter) ([]domainaktivitaet.Event, error) {
+	if !filter.Valid() {
+		return nil, portaktivitaet.ErrInvalidFilter
+	}
+	query, args := d.activityFilterQuery(organizationID, filter)
+	rows, err := d.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("Aktivität filtern: %w", err)
+	}
+	defer rows.Close()
+	return d.collectEvents(rows)
+}
+
+func (d *Database) activityFilterQuery(organizationID string, filter domainaktivitaet.Filter) (string, []any) {
+	clauses := []string{"organization_id = ?"}
+	args := []any{organizationID}
+	d.appendActivityPredicate(filter.AgentID, "assignee_id = ?", &clauses, &args)
+	d.appendActivityPredicate(filter.Action, "kind = ?", &clauses, &args)
+	d.appendActivityPredicate(d.filterTime(filter.From), "occurred_at >= ?", &clauses, &args)
+	d.appendActivityPredicate(d.filterTime(filter.To), "occurred_at <= ?", &clauses, &args)
+	d.appendActivityPredicate(filter.ObjectID, "task_id = ?", &clauses, &args)
+	query := `SELECT id, organization_id, project_id, task_id, kind, actor, source,
+		occurred_at, object_title, deep_link, assignee_id, assignee_name
+		FROM activity_events WHERE ` + strings.Join(clauses, " AND ") + ` ORDER BY occurred_at DESC, sequence DESC`
+	return d.activityPageQuery(query, args, filter)
+}
+
+func (d *Database) appendActivityPredicate(value, predicate string, clauses *[]string, args *[]any) {
+	if value == "" {
+		return
+	}
+	*clauses = append(*clauses, predicate)
+	*args = append(*args, value)
+}
+
+func (d *Database) filterTime(value string) string {
+	if value == "" {
+		return ""
+	}
+	at, _ := time.Parse(time.RFC3339, value)
+	return at.UTC().Format(activityTimeFormat)
+}
+
+func (d *Database) activityPageQuery(query string, args []any, filter domainaktivitaet.Filter) (string, []any) {
+	if filter.Limit > 0 {
+		return query + ` LIMIT ? OFFSET ?`, append(args, filter.Limit, filter.Offset)
+	}
+	if filter.Offset > 0 {
+		return query + ` LIMIT -1 OFFSET ?`, append(args, filter.Offset)
+	}
+	return query, args
 }
 
 func (d *Database) collectEvents(rows *sql.Rows) ([]domainaktivitaet.Event, error) {

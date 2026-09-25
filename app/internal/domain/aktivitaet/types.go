@@ -24,3 +24,15 @@ type Event struct {
 	AssigneeID     string    `json:"assignee_id,omitempty"`
 	AssigneeName   string    `json:"assignee_name,omitempty"`
 }
+
+// Filter grenzt Ereignisse innerhalb genau einer Organisation ein.
+// Leeres Limit liefert alle Treffer; alle Zeitgrenzen sind einschließlich.
+type Filter struct {
+	AgentID  string
+	Action   string
+	From     string
+	To       string
+	ObjectID string
+	Limit    int
+	Offset   int
+}
