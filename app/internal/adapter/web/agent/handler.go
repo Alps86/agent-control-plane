@@ -9,13 +9,18 @@ import (
 	"net/url"
 
 	appagent "agentcontrolplane/app/internal/app/agent"
+	appberichtsweg "agentcontrolplane/app/internal/app/berichtsweg"
 	domainagent "agentcontrolplane/app/internal/domain/agent"
 	"agentcontrolplane/ui/bridge"
 )
 
 // NewHandler builds the JSON and HTML routes for one agent service.
-func NewHandler(service *appagent.Service, ui *bridge.Bridge, bindAddress string) *Handler {
+func NewHandler(service *appagent.Service, ui *bridge.Bridge, bindAddress string, reporting ...*appberichtsweg.Service) *Handler {
 	h := &Handler{service: service, bridge: ui, bindAddress: bindAddress, mux: http.NewServeMux()}
+	if len(reporting) > 0 {
+		h.reporting = reporting[0]
+	}
+
 	h.mux.HandleFunc("GET /api/organisationen/{id}/agenten", h.apiList)
 	h.mux.HandleFunc("POST /api/organisationen/{id}/agenten", h.apiCreate)
 	h.mux.HandleFunc("GET /api/organisationen/{id}/agenten/vorlagen", h.apiTemplates)
@@ -70,7 +75,18 @@ func (h *Handler) apiGet(w http.ResponseWriter, r *http.Request) {
 		h.apiError(w, err)
 		return
 	}
-	h.json(w, http.StatusOK, profile)
+	if h.reporting == nil {
+		h.json(w, http.StatusOK, profile)
+		return
+	}
+
+	parentID, parentName, err := h.reportingParent(r.Context(), r.PathValue("id"), profile.ID)
+	if err != nil {
+		h.apiError(w, err)
+		return
+	}
+
+	h.json(w, http.StatusOK, profileResponse{Profile: profile, ParentID: parentID, ParentName: parentName})
 }
 
 func (h *Handler) apiTemplates(w http.ResponseWriter, r *http.Request) {

@@ -1,0 +1,44 @@
+{{define "berichtswege/node"}}
+  <li>
+    <a href="{{.ProfileURL}}">{{.Name}}</a> <span>· {{.ExecutionKind}}</span>
+    {{if .Children}}<ul>{{range .Children}}{{template "berichtswege/node" .}}{{end}}</ul>{{end}}
+  </li>
+{{end}}
+{{define "berichtswege/content"}}
+  {{if .Errors}}<div class="notice" role="alert">{{range .Errors}}<p>{{.}}</p>{{end}}</div>{{end}}
+  {{if eq .View.Kind "error"}}
+    <section class="empty-state"><h1>Organigramm</h1><p>Die Anfrage konnte nicht abgeschlossen werden.</p></section>
+  {{end}}
+  {{if eq .View.Kind "chart"}}
+    <div class="page-heading">
+      <div><div class="eyebrow">ORGANISATION</div><h1>Organigramm</h1><p>Jeder Agent hat höchstens einen unmittelbaren Vorgesetzten. Berichtslinien zeigen mögliche Empfänger; Delegation benötigt zusätzlich die passende Arbeitsregel und Rechte.</p></div>
+    </div>
+    <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}">Zur Organisation →</a> <a class="text-link" href="/organisationen/{{.View.OrganizationID}}/arbeitsregeln">Arbeitsregeln prüfen →</a></p>
+    <section class="stat-card" aria-label="Berichtslinien">
+      <h2>Berichtslinien</h2>
+      {{if .View.Roots}}
+        <ul>{{range .View.Roots}}{{template "berichtswege/node" .}}{{end}}</ul>
+      {{else}}
+        <p>Noch keine Agenten in dieser Organisation.</p>
+      {{end}}
+    </section>
+    <section aria-label="Berichtswege bearbeiten">
+      <h2>Vorgesetzte bearbeiten</h2>
+      {{range .View.Agents}}
+        {{$agent := .}}
+        <article class="stat-card" id="agent-{{.ID}}">
+          <h3><a href="{{.ProfileURL}}">{{.Name}}</a></h3>
+          <p>Ausführungsart: {{.ExecutionKind}} · Vorgesetzte: {{if .ParentName}}{{.ParentName}}{{else}}keine{{end}}</p>
+          <form method="post" action="/organisationen/{{$.View.OrganizationID}}/agenten/{{.ID}}/berichtsweg">
+            <label for="parent-{{.ID}}">Vorgesetzte für {{.Name}}</label>
+            <select id="parent-{{.ID}}" name="parent_id">
+              <option value="" {{if not .ParentID}}selected{{end}}>Keine Vorgesetzte</option>
+              {{range $.View.Agents}}<option value="{{.ID}}" {{if eq .ID $agent.ParentID}}selected{{end}}>{{.Name}} · {{.ExecutionKind}}</option>{{end}}
+            </select>
+            <button type="submit">Berichtsweg speichern</button>
+          </form>
+        </article>
+      {{end}}
+    </section>
+  {{end}}
+{{end}}
