@@ -1,0 +1,27 @@
+{
+  "PageTitle": "Verbindungsstatus · Modellanbieter · Settings",
+  "View": {
+    "Providers": [
+      {
+        "ID": "codex-abo",
+        "Name": "Codex-Abo",
+        "AuthMethod": "Gerätecode",
+        "Status": "connected",
+        "StatusDetail": "",
+        "Reference": "codex-chatgpt",
+        "Ready": true,
+        "ManageURL": "/settings/modelle/codex"
+      },
+      {
+        "ID": "openrouter",
+        "Name": "OpenRouter",
+        "AuthMethod": "API-Schlüssel",
+        "Status": "connected",
+        "StatusDetail": "",
+        "Reference": "openrouter-central",
+        "Ready": true,
+        "ManageURL": "/settings/modellanbieter/openrouter"
+      }
+    ]
+  }
+}

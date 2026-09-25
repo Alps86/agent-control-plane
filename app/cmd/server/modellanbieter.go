@@ -15,6 +15,7 @@ import (
 	webopenrouter "agentcontrolplane/app/internal/adapter/web/openrouter"
 	"agentcontrolplane/app/internal/app/modellverbindung"
 	"agentcontrolplane/app/internal/app/openrouterverbindung"
+	"agentcontrolplane/app/internal/app/verbindungsstatus"
 	"agentcontrolplane/ui/bridge"
 )
 
@@ -35,7 +36,7 @@ func (b *Bootstrap) mountModelProviders(server *web.Server, db *sqlite.Database,
 		return err
 	}
 
-	return b.mountOpenRouter(server, db, ui, store)
+	return b.mountOpenRouter(server, db, ui, store, flow)
 }
 
 func (b *Bootstrap) credentialPaths() (string, string) {
@@ -66,7 +67,7 @@ func (b *Bootstrap) mountCodex(server *web.Server, ui *bridge.Bridge, flow *mode
 	return b.mountModelProbe(server, flow)
 }
 
-func (b *Bootstrap) mountOpenRouter(server *web.Server, db *sqlite.Database, ui *bridge.Bridge, store *credentialsadapter.Store) error {
+func (b *Bootstrap) mountOpenRouter(server *web.Server, db *sqlite.Database, ui *bridge.Bridge, store *credentialsadapter.Store, flow *modellverbindung.Service) error {
 	probe, err := b.openRouterProbe()
 	if err != nil {
 		return err
@@ -78,7 +79,13 @@ func (b *Bootstrap) mountOpenRouter(server *web.Server, db *sqlite.Database, ui 
 	server.Handle("/api/settings/modellanbieter/openrouter", handler)
 	server.Handle("/api/settings/modellanbieter/openrouter/", handler)
 	grants := b.mountModelGrants(server, db, ui, service)
-	return b.mountModelChoice(server, db, ui, grants)
+	catalog, err := b.mountModelChoice(server, db, ui, grants)
+	if err != nil {
+		return err
+	}
+	status := verbindungsstatus.NewService(catalog, verbindungsstatus.NewCodexSource(flow), verbindungsstatus.NewOpenRouterSource(service))
+	b.mountConnectionStatus(server, ui, status)
+	return nil
 }
 
 func (b *Bootstrap) codexPage(w http.ResponseWriter, r *http.Request, ui *bridge.Bridge, flow *modellverbindung.Service) {

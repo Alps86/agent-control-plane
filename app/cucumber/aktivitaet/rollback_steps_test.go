@@ -15,6 +15,7 @@ import (
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appprojektarchiv "agentcontrolplane/app/internal/app/projektarchiv"
 	"github.com/cucumber/godog"
 )
 
@@ -50,12 +51,12 @@ func (s *Suite) fixtureRoutes(db *sqlite.Database, mux *http.ServeMux, bindAddre
 	agents := appagent.NewService(db, identity, sqlite.NewOrganizationStore(db))
 	activity := appaktivitaet.NewService(s.failingStore, organizations, identity)
 	tasks := appaufgabe.NewService(db, projects, agents, activity, db)
-	s.fixtureMux(mux, bindAddress, tasks, activity, organizations, projects, agents)
+	s.fixtureMux(db, mux, bindAddress, tasks, activity, organizations, projects, agents)
 }
 
-func (s *Suite) fixtureMux(mux *http.ServeMux, bindAddress string, tasks *appaufgabe.Service, activity *appaktivitaet.Service,
+func (s *Suite) fixtureMux(db *sqlite.Database, mux *http.ServeMux, bindAddress string, tasks *appaufgabe.Service, activity *appaktivitaet.Service,
 	organizations *apporganisation.Service, projects *appprojekt.Service, agents *appagent.Service) {
-	taskHandler := webaufgabe.NewHandler(tasks, projects, agents, organizations, nil, bindAddress)
+	taskHandler := webaufgabe.NewHandler(tasks, projects, appprojektarchiv.NewService(db, organizations), agents, organizations, nil, bindAddress)
 	activityHandler := webaktivitaet.NewHandler(activity, organizations, nil)
 	mux.Handle("POST /api/organisationen/{id}/projekte/{projektID}/aufgaben", taskHandler)
 	mux.Handle("GET /api/organisationen/{id}/projekte/{projektID}/aufgaben/{aufgabeID}", taskHandler)
