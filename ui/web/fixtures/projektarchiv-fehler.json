@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Projektarchiv",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Errors": ["Das Projektarchiv ist gerade nicht erreichbar."],
+  "View": {"Kind": "error"}
+}

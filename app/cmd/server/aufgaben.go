@@ -8,6 +8,7 @@ import (
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appprojektarchiv "agentcontrolplane/app/internal/app/projektarchiv"
 	"agentcontrolplane/ui/bridge"
 )
 
@@ -17,7 +18,7 @@ func (b *Bootstrap) mountTasks(server *web.Server, db *sqlite.Database, organiza
 	agents := appagent.NewService(db, apporganisation.NewLocalIdentity(), sqlite.NewOrganizationStore(db))
 	activities := b.mountActivity(server, db, organizations, ui)
 	tasks := appaufgabe.NewService(db, projects, agents, activities, db)
-	handler := webaufgabe.NewHandler(tasks, projects, agents, organizations, ui, b.address())
+	handler := webaufgabe.NewHandler(tasks, projects, appprojektarchiv.NewService(db, organizations), agents, organizations, ui, b.address())
 	for _, pattern := range []string{
 		"GET /api/organisationen/{id}/projekte/{projektID}/aufgaben",
 		"POST /api/organisationen/{id}/projekte/{projektID}/aufgaben",

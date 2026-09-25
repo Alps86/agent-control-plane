@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 
 	domainaufgabe "agentcontrolplane/app/internal/domain/aufgabe"
 	portaufgabe "agentcontrolplane/app/internal/port/aufgabe"
@@ -23,6 +24,10 @@ func (d *Database) CreateTask(ctx context.Context, task domainaufgabe.Task) erro
 }
 
 func (d *Database) taskWriteResult(result sql.Result, err error) error {
+	if err != nil && strings.Contains(err.Error(), "project_archived") {
+		return portaufgabe.ErrProjectArchived
+	}
+
 	if err != nil {
 		return fmt.Errorf("Aufgabe speichern: %w", err)
 	}

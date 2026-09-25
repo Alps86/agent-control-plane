@@ -7,6 +7,7 @@ import (
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appprojektarchiv "agentcontrolplane/app/internal/app/projektarchiv"
 	"agentcontrolplane/ui/bridge"
 )
 
@@ -14,6 +15,7 @@ import (
 type Handler struct {
 	tasks         *appaufgabe.Service
 	projects      *appprojekt.Service
+	archive       *appprojektarchiv.Service
 	agents        *appagent.Service
 	organizations *apporganisation.Service
 	bridge        *bridge.Bridge

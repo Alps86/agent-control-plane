@@ -17,6 +17,7 @@ var ErrInvalidPriority = domainaufgabe.ErrInvalidPriority
 var ErrInvalidAssignee = errors.New("Zuständiger Agent ist ungültig")
 var ErrAssigneePaused = errors.New("Zuständiger Agent ist pausiert")
 var ErrInvalidProject = errors.New("Projekt ist ungültig")
+var ErrProjectArchived = portaufgabe.ErrProjectArchived
 var ErrNotFound = portaufgabe.ErrNotFound
 var ErrAccessDenied = apporganisation.ErrAccessDenied
 

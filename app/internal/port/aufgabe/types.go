@@ -9,6 +9,7 @@ import (
 
 var ErrNotFound = errors.New("Aufgabe nicht gefunden")
 var ErrInvalidReference = errors.New("Projekt oder Agent ist ungültig")
+var ErrProjectArchived = errors.New("Archiviertes Projekt nimmt keine neue Arbeit an")
 
 // Store speichert Aufgaben ausschließlich in ihrem Organisationsbereich.
 type Store interface {

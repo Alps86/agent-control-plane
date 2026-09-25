@@ -6,6 +6,7 @@ import (
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appprojektarchiv "agentcontrolplane/app/internal/app/projektarchiv"
 	appziel "agentcontrolplane/app/internal/app/ziel"
 	domainprojekt "agentcontrolplane/app/internal/domain/projekt"
 	"agentcontrolplane/ui/bridge"
@@ -14,6 +15,7 @@ import (
 // Handler bindet Projekte an die öffentlichen JSON- und HTML-Routen.
 type Handler struct {
 	projects      *appprojekt.Service
+	archive       *appprojektarchiv.Service
 	tasks         *appaufgabe.Service
 	organizations *apporganisation.Service
 	goals         *appziel.Service
