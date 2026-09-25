@@ -20,7 +20,7 @@ func NewSuite(t *testing.T) *Suite {
 	client := &http.Client{Timeout: 4 * time.Second, Transport: &http.Transport{Proxy: nil}, CheckRedirect: func(_ *http.Request, _ []*http.Request) error {
 		return http.ErrUseLastResponse
 	}}
-	return &Suite{t: t, client: client, organizations: map[string]string{}}
+	return &Suite{t: t, client: client, organizations: map[string]string{}, goals: map[string]string{}, projects: map[string]string{}, baseline: map[string]string{}}
 }
 
 func (s *Suite) build() error {
@@ -150,6 +150,10 @@ func (s *Suite) afterScenario(ctx context.Context, _ *godog.Scenario, _ error) (
 	s.response, s.createdID, s.active = nil, "", ""
 	s.unknownBody = nil
 	s.organizations = map[string]string{}
+	s.goals = map[string]string{}
+	s.projects = map[string]string{}
+	s.baseline = map[string]string{}
+	s.childName = ""
 	s.wildcardRejected = false
 	return ctx, nil
 }

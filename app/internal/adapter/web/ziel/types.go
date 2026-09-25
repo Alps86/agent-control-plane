@@ -5,6 +5,7 @@ import (
 
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appziel "agentcontrolplane/app/internal/app/ziel"
+	domainziel "agentcontrolplane/app/internal/domain/ziel"
 	"agentcontrolplane/ui/bridge"
 )
 
@@ -23,6 +24,26 @@ type createRequest struct {
 
 type listResponse struct {
 	Goals any `json:"goals"`
+}
+
+type treeResponse struct {
+	Goals        []domainziel.Goal        `json:"goals"`
+	ProjectPaths []domainziel.ProjectPath `json:"project_paths"`
+}
+
+type statusRequest struct {
+	Status string `json:"status"`
+}
+
+type goalNode struct {
+	ID             string
+	OrganizationID string
+	Name           string
+	Status         string
+	StatusLabel    string
+	ChildName      string
+	ChildError     string
+	Children       []goalNode
 }
 
 type errorResponse struct {
