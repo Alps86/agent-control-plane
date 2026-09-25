@@ -33,6 +33,7 @@ func (s *Suite) InitializeScenario(sc *godog.ScenarioContext) {
 	sc.Step(`^beendet er den Start mit einem verständlichen Datenbankfehler$`, s.startupError)
 	sc.Step(`^der Server ist über seine öffentliche HTTP-Grenze nicht erreichbar$`, s.notReachable)
 	s.initializeMigrationScenario(sc)
+	s.initializeForeignKeyScenario(sc)
 }
 
 func (s *Suite) initializeMigrationScenario(sc *godog.ScenarioContext) {

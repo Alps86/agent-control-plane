@@ -25,7 +25,11 @@ func OpenWithMigrations(ctx context.Context, path string, additional ...Migratio
 		return nil, err
 	}
 
-	if err = database.connect(ctx, (&url.URL{Scheme: "file", Path: absolute}).String()); err != nil {
+	dsn := &url.URL{Scheme: "file", Path: absolute}
+	query := dsn.Query()
+	query.Set("_foreign_keys", "1")
+	dsn.RawQuery = query.Encode()
+	if err = database.connect(ctx, dsn.String()); err != nil {
 		return nil, err
 	}
 
