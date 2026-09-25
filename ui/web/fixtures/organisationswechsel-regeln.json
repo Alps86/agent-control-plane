@@ -1,0 +1,18 @@
+{
+  "PageTitle": "Arbeitsregeln von Nordstern",
+  "Notice": "",
+  "Errors": [],
+  "View": {
+    "Kind": "rules",
+    "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+    "Revision": 1,
+    "Change": {"Area": "status", "From": "todo", "To": "in_progress", "Approver": "betreiber"},
+    "Areas": [
+      {"Label": "Aufgabenstatus", "Description": "Erlaubte Statusübergänge für Aufgaben.", "Rules": [
+        {"Area": "status", "From": "todo", "To": "in_progress", "Approver": "betreiber"}
+      ]},
+      {"Label": "Zuweisung", "Description": "Erlaubte Übergänge bei der Zuständigkeit.", "Rules": []},
+      {"Label": "Delegation", "Description": "Erlaubte Übergänge für delegierte Arbeit.", "Rules": []}
+    ]
+  }
+}

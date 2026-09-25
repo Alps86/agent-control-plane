@@ -67,6 +67,7 @@ func (b *Bootstrap) assemble(db *sqlite.Database, ui *bridge.Bridge) (*web.Serve
 	organizations := weborganisation.NewHandler(service, ui, b.address())
 	server := web.NewServer(system.NewProbe(), db)
 	b.mount(server, organizations, ui)
+	b.mountOrganizationSwitch(server, db, service, ui)
 	b.mountGoals(server, db, service, ui)
 	b.mountProjects(server, db, service, ui)
 	b.mountAgents(server, db, ui)
