@@ -77,8 +77,8 @@ func (b *Bootstrap) mountOpenRouter(server *web.Server, db *sqlite.Database, ui 
 	server.Handle("/settings/modellanbieter/openrouter/", handler)
 	server.Handle("/api/settings/modellanbieter/openrouter", handler)
 	server.Handle("/api/settings/modellanbieter/openrouter/", handler)
-	b.mountModelGrants(server, db, ui, service)
-	return nil
+	grants := b.mountModelGrants(server, db, ui, service)
+	return b.mountModelChoice(server, db, ui, grants)
 }
 
 func (b *Bootstrap) codexPage(w http.ResponseWriter, r *http.Request, ui *bridge.Bridge, flow *modellverbindung.Service) {
