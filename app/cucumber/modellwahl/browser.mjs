@@ -64,7 +64,7 @@ async function snapshot(expected) {
         item.querySelector('strong')?.textContent?.replace(/:$/, '').trim(),
         {text:item.textContent.replace(/\\s+/g,' ').trim(),checkedAt:item.querySelector('time')?.getAttribute('datetime') || ''}
       ]))
-      return {url:location.href,text:document.querySelector('main')?.textContent?.replace(/\\s+/g,' ').trim() || '',html:document.querySelector('main')?.outerHTML || '',selected:document.querySelector('section[aria-label="Aktuelle Modellwahl"]')?.textContent?.trim() || '',expanded:details?.open || false,modelEvidence:{source:evidenceText.match(/Quelle:\\s*([^·]+)/)?.[1]?.trim() || '',observedAt:evidence?.querySelector('time')?.getAttribute('datetime') || '',status:evidenceText.includes('Nicht nachgewiesen') ? 'Nicht nachgewiesen' : ''},capabilities}
+      return {url:location.href,text:document.querySelector('main')?.textContent?.replace(/\\s+/g,' ').trim() || '',html:document.querySelector('main')?.outerHTML || '',selected:document.querySelector('section[aria-label="Modellwahlstatus"]')?.textContent?.trim() || '',expanded:details?.open || false,modelEvidence:{source:evidenceText.match(/Quelle:\\s*([^·]+)/)?.[1]?.trim() || '',observedAt:evidence?.querySelector('time')?.getAttribute('datetime') || '',status:evidenceText.includes('Nicht nachgewiesen') ? 'Nicht nachgewiesen' : ''},capabilities}
     })()`)
     if (page.text && (!expected || page.selected.includes(expected))) return page
     await new Promise(resolve => setTimeout(resolve, 50))

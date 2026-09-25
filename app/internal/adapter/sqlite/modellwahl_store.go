@@ -10,8 +10,8 @@ import (
 	port "agentcontrolplane/app/internal/port/modellwahl"
 )
 
-// Get reads a route only through the agent's organization and operator owner.
-func (d *Database) Get(ctx context.Context, organizationID, agentID, operatorID string) (domain.Selection, error) {
+// GetModelChoice reads a route only through the agent's organization and operator owner.
+func (d *Database) GetModelChoice(ctx context.Context, organizationID, agentID, operatorID string) (domain.Selection, error) {
 	row := d.executor(ctx).QueryRowContext(ctx, `SELECT m.provider_id, m.connection_id, m.model_id
 		FROM agent_model_selections m JOIN agents a ON a.id=m.agent_id
 		JOIN organizations o ON o.id=a.organization_id
