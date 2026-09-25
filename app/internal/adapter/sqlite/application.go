@@ -21,6 +21,7 @@ func OpenApplication(ctx context.Context, path string) (*Database, error) {
 		ActivityMigration(),
 		ProjectArchiveMigration(),
 		CommentMigration(),
+		BerichtswegMigration(),
 	}
 
 	return OpenWithMigrations(ctx, path, steps...)

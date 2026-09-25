@@ -73,6 +73,7 @@ func (b *Bootstrap) assemble(db *sqlite.Database, ui *bridge.Bridge) (*web.Serve
 	b.mountProjectArchive(server, db, service, ui)
 	b.mountProjectLocations(server, db, service, ui)
 	b.mountAgents(server, db, ui)
+	b.mountReportingLines(server, db, ui)
 	b.mountDataScope(server, db, ui)
 	b.mountCodexProfile(server, db, ui)
 	b.mountSettings(server, ui)

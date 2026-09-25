@@ -1,0 +1,21 @@
+{
+  "PageTitle": "Kai · Codex CLI",
+  "Notice": "",
+  "Errors": [],
+  "View": {
+    "Kind": "detail",
+    "OrganizationID": "org-nordstern",
+    "OrganizationName": "Nordstern",
+    "Agent": {
+      "ID": "agent-kai",
+      "Name": "Kai",
+      "Capabilities": [],
+      "ExecutionKind": "codex_cli",
+      "ExecutionKindLabel": "Codex CLI",
+      "ReadinessLabel": "Nicht startbereit",
+      "ReadinessReason": "Das Fähigkeitsprofil ist noch nicht freigegeben.",
+      "ParentID": "",
+      "ParentName": ""
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "PageTitle": "Organigramm",
+  "Notice": "",
+  "Errors": [],
+  "View": {
+    "Kind": "chart",
+    "OrganizationID": "org-nordstern",
+    "Roots": [
+      {"ID": "agent-kai", "Name": "Kai", "ExecutionKind": "Eino", "ParentID": "", "ParentName": "", "ProfileURL": "/organisationen/org-nordstern/agenten/agent-kai", "Children": [
+        {"ID": "agent-mira", "Name": "Mira", "ExecutionKind": "Eino", "ParentID": "agent-kai", "ParentName": "Kai", "ProfileURL": "/organisationen/org-nordstern/agenten/agent-mira", "Children": []}
+      ]},
+      {"ID": "agent-lena", "Name": "Lena", "ExecutionKind": "Eino", "ParentID": "", "ParentName": "", "ProfileURL": "/organisationen/org-nordstern/agenten/agent-lena", "Children": []}
+    ],
+    "Agents": [
+      {"ID": "agent-kai", "Name": "Kai", "ExecutionKind": "Eino", "ParentID": "", "ParentName": "", "ProfileURL": "/organisationen/org-nordstern/agenten/agent-kai"},
+      {"ID": "agent-mira", "Name": "Mira", "ExecutionKind": "Eino", "ParentID": "agent-kai", "ParentName": "Kai", "ProfileURL": "/organisationen/org-nordstern/agenten/agent-mira"},
+      {"ID": "agent-lena", "Name": "Lena", "ExecutionKind": "Eino", "ParentID": "", "ParentName": "", "ProfileURL": "/organisationen/org-nordstern/agenten/agent-lena"}
+    ]
+  }
+}

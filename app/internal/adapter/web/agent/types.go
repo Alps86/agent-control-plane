@@ -4,15 +4,23 @@ import (
 	"net/http"
 
 	appagent "agentcontrolplane/app/internal/app/agent"
+	appberichtsweg "agentcontrolplane/app/internal/app/berichtsweg"
 	"agentcontrolplane/ui/bridge"
 )
 
 // Handler exposes only organization-scoped agent operations.
 type Handler struct {
 	service     *appagent.Service
+	reporting   *appberichtsweg.Service
 	bridge      *bridge.Bridge
 	bindAddress string
 	mux         *http.ServeMux
+}
+
+type profileResponse struct {
+	appagent.Profile
+	ParentID   string `json:"parent_id"`
+	ParentName string `json:"parent_name"`
 }
 
 type listResponse struct {
