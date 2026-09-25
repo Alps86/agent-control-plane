@@ -1,0 +1,33 @@
+{{define "modelle/status/page"}}
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.PageTitle}}</title>
+    <link rel="stylesheet" href="/assets/index.css">
+    <style>
+      .connection-page { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 4rem; }
+      .connection-list { display: grid; gap: 1rem; margin-top: 1.5rem; }
+      .connection-card { border: 1px solid #d6dce5; border-radius: 12px; padding: 1.5rem; background: #fff; }
+      .connection-card h2 { margin-top: 0; }
+      .connection-card dl { display: grid; grid-template-columns: minmax(10rem, 1fr) 2fr; gap: .65rem 1rem; }
+      .connection-card dt { font-weight: 700; }
+      .connection-card dd { margin: 0; overflow-wrap: anywhere; }
+      .connection-card code { overflow-wrap: anywhere; }
+      .connection-state { font-weight: 700; }
+      .connection-state[data-ready="false"] { color: #8b341c; }
+      .connection-note { margin-bottom: 0; }
+      @media (max-width: 540px) {
+        .connection-card dl { display: block; }
+        .connection-card dd { margin: .2rem 0 .85rem; }
+      }
+    </style>
+  </head>
+  <body>
+    <main id="content" class="connection-page" tabindex="-1">
+      {{template "modelle/status/content" .}}
+    </main>
+  </body>
+</html>
+{{end}}

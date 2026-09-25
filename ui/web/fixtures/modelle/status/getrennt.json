@@ -1,0 +1,27 @@
+{
+  "PageTitle": "Verbindungsstatus · Modellanbieter · Settings",
+  "View": {
+    "Providers": [
+      {
+        "ID": "codex-abo",
+        "Name": "Codex-Abo",
+        "AuthMethod": "Gerätecode",
+        "Status": "connected",
+        "StatusDetail": "",
+        "Reference": "codex-chatgpt",
+        "Ready": true,
+        "ManageURL": "/settings/modelle/codex"
+      },
+      {
+        "ID": "openrouter",
+        "Name": "OpenRouter",
+        "AuthMethod": "API-Schlüssel",
+        "Status": "disconnected",
+        "StatusDetail": "Die zentrale Verbindung wurde getrennt.",
+        "Reference": "",
+        "Ready": false,
+        "ManageURL": "/settings/modellanbieter/openrouter"
+      }
+    ]
+  }
+}

@@ -18,17 +18,17 @@ import (
 )
 
 // mountModelChoice is called after migration 14 and Story-24 access wiring.
-func (b *Bootstrap) mountModelChoice(server *web.Server, db *sqlite.Database, ui *bridge.Bridge, grants *appfreigabe.Service) error {
+func (b *Bootstrap) mountModelChoice(server *web.Server, db *sqlite.Database, ui *bridge.Bridge, grants *appfreigabe.Service) (domainmodellwahl.Catalog, error) {
 	catalog, err := appmodellwahl.NewCatalogLoader().Load(os.Getenv("APP_MODEL_CATALOG_PATH"))
 	if err != nil {
-		return fmt.Errorf("Modellwahl startup: %w", err)
+		return domainmodellwahl.Catalog{}, fmt.Errorf("Modellwahl startup: %w", err)
 	}
 
 	service := appmodellwahl.NewService(db, apporganisation.NewLocalIdentity(), modelChoiceStore{db}, modelGrantAccess{grants}, catalog)
 	handler := webmodellwahl.NewHandler(service, ui, b.address())
 	server.Handle("/api/organisationen/{id}/agenten/{agentID}/modellwahl", handler)
 	server.Handle("/organisationen/{id}/agenten/{agentID}/modellwahl", handler)
-	return nil
+	return catalog, nil
 }
 
 func (s modelChoiceStore) Get(ctx context.Context, organizationID, agentID, operatorID string) (domainmodellwahl.Selection, error) {
