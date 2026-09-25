@@ -75,7 +75,7 @@ func (h *Handler) release() { <-h.slot }
 func (h *Handler) run(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 45*time.Second)
 	defer cancel()
-	run := &probeRun{status: h.status}
+	run := &probeRun{status: h.status, modelID: h.modelID}
 	transport := h.transport()
 	chat, err := codexabo.New(h.modelID, h.access, &http.Client{Transport: transport, Timeout: 45 * time.Second}, run)
 	if err != nil {
@@ -98,7 +98,7 @@ func (h *Handler) transport() *boundedTransport {
 		base = h.client.Transport
 	}
 
-	return &boundedTransport{base: base}
+	return &boundedTransport{base: base, progress: make(chan struct{}, 1)}
 }
 
 func (h *Handler) jsonError(w http.ResponseWriter, status int, kind string) {
