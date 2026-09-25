@@ -1,0 +1,18 @@
+{
+  "PageTitle": "Aktivitätsverlauf",
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Navigation": [
+    {"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"},
+    {"Key": "aktivitaet", "Label": "Aktivität", "Href": "/organisationen/org-nordstern/aktivitaet", "Icon": "◷"}
+  ],
+  "Errors": [],
+  "View": {
+    "Kind": "list",
+    "Filter": {"Agent": "", "Action": "", "From": "", "To": "", "Object": "", "Limit": "", "Offset": ""},
+    "ExportURL": "/api/organisationen/org-nordstern/aktivitaet/export.csv",
+    "Events": [
+      {"ID": "event-1", "KindLabel": "Aufgabe angelegt", "ActorLabel": "Lokaler Betreiber", "SourceLabel": "Browser", "OccurredAtISO": "2026-09-25T08:20:00Z", "OccurredAtLabel": "25.09.2026 08:20 UTC", "ObjectTitle": "Startseite prüfen", "DeepLink": "/organisationen/org-nordstern/projekte/projekt-website/aufgaben/aufgabe-1"},
+      {"ID": "event-2", "KindLabel": "Aufgabe zugewiesen", "ActorLabel": "Lokaler Betreiber", "SourceLabel": "Browser", "OccurredAtISO": "2026-09-25T08:20:00Z", "OccurredAtLabel": "25.09.2026 08:20 UTC", "ObjectTitle": "Startseite prüfen", "AssigneeName": "Mira", "DeepLink": "/organisationen/org-nordstern/projekte/projekt-website/aufgaben/aufgabe-1"}
+    ]
+  }
+}

@@ -6,18 +6,21 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strings"
 
 	appagent "agentcontrolplane/app/internal/app/agent"
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appprojektarchiv "agentcontrolplane/app/internal/app/projektarchiv"
+	domainaktivitaet "agentcontrolplane/app/internal/domain/aktivitaet"
 	domainaufgabe "agentcontrolplane/app/internal/domain/aufgabe"
 	"agentcontrolplane/ui/bridge"
 )
 
 // NewHandler erstellt die Projekt-gebundenen Aufgabenrouten.
-func NewHandler(tasks *appaufgabe.Service, projects *appprojekt.Service, agents *appagent.Service, organizations *apporganisation.Service, ui *bridge.Bridge, bindAddress string) *Handler {
-	h := &Handler{tasks: tasks, projects: projects, agents: agents, organizations: organizations, bridge: ui, bindAddress: bindAddress, mux: http.NewServeMux()}
+func NewHandler(tasks *appaufgabe.Service, projects *appprojekt.Service, archive *appprojektarchiv.Service, agents *appagent.Service, organizations *apporganisation.Service, ui *bridge.Bridge, bindAddress string) *Handler {
+	h := &Handler{tasks: tasks, projects: projects, archive: archive, agents: agents, organizations: organizations, bridge: ui, bindAddress: bindAddress, mux: http.NewServeMux()}
 	h.mux.HandleFunc("GET /api/organisationen/{id}/projekte/{projektID}/aufgaben", h.apiList)
 	h.mux.HandleFunc("POST /api/organisationen/{id}/projekte/{projektID}/aufgaben", h.apiCreate)
 	h.mux.HandleFunc("GET /api/organisationen/{id}/projekte/{projektID}/aufgaben/{aufgabeID}", h.apiGet)
@@ -148,8 +151,13 @@ func (h *Handler) decodeEnd(decoder *json.Decoder) error {
 }
 
 func (h *Handler) input(r *http.Request, request createRequest) appaufgabe.CreateInput {
+	source := domainaktivitaet.SourceBrowser
+	if strings.HasPrefix(r.URL.Path, "/api/organisationen/") {
+		source = domainaktivitaet.SourceAPI
+	}
+
 	return appaufgabe.CreateInput{ProjectID: r.PathValue("projektID"), Title: request.Title,
-		Description: request.Description, Priority: request.Priority, AssigneeID: request.AssigneeID}
+		Description: request.Description, Priority: request.Priority, AssigneeID: request.AssigneeID, Source: source}
 }
 
 func (h *Handler) apiURL(task domainaufgabe.Task) string {
@@ -170,6 +178,11 @@ func (h *Handler) find(r *http.Request) (domainaufgabe.Task, error) {
 }
 
 func (h *Handler) apiError(w http.ResponseWriter, err error) {
+	if errors.Is(err, appaufgabe.ErrProjectArchived) {
+		h.json(w, http.StatusConflict, errorResponse{Error: "project_archived"})
+		return
+	}
+
 	if errors.Is(err, appaufgabe.ErrAccessDenied) {
 		h.json(w, http.StatusForbidden, errorResponse{Error: "access_denied"})
 		return

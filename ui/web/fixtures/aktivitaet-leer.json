@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Aktivitätsverlauf",
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Navigation": [{"Key": "aktivitaet", "Label": "Aktivität", "Href": "/organisationen/org-nordstern/aktivitaet", "Icon": "◷"}],
+  "Errors": [],
+  "View": {"Kind": "list", "Filter": {"Agent": "", "Action": "", "From": "", "To": "", "Object": "", "Limit": "", "Offset": ""}, "ExportURL": "/api/organisationen/org-nordstern/aktivitaet/export.csv", "Events": []}
+}

@@ -1,0 +1,24 @@
+{{define "kommentare/page"}}
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{.PageTitle}}</title>
+    <link rel="stylesheet" href="/assets/index.css">
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Hauptnavigation">
+        <a class="brand" href="/organisationen"><span class="brand-mark">✳</span><span>agent<span class="brand-light">control</span><small>CONTROL PLANE</small></span></a>
+        <div class="side-label nav-label">NAVIGATION</div>
+        <nav>{{range .Navigation}}<a class="nav-item" href="{{.Href}}"><span class="nav-icon" aria-hidden="true">{{.Icon}}</span>{{.Label}}</a>{{end}}</nav>
+      </aside>
+      <div class="main-wrap">
+        <header class="topbar"><div class="breadcrumb">{{.Organization.Name}} <span>/</span> <strong>Aufgabenkommentare</strong></div></header>
+        <main id="content" class="content" tabindex="-1">{{template "kommentare/content" .}}</main>
+      </div>
+    </div>
+  </body>
+</html>
+{{end}}

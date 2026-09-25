@@ -18,6 +18,9 @@ func OpenApplication(ctx context.Context, path string) (*Database, error) {
 		OrganizationRulesMigration(),
 		ProjectLocationMigration(),
 		ModelChoiceMigration(),
+		ActivityMigration(),
+		ProjectArchiveMigration(),
+		CommentMigration(),
 	}
 
 	return OpenWithMigrations(ctx, path, steps...)
