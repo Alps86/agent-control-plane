@@ -1,0 +1,38 @@
+{{define "modelle/status/content"}}
+  <nav aria-label="Pfad"><a href="/settings">Settings</a> <span aria-hidden="true">/</span> Modellanbieter</nav>
+  <header>
+    <p class="eyebrow">SETTINGS / MODELLANBIETER</p>
+    <h1>Verbindungsstatus</h1>
+    <p>Überblick über die Modellverbindungen dieser Installation. Eine nicht einsatzbereite Verbindung kann für neue Modellaufrufe nicht verwendet werden.</p>
+  </header>
+  <div class="connection-list" aria-label="Modellverbindungen">
+    {{range .View.Providers}}
+      <section class="connection-card" id="connection-{{.ID}}" aria-labelledby="connection-title-{{.ID}}" data-state="{{.Status}}" data-ready="{{.Ready}}">
+        <h2 id="connection-title-{{.ID}}">{{.Name}}</h2>
+        <dl>
+          <dt>Authentifizierungsart</dt>
+          <dd>{{.AuthMethod}}</dd>
+          <dt>Verbindungsstatus</dt>
+          <dd class="connection-state" role="status" data-ready="{{.Ready}}">
+            {{if eq .Status "connected"}}Verbunden
+            {{else if eq .Status "reauthentication_required"}}Erneute Anmeldung erforderlich
+            {{else if eq .Status "pending"}}Anmeldung läuft
+            {{else if eq .Status "disconnected"}}Getrennt
+            {{else if eq .Status "not_ready"}}Nicht einsatzbereit
+            {{else if eq .Status "unavailable"}}Nicht verfügbar
+            {{else if eq .Status "not_configured"}}Nicht eingerichtet
+            {{else}}Status unbekannt{{end}}
+          </dd>
+          {{if .Reference}}
+            <dt>Verbindungsreferenz</dt>
+            <dd><code>{{.Reference}}</code>{{if not .Ready}} · derzeit nicht nutzbar{{end}}</dd>
+          {{end}}
+        </dl>
+        {{if .StatusDetail}}<p class="connection-note">{{.StatusDetail}}</p>{{end}}
+        {{if .ManageURL}}<p><a href="{{.ManageURL}}">{{.Name}} verwalten →</a></p>{{end}}
+      </section>
+    {{else}}
+      <section class="connection-card"><h2>Keine Verbindungsstatus verfügbar</h2><p>Für diese Installation sind derzeit keine Statusquellen für Modellverbindungen eingerichtet.</p></section>
+    {{end}}
+  </div>
+{{end}}

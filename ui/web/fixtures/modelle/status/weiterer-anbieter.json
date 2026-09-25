@@ -1,0 +1,17 @@
+{
+  "PageTitle": "Verbindungsstatus · Modellanbieter · Settings",
+  "View": {
+    "Providers": [
+      {
+        "ID": "weiterer-anbieter",
+        "Name": "Weiterer Testanbieter",
+        "AuthMethod": "API-Schlüssel",
+        "Status": "not_configured",
+        "StatusDetail": "Für diesen Anbieter ist keine Verbindung eingerichtet.",
+        "Reference": "",
+        "Ready": false,
+        "ManageURL": ""
+      }
+    ]
+  }
+}
