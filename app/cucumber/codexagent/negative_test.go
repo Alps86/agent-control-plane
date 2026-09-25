@@ -16,7 +16,7 @@ import (
 )
 
 func (s *Suite) startNegative() error {
-	db, err := sqlite.OpenWithMigrations(context.Background(), s.dbPath, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(), sqlite.TaskMigration(), sqlite.GoalTreeMigration())
+	db, err := sqlite.OpenApplication(context.Background(), s.dbPath)
 	if err != nil {
 		return err
 	}
