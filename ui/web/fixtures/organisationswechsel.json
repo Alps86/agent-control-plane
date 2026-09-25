@@ -1,0 +1,13 @@
+{
+  "PageTitle": "Organisation wählen",
+  "Notice": "",
+  "Errors": [],
+  "View": {
+    "Kind": "list",
+    "Query": "",
+    "Organizations": [
+      {"ID": "org-nordstern", "Name": "Nordstern", "Description": "Wissensarbeit für das Team", "Selected": true},
+      {"ID": "org-suedwind", "Name": "Südwind", "Description": "Recherche und Projekte", "Selected": false}
+    ]
+  }
+}
