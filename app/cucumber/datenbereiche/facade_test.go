@@ -20,7 +20,7 @@ func (s *Suite) openStore() error {
 
 	store, err := sqlite.OpenWithMigrations(context.Background(), s.database,
 		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(),
-		sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration())
+		sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(), sqlite.TaskMigration())
 	if err != nil {
 		return err
 	}

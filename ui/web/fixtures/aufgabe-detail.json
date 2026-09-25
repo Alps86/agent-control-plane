@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Startseite prüfen",
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Errors": [],
+  "View": {"Kind": "detail", "Project": {"ID": "projekt-website", "Name": "Website"}, "Task": {"ID": "aufgabe-1", "Title": "Startseite prüfen", "Description": "Navigation und Texte prüfen", "PriorityLabel": "Hoch", "AssigneeName": "Mira", "ExecutionKindLabel": "Eino", "StatusLabel": "Offen"}}
+}
