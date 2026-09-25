@@ -1,0 +1,43 @@
+{{define "kommentare/content"}}
+  {{if .Errors}}<div class="notice" role="alert">{{range .Errors}}<p>{{.}}</p>{{end}}</div>{{end}}
+  {{if eq .View.Kind "error"}}
+    <section class="empty-state"><h1>Aufgabenkommentare</h1><p>Die Anfrage konnte nicht abgeschlossen werden.</p></section>
+  {{end}}
+  {{if eq .View.Kind "thread"}}
+    <div class="page-heading"><div><div class="eyebrow">{{.Organization.Name}} / {{.View.Project.Name}}</div><h1>Kommentare zu {{.View.Task.Title}}</h1></div></div>
+    <section class="stat-card" aria-label="Aufgabenthread" data-task-id="{{.View.Task.ID}}">
+      <h2>Aufgabenthread</h2>
+      {{if .View.Comments}}
+        <ol class="comment-thread">
+          {{range .View.Comments}}
+            <li class="comment" data-comment-id="{{.ID}}">
+              <p>{{.Content}}</p>
+              <p><small>Quelle: {{.SourceLabel}} · <time datetime="{{.Timestamp}}">{{.Timestamp}}</time></small></p>
+              {{if .References}}
+                <ul aria-label="Verknüpfte Referenzen">
+                  {{range .References}}
+                    <li>
+                      {{.TypeLabel}}:
+                      {{if .Link}}<a href="{{.Link}}">{{if .DisplayName}}{{.DisplayName}}{{else}}{{.ID}}{{end}}</a>{{else}}{{if .DisplayName}}{{.DisplayName}}{{else}}{{.ID}}{{end}}{{end}}
+                      {{if .DisplayName}} · Kennung: {{.ID}}{{end}}
+                      · Organisation: {{.OrganizationID}}
+                    </li>
+                  {{end}}
+                </ul>
+              {{end}}
+            </li>
+          {{end}}
+        </ol>
+      {{else}}<p>Noch keine Kommentare zu dieser Aufgabe.</p>{{end}}
+    </section>
+    <section class="stat-card">
+      <h2>Kommentar schreiben</h2>
+      <form action="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}/aufgaben/{{.View.Task.ID}}/kommentare" method="post" novalidate>
+        <p><label for="kommentar-content">Kommentar</label><br><textarea id="kommentar-content" name="content" rows="5" required aria-describedby="kommentar-content-error">{{.View.Content}}</textarea></p>
+        {{with index .View.FieldErrors "content"}}<p id="kommentar-content-error" role="alert">{{.}}</p>{{end}}
+        <p><button type="submit">Kommentar senden</button></p>
+      </form>
+    </section>
+    <p><a class="text-link" href="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}/aufgaben/{{.View.Task.ID}}">Zur Aufgabe →</a></p>
+  {{end}}
+{{end}}

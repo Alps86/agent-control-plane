@@ -32,6 +32,7 @@
   {{if eq .View.Kind "detail"}}
     <div class="page-heading"><div><div class="eyebrow">{{.Organization.Name}} / {{.View.Project.Name}}</div><h1>{{.View.Task.Title}}</h1></div></div>
     <section class="stat-card"><h2>Aufgabe</h2><p><strong>Beschreibung:</strong> {{.View.Task.Description}}</p><p><strong>Priorität:</strong> {{.View.Task.PriorityLabel}}</p><p><strong>Projekt:</strong> <a href="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}">{{.View.Project.Name}}</a></p><p><strong>Zuständig:</strong> {{.View.Task.AssigneeName}} · {{.View.Task.ExecutionKindLabel}}</p><p><strong>Status:</strong> {{.View.Task.StatusLabel}}</p></section>
+    <p><a class="hero-link" href="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}/aufgaben/{{.View.Task.ID}}/kommentare">Aufgabenthread und Kommentare öffnen →</a></p>
     <p><a class="text-link" href="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}/aufgaben">Zur Aufgabenliste →</a></p>
   {{end}}
 {{end}}

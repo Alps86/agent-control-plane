@@ -13,6 +13,7 @@ import (
 
 func (b *Bootstrap) mountProjects(server *web.Server, db *sqlite.Database, organizations *apporganisation.Service, ui *bridge.Bridge) {
 	tasks := b.mountTasks(server, db, organizations, ui)
+	b.mountComments(server, db, organizations, tasks, ui)
 	projects := webprojekt.NewHandler(appprojekt.NewService(db, organizations), organizations, appziel.NewService(db, organizations), ui, b.address())
 	projects.SetArchive(appprojektarchiv.NewService(db, organizations))
 	projects.SetTasks(tasks)

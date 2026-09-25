@@ -1,0 +1,17 @@
+{
+  "PageTitle": "Kommentare zu Texte prüfen",
+  "Organization": {"ID": "nordstern", "Name": "Nordstern"},
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Errors": [],
+  "View": {
+    "Kind": "thread",
+    "Project": {"ID": "website", "Name": "Website"},
+    "Task": {"ID": "texte-pruefen", "Title": "Texte prüfen"},
+    "Comments": [
+      {"ID": "kommentar-1", "Content": "Fachprüfung folgt", "SourceLabel": "Betreiberin", "Timestamp": "2026-09-25T09:15:00Z", "References": []},
+      {"ID": "kommentar-2", "Content": "Entwurf ist bereit", "SourceLabel": "Mira", "Timestamp": "2026-09-25T09:18:00Z", "References": [{"TypeLabel": "Artefakt", "ID": "entwurf-7", "OrganizationID": "nordstern", "DisplayName": "Entwurf 7", "Link": "/organisationen/nordstern/artefakte/entwurf-7"}]}
+    ],
+    "Content": "",
+    "FieldErrors": {}
+  }
+}
