@@ -33,9 +33,21 @@ func (h *Handler) goalNodes(goals []domainziel.Goal, parent string) []goalNode {
 			continue
 		}
 
-		nodes = append(nodes, goalNode{ID: goal.ID, OrganizationID: goal.OrganizationID, Name: goal.Name, Status: goal.Status, StatusLabel: h.statusLabel(goal.Status), Children: h.goalNodes(goals, goal.ID)})
+		nodes = append(nodes, goalNode{ID: goal.ID, OrganizationID: goal.OrganizationID, Name: goal.Name,
+			Status: goal.Status, StatusLabel: h.statusLabel(goal.Status), ParentGoalID: h.parentID(goal),
+			ParentOptions: h.parentOptions(goals, goal), Children: h.goalNodes(goals, goal.ID)})
 	}
 	return nodes
+}
+
+func (h *Handler) parentOptions(goals []domainziel.Goal, current domainziel.Goal) []parentOption {
+	parentID := h.parentID(current)
+	options := []parentOption{{ID: "", Name: "Stammziel", Selected: parentID == ""}}
+	for _, goal := range goals {
+		options = append(options, parentOption{ID: goal.ID, Name: goal.Name, Selected: goal.ID == parentID})
+	}
+
+	return options
 }
 
 func (h *Handler) parentID(goal domainziel.Goal) string {
@@ -141,6 +153,9 @@ func (h *Handler) actionMessage(err error) string {
 	}
 	if errors.Is(err, appziel.ErrInvalidParent) {
 		return "Bitte wählen Sie ein Ziel dieser Organisation aus."
+	}
+	if errors.Is(err, appziel.ErrGoalCycle) {
+		return "Diese Zielkante würde einen Kreis bilden."
 	}
 	if errors.Is(err, appziel.ErrInvalidStatus) {
 		return "Bitte wählen Sie einen gültigen Status aus."

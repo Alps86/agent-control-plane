@@ -62,6 +62,15 @@ func (s *Service) SetStatus(ctx context.Context, organizationID, goalID, status 
 	return s.store.SetGoalStatus(ctx, organizationID, goalID, status)
 }
 
+// Move ändert die Elternziel-Kante; ein leeres Elternziel macht das Ziel zum Stammziel.
+func (s *Service) Move(ctx context.Context, organizationID, goalID, parentGoalID string) (domainziel.Goal, error) {
+	if err := s.checkOrganization(ctx, organizationID); err != nil {
+		return domainziel.Goal{}, err
+	}
+
+	return s.store.MoveGoal(ctx, organizationID, goalID, parentGoalID)
+}
+
 // List zeigt nur Ziele einer zugänglichen Organisation.
 func (s *Service) List(ctx context.Context, organizationID string) ([]domainziel.Goal, error) {
 	if err := s.checkOrganization(ctx, organizationID); err != nil {

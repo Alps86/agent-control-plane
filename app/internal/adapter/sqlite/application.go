@@ -16,6 +16,8 @@ func OpenApplication(ctx context.Context, path string) (*Database, error) {
 		GoalTreeMigration(),
 		ModellfreigabeMigration(),
 		OrganizationRulesMigration(),
+		ProjectLocationMigration(),
+		ModelChoiceMigration(),
 	}
 
 	return OpenWithMigrations(ctx, path, steps...)

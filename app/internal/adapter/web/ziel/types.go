@@ -41,9 +41,22 @@ type goalNode struct {
 	Name           string
 	Status         string
 	StatusLabel    string
+	ParentGoalID   string
+	ParentOptions  []parentOption
+	ParentError    string
 	ChildName      string
 	ChildError     string
 	Children       []goalNode
+}
+
+type parentOption struct {
+	ID       string
+	Name     string
+	Selected bool
+}
+
+type moveRequest struct {
+	ParentGoalID *string `json:"parent_goal_id"`
 }
 
 type errorResponse struct {

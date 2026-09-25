@@ -19,6 +19,8 @@ func TestFeatures(t *testing.T) {
 			"../../../features/ui/ziele/story-13.feature",
 			"../../../features/app/ziele/story-32.feature",
 			"../../../features/ui/ziele/story-32.feature",
+			"../../../features/app/ziele/story-33.feature",
+			"../../../features/ui/ziele/story-33.feature",
 		}, TestingT: t}}
 	if runner.Run() != 0 {
 		t.Fatal("GOAL-01-Godog-Szenarien fehlgeschlagen")

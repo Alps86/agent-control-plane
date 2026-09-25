@@ -11,7 +11,7 @@ import (
 )
 
 // mountModelGrants bindet die Freigaben an dieselbe zentrale Verbindung wie Settings.
-func (b *Bootstrap) mountModelGrants(server *web.Server, db *sqlite.Database, ui *bridge.Bridge, connection portfreigabe.ConnectionStatus) {
+func (b *Bootstrap) mountModelGrants(server *web.Server, db *sqlite.Database, ui *bridge.Bridge, connection portfreigabe.ConnectionStatus) *appfreigabe.Service {
 	service := appfreigabe.NewService(sqlite.NewModellfreigabeStore(db), sqlite.NewOrganizationStore(db), db, apporganisation.NewLocalIdentity(), connection)
 	handler := webfreigabe.NewHandler(service, ui, b.address())
 	for _, pattern := range []string{
@@ -20,4 +20,5 @@ func (b *Bootstrap) mountModelGrants(server *web.Server, db *sqlite.Database, ui
 	} {
 		server.Handle(pattern, handler)
 	}
+	return service
 }
