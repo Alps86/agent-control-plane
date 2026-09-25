@@ -1,0 +1,12 @@
+{
+  "PageTitle": "Ausführungsort · Website",
+  "Navigation": [{"Key": "organisation", "Label": "Organisationen", "Href": "/organisationen", "Icon": "✳"}],
+  "Notice": "",
+  "Errors": [],
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "View": {
+    "Kind": "location",
+    "Project": {"ID": "projekt-website", "Name": "Website"},
+    "Location": {"Configured": false, "Kind": "", "Path": "", "StartReady": false, "Code": "project_location_missing", "Reason": "Aktivieren Sie den privaten Projektort vor dem Start."}
+  }
+}
