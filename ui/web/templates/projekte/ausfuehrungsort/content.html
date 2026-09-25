@@ -1,0 +1,40 @@
+{{define "projekte/ausfuehrungsort/content"}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">{{.Organization.Name}} / {{.View.Project.Name}}</div>
+      <h1>Ausführungsort</h1>
+      <p>Der private Projektarbeitsordner wird von der Anwendung verwaltet und für den Start geprüft.</p>
+    </div>
+  </div>
+
+  {{if .Notice}}<div class="notice" role="status">{{.Notice}}</div>{{end}}
+  {{if .Errors}}<div class="notice" role="alert">{{range .Errors}}<p>{{.}}</p>{{end}}</div>{{end}}
+
+  <section class="stat-card" aria-label="Privater Projektort">
+    <h2>Privater Projektarbeitsordner</h2>
+    {{if .View.Location.StartReady}}
+      <p><strong>Aktiviert</strong> · Appverwalteter Ordner</p>
+      <p>Erlaubter Ort: <code>{{.View.Location.Path}}</code></p>
+      <p role="status">Diese Ordnerbindung ist für den Start bereit.</p>
+    {{else if eq .View.Location.Code "project_location_invalid"}}
+      <p role="alert">Die gespeicherte Ordnerbindung ist derzeit ungültig. Der Start bleibt gesperrt.</p>
+      <p>{{.View.Location.Reason}}</p>
+      <p>Aktivieren Sie den privaten Projektarbeitsordner erneut, um die Bindung zu korrigieren.</p>
+    {{else}}
+      <p><strong>Deaktiviert</strong> · Es ist noch kein Projektarbeitsordner gebunden.</p>
+      <p role="status">Ohne Ordnerbindung kann dieses Projekt nicht gestartet werden.</p>
+    {{end}}
+    <p>Der Pfad wird serverseitig bestimmt. Eine freie Pfadeingabe ist nicht vorgesehen.</p>
+  </section>
+
+  {{if not .View.Location.StartReady}}
+    <form action="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}/ausfuehrungsort" method="post">
+      <input type="hidden" name="kind" value="managed_directory">
+      <p><button type="submit">{{if eq .View.Location.Code "project_location_invalid"}}Ordnerbindung korrigieren{{else}}Privaten Projektarbeitsordner aktivieren{{end}}</button></p>
+    </form>
+  {{end}}
+  <form action="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}/ausfuehrungsort/startpruefung" method="post">
+    <p><button type="submit">Startprüfung ausführen</button></p>
+  </form>
+  <p><a class="text-link" href="/organisationen/{{.Organization.ID}}/projekte/{{.View.Project.ID}}">Zum Projektdetail →</a></p>
+{{end}}

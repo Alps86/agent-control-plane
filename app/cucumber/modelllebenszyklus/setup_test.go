@@ -27,6 +27,7 @@ func (s *Suite) InitializeScenario(sc *godog.ScenarioContext) {
 	s.registerCodex(sc)
 	s.registerOpenRouter(sc)
 	s.registerBinding(sc)
+	s.registerInvoke(sc)
 	s.registerSecrets(sc)
 }
 
@@ -97,6 +98,9 @@ func (s *Suite) routes(codex, openrouter http.Handler) http.Handler {
 
 func (s *Suite) cleanup(ctx context.Context, _ *godog.Scenario, _ error) (context.Context, error) {
 	s.stopProcess()
+	if s.db != nil {
+		_ = s.db.Close()
+	}
 	if s.app != nil {
 		s.app.Close()
 	}

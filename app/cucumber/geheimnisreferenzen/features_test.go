@@ -1,0 +1,17 @@
+package geheimnisreferenzen
+
+import (
+	"testing"
+
+	"github.com/cucumber/godog"
+)
+
+func TestFeatures(t *testing.T) {
+	suite := &Suite{t: t}
+	runner := godog.TestSuite{ScenarioInitializer: suite.InitializeScenario, Options: &godog.Options{
+		Paths: []string{"../../../features/app/betrieb/story-79.feature"}, TestingT: t, Format: "pretty",
+	}}
+	if runner.Run() != 0 {
+		t.Fatal("Story-79-Statusabnahme fehlgeschlagen")
+	}
+}

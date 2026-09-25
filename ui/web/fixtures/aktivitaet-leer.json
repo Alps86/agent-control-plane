@@ -1,0 +1,7 @@
+{
+  "PageTitle": "Aktivitätsverlauf",
+  "Organization": {"ID": "org-nordstern", "Name": "Nordstern"},
+  "Navigation": [{"Key": "aktivitaet", "Label": "Aktivität", "Href": "/organisationen/org-nordstern/aktivitaet", "Icon": "◷"}],
+  "Errors": [],
+  "View": {"Kind": "list", "Events": []}
+}

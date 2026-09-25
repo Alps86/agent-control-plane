@@ -8,9 +8,11 @@ import (
 
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appprojektarchiv "agentcontrolplane/app/internal/app/projektarchiv"
 	appziel "agentcontrolplane/app/internal/app/ziel"
 	domainorganisation "agentcontrolplane/app/internal/domain/organisation"
 	domainprojekt "agentcontrolplane/app/internal/domain/projekt"
+	domainprojektarchiv "agentcontrolplane/app/internal/domain/projektarchiv"
 	domainziel "agentcontrolplane/app/internal/domain/ziel"
 )
 
@@ -91,20 +93,33 @@ func (h *Handler) pageGet(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if h.archive == nil {
+		h.pageFailure(w, r, http.StatusServiceUnavailable, "Projektstatus ist derzeit nicht verfügbar")
+		return
+	}
+
+	status, err := h.archive.Status(r.Context(), organization.ID, project.ID)
+	if err != nil {
+		h.pageError(w, r, err)
+		return
+	}
+
 	tasks, err := h.projectTasks(r.Context(), project)
 	if err != nil {
 		h.pageError(w, r, err)
 		return
 	}
 
-	h.renderProjectDetail(w, r, organization, goals, project, tasks)
+	h.renderProjectDetail(w, r, organization, goals, project, status, tasks)
 }
 
-func (h *Handler) renderProjectDetail(w http.ResponseWriter, r *http.Request, organization domainorganisation.Organization, goals []domainziel.Goal, project domainprojekt.Project, tasks any) {
+func (h *Handler) renderProjectDetail(w http.ResponseWriter, r *http.Request, organization domainorganisation.Organization, goals []domainziel.Goal, project domainprojekt.Project, status domainprojektarchiv.Status, tasks any) {
 	data := h.pageData(organization, "detail")
 	data["PageTitle"] = project.Name
 	view := data["View"].(map[string]any)
-	view["Project"] = h.projectView(project, h.goalName(goals, project.GoalID))
+	projectView := h.projectView(project, h.goalName(goals, project.GoalID))
+	projectView["Status"] = string(status)
+	view["Project"] = projectView
 	view["Tasks"] = tasks
 	h.render(w, r, http.StatusOK, data)
 }
@@ -211,7 +226,7 @@ func (h *Handler) pageError(w http.ResponseWriter, r *http.Request, err error) {
 		return
 	}
 
-	if errors.Is(err, appprojekt.ErrNotFound) || errors.Is(err, apporganisation.ErrNotFound) || errors.Is(err, appziel.ErrNotFound) {
+	if errors.Is(err, appprojekt.ErrNotFound) || errors.Is(err, appprojektarchiv.ErrNotFound) || errors.Is(err, apporganisation.ErrNotFound) || errors.Is(err, appziel.ErrNotFound) {
 		h.pageFailure(w, r, http.StatusNotFound, "Projekt oder Organisation nicht gefunden")
 		return
 	}

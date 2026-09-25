@@ -67,13 +67,16 @@ func (b *Bootstrap) assemble(db *sqlite.Database, ui *bridge.Bridge) (*web.Serve
 	organizations := weborganisation.NewHandler(service, ui, b.address())
 	server := web.NewServer(system.NewProbe(), db)
 	b.mount(server, organizations, ui)
+	b.mountOrganizationSwitch(server, db, service, ui)
 	b.mountGoals(server, db, service, ui)
 	b.mountProjects(server, db, service, ui)
+	b.mountProjectArchive(server, db, service, ui)
+	b.mountProjectLocations(server, db, service, ui)
 	b.mountAgents(server, db, ui)
 	b.mountDataScope(server, db, ui)
 	b.mountCodexProfile(server, db, ui)
 	b.mountSettings(server, ui)
-	if err := b.mountModelProviders(server, ui); err != nil {
+	if err := b.mountModelProviders(server, db, ui); err != nil {
 		return nil, err
 	}
 
