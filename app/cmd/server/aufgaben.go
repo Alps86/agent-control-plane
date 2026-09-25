@@ -15,7 +15,8 @@ import (
 func (b *Bootstrap) mountTasks(server *web.Server, db *sqlite.Database, organizations *apporganisation.Service, ui *bridge.Bridge) *appaufgabe.Service {
 	projects := appprojekt.NewService(db, organizations)
 	agents := appagent.NewService(db, apporganisation.NewLocalIdentity(), sqlite.NewOrganizationStore(db))
-	tasks := appaufgabe.NewService(db, projects, agents)
+	activities := b.mountActivity(server, db, organizations, ui)
+	tasks := appaufgabe.NewService(db, projects, agents, activities, db)
 	handler := webaufgabe.NewHandler(tasks, projects, agents, organizations, ui, b.address())
 	for _, pattern := range []string{
 		"GET /api/organisationen/{id}/projekte/{projektID}/aufgaben",
