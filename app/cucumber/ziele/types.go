@@ -24,6 +24,10 @@ type Suite struct {
 	client           *http.Client
 	response         *HTTPResponse
 	organizations    map[string]string
+	goals            map[string]string
+	projects         map[string]string
+	baseline         map[string]string
+	childName        string
 	active           string
 	createdID        string
 	unknownBody      []byte
@@ -53,6 +57,19 @@ type Goal struct {
 	OrganizationID string  `json:"organization_id"`
 	ParentGoalID   *string `json:"parent_goal_id"`
 	ProjectID      *string `json:"project_id"`
+	Status         string  `json:"status"`
+}
+
+type ProjectPath struct {
+	ProjectID   string   `json:"project_id"`
+	ProjectName string   `json:"project_name"`
+	GoalIDs     []string `json:"goal_ids"`
+	GoalNames   []string `json:"goal_names"`
+}
+
+type GoalTree struct {
+	Goals        []Goal        `json:"goals"`
+	ProjectPaths []ProjectPath `json:"project_paths"`
 }
 
 type GoalList struct {
@@ -78,12 +95,33 @@ type BrowserReply struct {
 }
 
 type BrowserPage struct {
-	URL     string   `json:"url"`
-	Epoch   float64  `json:"epoch"`
-	Heading string   `json:"heading"`
-	Text    string   `json:"text"`
-	Alert   string   `json:"alert"`
-	Name    string   `json:"name"`
-	Links   []string `json:"links"`
-	Goals   []string `json:"goals"`
+	URL          string              `json:"url"`
+	Epoch        float64             `json:"epoch"`
+	Heading      string              `json:"heading"`
+	Text         string              `json:"text"`
+	Alert        string              `json:"alert"`
+	Name         string              `json:"name"`
+	Links        []string            `json:"links"`
+	Goals        []string            `json:"goals"`
+	GoalCards    []BrowserGoal       `json:"goal_cards"`
+	ChildErrors  []BrowserChildError `json:"child_errors"`
+	MoveErrors   []BrowserMoveError  `json:"move_errors"`
+	ProjectPaths []string            `json:"project_paths"`
+}
+
+type BrowserChildError struct {
+	ID      string `json:"id"`
+	Message string `json:"message"`
+}
+
+type BrowserMoveError struct {
+	ID      string `json:"id"`
+	Message string `json:"message"`
+}
+
+type BrowserGoal struct {
+	ID       string `json:"id"`
+	Name     string `json:"name"`
+	Status   string `json:"status"`
+	ParentID string `json:"parent_id"`
 }

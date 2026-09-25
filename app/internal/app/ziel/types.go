@@ -7,9 +7,13 @@ import (
 )
 
 var (
-	ErrNameRequired = domainziel.ErrNameRequired
-	ErrAccessDenied = apporganisation.ErrAccessDenied
-	ErrNotFound     = apporganisation.ErrNotFound
+	ErrNameRequired  = domainziel.ErrNameRequired
+	ErrAccessDenied  = apporganisation.ErrAccessDenied
+	ErrNotFound      = apporganisation.ErrNotFound
+	ErrInvalidParent = portziel.ErrInvalidParent
+	ErrGoalNotFound  = portziel.ErrGoalNotFound
+	ErrGoalCycle     = portziel.ErrGoalCycle
+	ErrInvalidStatus = domainziel.ErrInvalidStatus
 )
 
 // Service ist die Anwendungsgrenze für Stammziele.

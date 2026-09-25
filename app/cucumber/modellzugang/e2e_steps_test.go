@@ -127,7 +127,8 @@ func (s *httpE2ESuite) echoedMetadata() error {
 func (s *httpE2ESuite) redactedMetadata() error {
 	if s.probeStatus != http.StatusOK || !strings.Contains(s.probeBody, "redacted-request-1") ||
 		!strings.Contains(s.probeBody, "redacted-request-2") ||
-		!strings.Contains(s.probeBody, `"model":"local-e2e-model"`) {
+		!strings.Contains(s.probeBody, `"model":"local-e2e-model"`) ||
+		strings.Contains(s.probeBody, "other-local-model") {
 		return fmt.Errorf("redigierte öffentliche Provider-Metadaten fehlen")
 	}
 	return s.noProbeSecrets()
@@ -136,7 +137,8 @@ func (s *httpE2ESuite) redactedMetadata() error {
 func (s *httpE2ESuite) noProbeSecrets() error {
 	if strings.Contains(s.probeBody, s.issuer.accessToken) || strings.Contains(s.probeBody, s.issuer.accountID) ||
 		strings.Contains(s.probeBody, s.issuer.refreshToken) || strings.Contains(s.probeBody, "function_call_output") ||
-		strings.Contains(s.probeBody, "Call the registered") || strings.Contains(s.probeBody, "Prüfe den technischen") {
+		strings.Contains(s.probeBody, "Call the registered") || strings.Contains(s.probeBody, "Prüfe den technischen") ||
+		strings.Contains(s.probeBody, "MS01-PROBE-OK") {
 		return fmt.Errorf("HTTP-Probe enthält Zugangsdaten oder Rohinhalt")
 	}
 	return nil
@@ -159,13 +161,42 @@ func (s *httpE2ESuite) oneE2ERequest() error {
 func (s *httpE2ESuite) e2eGateOpen() error {
 	status := s.nachweis.Status()
 	expected := 0
-	if s.responses.mode == "tool" || s.responses.mode == "echo" {
+	if strings.Contains(s.probeBody, `"state":"completed"`) && len(s.responses.Requests()) == 2 {
 		expected = 1
 	}
 	if !status.Offen || status.Modellbelege != expected {
 		return fmt.Errorf("App-Nachweis bewertet lokalen Teilbeleg nicht als offen")
 	}
 	return nil
+}
+
+func (s *httpE2ESuite) providerModelMatches() error { return s.providerMatches(true) }
+func (s *httpE2ESuite) providerModelDiffers() error {
+	if err := s.fakeModelMismatch(); err != nil {
+		return err
+	}
+	return s.providerMatches(false)
+}
+func (s *httpE2ESuite) completeAnswerEvidence() error { return s.finalEvidence(true, true) }
+func (s *httpE2ESuite) wrongAnswerEvidence() error {
+	if err := s.toolRoundtrip(); err != nil {
+		return err
+	}
+	return s.finalEvidence(false, true)
+}
+
+func (s *httpE2ESuite) missingStatusEvidence() error {
+	if err := s.toolRoundtrip(); err != nil {
+		return err
+	}
+	return s.finalEvidence(true, false)
+}
+
+func (s *httpE2ESuite) badStatusEvidence() error {
+	if err := s.toolRoundtrip(); err != nil {
+		return err
+	}
+	return s.errorEvidence(false, false)
 }
 
 func (s *httpE2ESuite) captureLocalEvidence() {
@@ -189,6 +220,10 @@ func (s *httpE2ESuite) cancelProbe() error {
 	go func() {
 		done <- s.httpRequest(ctx, http.MethodPost, "/api/settings/modelle/codex/probe", []byte("{}"))
 	}()
+	return s.cancelAfterDelta(cancel, done)
+}
+
+func (s *httpE2ESuite) cancelAfterDelta(cancel context.CancelFunc, done <-chan error) error {
 	select {
 	case <-s.responses.firstDelta:
 	case <-time.After(5 * time.Second):

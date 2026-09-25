@@ -55,7 +55,18 @@ const snapshot = `(() => ({
   alert: document.querySelector('main [role=alert]')?.textContent?.trim() || '',
   name: document.querySelector('input[name=name]')?.value ?? '',
   links: [...document.querySelectorAll('main a')].map(link => link.textContent.trim()),
-  goals: [...document.querySelectorAll('main article h2')].map(item => item.textContent.trim())
+  goals: [...document.querySelectorAll('main article h2')].map(item => item.textContent.trim()),
+  goal_cards: [...document.querySelectorAll('main [data-goal-id]')].filter(item => item.hasAttribute('data-goal-status')).map(item => ({
+    id: item.dataset.goalId, status: item.dataset.goalStatus, parent_id: item.dataset.parentGoalId || '',
+    name: item.querySelector('h2')?.textContent?.trim() || ''
+  })),
+  child_errors: [...document.querySelectorAll('main form[data-action="child"]')].map(form => ({
+    id: form.dataset.goalId, message: form.querySelector('[role=alert]')?.textContent?.trim() || ''
+  })),
+  move_errors: [...document.querySelectorAll('main form[data-action="reparent"]')].map(form => ({
+    id: form.dataset.goalId, message: form.querySelector('[role=alert]')?.textContent?.trim() || ''
+  })),
+  project_paths: [...document.querySelectorAll('main [data-project-id]')].map(item => item.textContent.replace(/\\s+/g, ' ').trim())
 }))()`
 
 async function evaluate(expression) {
@@ -70,6 +81,8 @@ async function page(mode, previousEpoch) {
     const ready = mode === 'error' ? Boolean(value?.alert)
       : mode === 'goals' ? value?.heading === 'Zielübersicht'
       : mode === 'goal-form' ? value?.heading === 'Ziel anlegen'
+      : mode === 'project-form' ? value?.heading === 'Projekt anlegen'
+      : mode === 'projects' ? value?.heading === 'Projektübersicht'
       : mode === 'org-form' ? value?.heading === 'Organisation anlegen'
       : mode === 'org-list' ? value?.heading === 'Organisationsübersicht'
       : mode === 'org-detail' ? Boolean(value?.url.match(/\/organisationen\/[^/]+$/))
@@ -88,12 +101,25 @@ async function command(input) {
     if (!element) throw new Error('Action missing: ' + ${JSON.stringify(input.click)})
     element.click()
   })()`)
+  if (input.check) await evaluate(`(() => {
+    if (!document.querySelector(${JSON.stringify(input.check)})) throw new Error('Element missing: ' + ${JSON.stringify(input.check)})
+  })()`)
   if (input.fill !== undefined) await evaluate(`(() => {
-    const name = document.querySelector('input[name=name]')
+    const name = document.querySelector(${JSON.stringify(input.field || 'input[name=name]')})
+    if (!name) throw new Error('Field missing: ' + ${JSON.stringify(input.field || 'input[name=name]')})
     name.value = ${JSON.stringify(input.fill)}
     name.dispatchEvent(new Event('input', { bubbles: true }))
+    name.dispatchEvent(new Event('change', { bubbles: true }))
   })()`)
-  if (input.submit) await evaluate(`document.querySelector('main form')?.requestSubmit()`)
+  if (input.select !== undefined) await evaluate(`(() => {
+    const select = document.querySelector(${JSON.stringify(input.field || 'select[name=goal_id]')})
+    if (!select) throw new Error('Select missing: ' + ${JSON.stringify(input.field || 'select[name=goal_id]')})
+    const option = [...select.options].find(item => item.textContent.trim() === ${JSON.stringify(input.select)})
+    if (!option) throw new Error('Option missing: ' + ${JSON.stringify(input.select)})
+    select.value = option.value
+    select.dispatchEvent(new Event('change', { bubbles: true }))
+  })()`)
+  if (input.submit) await evaluate(`document.querySelector(${JSON.stringify(input.form || 'main form')})?.requestSubmit()`)
   return { ok: true, page: await page(input.mode, previousEpoch) }
 }
 

@@ -1,0 +1,133 @@
+{
+  "PageTitle": "Ziele von Nordstern",
+  "Navigation": [
+    {
+      "Key": "organisation",
+      "Label": "Organisationen",
+      "Href": "/organisationen",
+      "Icon": "✳"
+    }
+  ],
+  "Organization": {
+    "ID": "org-nordstern",
+    "Name": "Nordstern"
+  },
+  "Errors": [],
+  "View": {
+    "Kind": "list",
+    "Tree": [
+      {
+        "ID": "ziel-1",
+        "OrganizationID": "org-nordstern",
+        "Name": "Wissensportal",
+        "Status": "planned",
+        "StatusLabel": "Geplant",
+        "ParentGoalID": "",
+        "ParentError": "Das übergeordnete Ziel würde einen Kreis erzeugen.",
+        "ParentOptions": [
+          {
+            "ID": "",
+            "Name": "Stammziel",
+            "Selected": false
+          },
+          {
+            "ID": "ziel-1",
+            "Name": "Wissensportal",
+            "Selected": false
+          },
+          {
+            "ID": "ziel-2",
+            "Name": "Redaktion",
+            "Selected": false
+          },
+          {
+            "ID": "ziel-3",
+            "Name": "Texte",
+            "Selected": true
+          }
+        ],
+        "Children": [
+          {
+            "ID": "ziel-2",
+            "OrganizationID": "org-nordstern",
+            "Name": "Redaktion",
+            "Status": "achieved",
+            "StatusLabel": "Erreicht",
+            "ParentGoalID": "ziel-1",
+            "ParentOptions": [
+              {
+                "ID": "",
+                "Name": "Stammziel",
+                "Selected": false
+              },
+              {
+                "ID": "ziel-1",
+                "Name": "Wissensportal",
+                "Selected": true
+              },
+              {
+                "ID": "ziel-2",
+                "Name": "Redaktion",
+                "Selected": false
+              },
+              {
+                "ID": "ziel-3",
+                "Name": "Texte",
+                "Selected": false
+              }
+            ],
+            "Children": [
+              {
+                "ID": "ziel-3",
+                "OrganizationID": "org-nordstern",
+                "Name": "Texte",
+                "Status": "active",
+                "StatusLabel": "Aktiv",
+                "ParentGoalID": "ziel-2",
+                "ParentOptions": [
+                  {
+                    "ID": "",
+                    "Name": "Stammziel",
+                    "Selected": false
+                  },
+                  {
+                    "ID": "ziel-1",
+                    "Name": "Wissensportal",
+                    "Selected": false
+                  },
+                  {
+                    "ID": "ziel-2",
+                    "Name": "Redaktion",
+                    "Selected": true
+                  },
+                  {
+                    "ID": "ziel-3",
+                    "Name": "Texte",
+                    "Selected": false
+                  }
+                ],
+                "Children": []
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "ProjectPaths": [
+      {
+        "ProjectID": "projekt-1",
+        "ProjectName": "Artikel",
+        "GoalIDs": [
+          "ziel-1",
+          "ziel-2",
+          "ziel-3"
+        ],
+        "GoalNames": [
+          "Wissensportal",
+          "Redaktion",
+          "Texte"
+        ]
+      }
+    ]
+  }
+}

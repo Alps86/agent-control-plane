@@ -1,0 +1,73 @@
+{
+  "PageTitle": "Modellwahl von Mira",
+  "Navigation": [
+    {
+      "Key": "organisation",
+      "Label": "Organisationen",
+      "Href": "/organisationen",
+      "Icon": "✳"
+    },
+    {
+      "Key": "agenten",
+      "Label": "Agenten",
+      "Href": "/organisationen/org-nordstern/agenten",
+      "Icon": "◇"
+    }
+  ],
+  "Notice": "",
+  "Errors": [],
+  "AllowedActions": [
+    "agent.model.select"
+  ],
+  "View": {
+    "Kind": "model-selection",
+    "OrganizationID": "org-nordstern",
+    "Agent": {
+      "ID": "agent-mira",
+      "Name": "Mira",
+      "ExecutionKindLabel": "Eino"
+    },
+    "Selection": {
+      "Provider": "codex-abo",
+      "ConnectionReference": "codex-chatgpt",
+      "Model": "gpt-5.3-codex"
+    },
+    "FieldErrors": {},
+    "Providers": [
+      {
+        "ID": "codex-abo",
+        "Name": "Codex-Abo",
+        "Reason": "",
+        "AuthType": "device_oauth",
+        "Connections": [
+          {
+            "Reference": "codex-chatgpt",
+            "Label": "Codex-Abo-Verbindung"
+          }
+        ],
+        "Models": [
+          {
+            "ID": "gpt-5.3-codex",
+            "Label": "gpt-5.3-codex",
+            "Capabilities": [],
+            "CheckStatus": "unverified",
+            "Source": "https://developers.openai.com/api/docs/models/all",
+            "ObservedAt": "2026-09-24T12:00:00Z",
+            "AccountVerified": false,
+            "RouteVerified": false
+          }
+        ],
+        "Selectable": true
+      },
+      {
+        "ID": "openrouter",
+        "Name": "OpenRouter",
+        "Reason": "Die Agentenfreigabe fehlt.",
+        "AuthType": "api_key",
+        "Connections": [],
+        "Models": [],
+        "Selectable": false
+      }
+    ]
+  }
+}

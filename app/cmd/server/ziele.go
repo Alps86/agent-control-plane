@@ -11,6 +11,7 @@ import (
 
 func (b *Bootstrap) mountGoals(server *web.Server, db *sqlite.Database, organizations *apporganisation.Service, ui *bridge.Bridge) {
 	goals := webziel.NewHandler(appziel.NewService(db, organizations), organizations, ui, b.address())
+	b.mountGoalTree(server, goals)
 	for _, pattern := range []string{
 		"GET /api/organisationen/{id}/ziele",
 		"POST /api/organisationen/{id}/ziele",

@@ -1,0 +1,77 @@
+{{define "agenten/modellwahl/content"}}
+  <div class="page-heading">
+    <div>
+      <div class="eyebrow">AGENTEN / MODELLWAHL</div>
+      <h1>Modell für {{.View.Agent.Name}}</h1>
+      <p>Ausführungsart: <strong>{{.View.Agent.ExecutionKindLabel}}</strong>. Anbieter, Verbindung und Modell werden für diesen Agenten gewählt.</p>
+    </div>
+  </div>
+  {{if .Notice}}<div class="notice" role="status">{{.Notice}}</div>{{end}}
+  {{range .Errors}}<div class="notice" role="alert">{{.}}</div>{{end}}
+
+  <section class="stat-card" aria-label="Modellwahlstatus">
+    {{if .View.Selection.Provider}}
+      <h2>Aktuelle Auswahl</h2>
+      <p>Anbieter: <strong>{{if eq .View.Selection.Provider "codex-abo"}}Codex-Abo{{else if eq .View.Selection.Provider "openrouter"}}OpenRouter{{else}}{{.View.Selection.Provider}}{{end}}</strong></p>
+      <p>Verbindungsreferenz: <code>{{.View.Selection.ConnectionReference}}</code></p>
+      <p>Modell: <strong>{{.View.Selection.Model}}</strong></p>
+      <p role="status">Modellroute nicht nachgewiesen; Startbereitschaft offen.</p>
+    {{else}}
+      <h2>Noch keine Modellwahl</h2>
+      <p>Codex-Abo ist Standardanbieter; noch kein Modell konfiguriert oder auswählbar.</p>
+    {{end}}
+  </section>
+
+  {{range .View.Providers}}
+    <section class="stat-card" aria-labelledby="provider-{{.ID}}">
+      <h2 id="provider-{{.ID}}">{{.Name}}{{if eq .ID "codex-abo"}} · Standard{{end}}</h2>
+      {{if eq .ID $.View.Selection.Provider}}<p role="status">Aktuell gewählt</p>{{end}}
+      <p>Authentifizierung: {{if eq .AuthType "device_code"}}Gerätecode{{else if eq .AuthType "device_oauth"}}Gerätecode über das ChatGPT-Konto{{else if eq .AuthType "api_key"}}Zentral verwahrter API-Schlüssel{{else}}{{.AuthType}}{{end}}</p>
+      {{if .Models}}<p role="status">Modellroute nicht nachgewiesen; Startbereitschaft offen.</p>{{else}}<p role="status">Noch kein Modell im Katalog konfiguriert.</p>{{end}}
+      {{if .Selectable}}
+        <form action="/organisationen/{{$.View.OrganizationID}}/agenten/{{$.View.Agent.ID}}/modellwahl" method="post">
+          <input type="hidden" name="provider" value="{{.ID}}">
+          <p>
+            <label for="connection-{{.ID}}">Verbindung</label><br>
+            <select id="connection-{{.ID}}" name="connection_reference" required>
+              {{range .Connections}}
+                <option value="{{.Reference}}" {{if eq .Reference $.View.Selection.ConnectionReference}}selected{{end}}>{{.Label}} · {{.Reference}}</option>
+              {{end}}
+            </select>
+          </p>
+          <p>
+            <label for="model-{{.ID}}">Modell</label><br>
+            <select id="model-{{.ID}}" name="model" required>
+              {{range .Models}}
+                <option value="{{.ID}}" {{if eq .ID $.View.Selection.Model}}selected{{end}}>{{.Label}}</option>
+              {{end}}
+            </select>
+          </p>
+          {{with index $.View.FieldErrors "provider"}}<p role="alert">{{.}}</p>{{end}}
+          {{with index $.View.FieldErrors "connection_reference"}}<p role="alert">{{.}}</p>{{end}}
+          {{with index $.View.FieldErrors "model"}}<p role="alert">{{.}}</p>{{end}}
+          <p><button type="submit">{{.Name}} und Modell wählen</button></p>
+        </form>
+      {{else}}
+        <p role="status">Der Anbieter ist für diesen Agenten nicht auswählbar. {{.Reason}}</p>
+      {{end}}
+      {{range .Models}}
+        <details>
+          <summary>Fähigkeiten: {{.Label}}</summary>
+          <p>Modellnachweis: {{if eq .CheckStatus "verified"}}Nachgewiesen{{else if eq .CheckStatus "unverified"}}Nicht nachgewiesen{{else if .CheckStatus}}{{.CheckStatus}}{{else}}Nicht nachgewiesen{{end}}{{if .Source}} · Quelle: {{.Source}}{{end}}{{if .ObservedAt}} · Stand: <time datetime="{{.ObservedAt}}">{{.ObservedAt}}</time>{{end}}</p>
+          <ul>
+            {{range .Capabilities}}
+              <li>
+                <strong>{{if eq .Name "text"}}Text{{else if eq .Name "tools"}}Tools{{else if eq .Name "audio_input"}}Audioeingabe{{else if eq .Name "audio_output"}}Audioausgabe{{else if eq .Name "realtime"}}Bidirektionale Echtzeit{{else}}{{.Name}}{{end}}:</strong>
+                {{if eq .Status "verified"}}Nachgewiesen{{else if eq .Status "unverified"}}Nicht nachgewiesen{{else if .Status}}{{.Status}}{{else}}Nicht nachgewiesen{{end}}{{if .Source}} · Quelle: {{.Source}}{{end}}{{if .CheckedAt}} · Geprüft: <time datetime="{{.CheckedAt}}">{{.CheckedAt}}</time>{{end}}
+              </li>
+            {{end}}
+          </ul>
+        </details>
+      {{end}}
+    </section>
+  {{else}}
+    <section class="empty-state"><h2>Keine Modellanbieter verfügbar</h2><p>Für diesen Agenten ist derzeit kein Modellkatalog eingerichtet.</p></section>
+  {{end}}
+  <p><a class="text-link" href="/organisationen/{{.View.OrganizationID}}/agenten/{{.View.Agent.ID}}">Zum Agentenprofil →</a></p>
+{{end}}
