@@ -1,0 +1,76 @@
+{{define "organisationswechsel/content"}}
+  {{if .Errors}}<div class="notice" role="alert">{{range .Errors}}<p>{{.}}</p>{{end}}</div>{{end}}
+  {{if .Notice}}<div class="notice" role="status">{{.Notice}}</div>{{end}}
+  {{if eq .View.Kind "list"}}
+    <div class="page-heading"><div><div class="eyebrow">ARBEITSBEREICHE</div><h1>Organisation wählen</h1><p>Suchen und öffnen Sie einen Ihrer Arbeitsbereiche.</p></div></div>
+    <form action="/organisationswechsel" method="get" role="search" hx-get="/organisationswechsel" hx-target="#content" hx-push-url="true">
+      <p><label for="organisation-search">Organisation suchen</label><br><input id="organisation-search" type="search" name="q" value="{{.View.Query}}" autocomplete="off"> <button type="submit">Suchen</button></p>
+    </form>
+    {{if .View.Organizations}}
+      <div class="stats-grid">
+        {{range .View.Organizations}}
+          <article class="stat-card">
+            <h2>{{.Name}}</h2><p>{{.Description}}</p>
+            {{if .Selected}}<p><strong>Gewählte Organisation</strong></p>{{end}}
+            <form method="post" action="/organisationswechsel/{{.ID}}"><button type="submit">{{if .Selected}}Erneut öffnen{{else}}Organisation wählen{{end}}</button></form>
+            <p><a class="text-link" href="/organisationen/{{.ID}}">Detail direkt öffnen →</a></p>
+            <p><a class="text-link" href="/organisationen/{{.ID}}/arbeitsregeln">Arbeitsregeln öffnen →</a></p>
+          </article>
+        {{end}}
+      </div>
+    {{else}}
+      <section class="empty-state"><h2>Keine Organisation gefunden</h2><p>Prüfen Sie den Suchbegriff oder legen Sie eine Organisation an.</p></section>
+    {{end}}
+    <p><a class="text-link" href="/organisationen/neu">Organisation anlegen →</a></p>
+  {{end}}
+  {{if eq .View.Kind "rules"}}
+    <div class="page-heading"><div><div class="eyebrow">{{.View.Organization.Name}} / ARBEITSREGELN</div><h1>Arbeitsregeln</h1><p>Jede Änderung gilt nur für diese Organisation. Prüfen Sie ihre Wirkung vor dem Speichern.</p></div></div>
+    <p><a class="text-link" href="/organisationen/{{.View.Organization.ID}}">Zur Organisation →</a></p>
+    <div class="stats-grid">
+      {{range .View.Areas}}
+        <section class="stat-card"><h2>{{.Label}}</h2><p>{{.Description}}</p>
+          {{if .Rules}}<ul>{{range .Rules}}<li><code>{{.From}}</code> → <code>{{.To}}</code> · Freigabe: {{.Approver}}
+            <form method="post" action="/organisationen/{{$.View.Organization.ID}}/arbeitsregeln/vorschau" hx-post="/organisationen/{{$.View.Organization.ID}}/arbeitsregeln/vorschau" hx-target="#content">
+              <input type="hidden" name="operation" value="revoke">
+              <input type="hidden" name="revision" value="{{$.View.Revision}}">
+              <input type="hidden" name="area" value="{{.Area}}">
+              <input type="hidden" name="from" value="{{.From}}">
+              <input type="hidden" name="to" value="{{.To}}">
+              <input type="hidden" name="approver" value="{{.Approver}}">
+              <button type="submit">Widerruf vorschauprüfen</button>
+            </form>
+          </li>{{end}}</ul>{{else}}<p>Keine Übergänge freigegeben.</p>{{end}}
+        </section>
+      {{end}}
+    </div>
+    <section class="stat-card" style="margin-top: 1.5rem">
+      <h2>Übergang vorschauprüfen</h2>
+      <form method="post" action="/organisationen/{{.View.Organization.ID}}/arbeitsregeln/vorschau" hx-post="/organisationen/{{.View.Organization.ID}}/arbeitsregeln/vorschau" hx-target="#content">
+        <input type="hidden" name="revision" value="{{.View.Revision}}">
+        <input type="hidden" name="operation" value="allow">
+        <p><label for="rule-area">Bereich</label><br><select id="rule-area" name="area" required><option value="status" {{if eq .View.Change.Area "status"}}selected{{end}}>Aufgabenstatus</option><option value="assignment" {{if eq .View.Change.Area "assignment"}}selected{{end}}>Zuweisung</option><option value="delegation" {{if eq .View.Change.Area "delegation"}}selected{{end}}>Delegation</option></select></p>
+        <p><label for="rule-from">Von</label><br><input id="rule-from" name="from" value="{{.View.Change.From}}" required></p>
+        <p><label for="rule-to">Nach</label><br><input id="rule-to" name="to" value="{{.View.Change.To}}" required></p>
+        <p><label for="rule-approver">Zuständige Freigabe</label><br><select id="rule-approver" name="approver"><option value="">Bitte wählen</option><option value="betreiber" {{if eq .View.Change.Approver "betreiber"}}selected{{end}}>Betreiber</option></select></p>
+        <p><button type="submit">Vorschau öffnen</button></p>
+      </form>
+    </section>
+    {{if .View.Preview}}
+      <section class="stat-card" aria-label="Regelvorschau" role="status" style="margin-top: 1.5rem">
+        <h2>{{if eq .View.Preview.Operation "revoke"}}Widerruf: betroffene Abläufe{{else}}Betroffene Abläufe{{end}}</h2><p>Bereich: {{.View.Preview.AreaLabel}}</p>
+        <ul>{{range .View.Preview.AffectedFlows}}<li>{{.}}</li>{{end}}</ul>
+        <p>Übergang: <code>{{.View.Preview.Rule.From}}</code> → <code>{{.View.Preview.Rule.To}}</code> · Freigabe: {{.View.Preview.Rule.Approver}}</p>
+        <form method="post" action="/organisationen/{{.View.Organization.ID}}{{if eq .View.Preview.Operation "revoke"}}/arbeitsregeln/widerruf{{else}}/arbeitsregeln{{end}}">
+          <input type="hidden" name="operation" value="{{.View.Preview.Operation}}">
+          <input type="hidden" name="revision" value="{{.View.Preview.Revision}}">
+          <input type="hidden" name="area" value="{{.View.Preview.Rule.Area}}">
+          <input type="hidden" name="from" value="{{.View.Preview.Rule.From}}">
+          <input type="hidden" name="to" value="{{.View.Preview.Rule.To}}">
+          <input type="hidden" name="approver" value="{{.View.Preview.Rule.Approver}}">
+          <button type="submit">{{if eq .View.Preview.Operation "revoke"}}Regel widerrufen{{else}}Regel speichern{{end}}</button>
+        </form>
+      </section>
+    {{end}}
+  {{end}}
+  {{if eq .View.Kind "error"}}<section class="empty-state"><h1>Organisation nicht verfügbar</h1><p>Die Anfrage konnte nicht abgeschlossen werden.</p><a class="text-link" href="/organisationswechsel">Zur Auswahl →</a></section>{{end}}
+{{end}}

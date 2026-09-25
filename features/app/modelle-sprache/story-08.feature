@@ -159,6 +159,8 @@ Funktionalität: Codex-Abo als eigener Eino-Chatmodell-Adapter
     Dann erreichen derselbe gespeicherte Zugang und das Konto die feste Responses-Route
     Und die Gegenstelle erhält eine Toolrunde mit redigiertem Verbindungszustand
     Und die HTTP-Probe meldet zwei Anbieteraufrufe und ein redigiertes Ergebnis
+    Und beide Providerbeobachtungen bestätigen das konfigurierte Modell
+    Und der Abschluss bestätigt Kennung und Antwortteil vor dem Providerabschluss
     Aber das echte Abo-Gate bleibt offen
 
   @lokales_http_e2e
@@ -186,5 +188,58 @@ Funktionalität: Codex-Abo als eigener Eino-Chatmodell-Adapter
     Wenn ich die öffentliche Eino-Probe über HTTP starte
     Dann hat die Gegenstelle Konto und Token als Provider-Metadaten gesendet
     Und die öffentliche SSE nennt nur redigierte Request-IDs und das konfigurierte Modell
+    Und beide Providerbeobachtungen melden eine Modellabweichung
     Und die Gegenstelle erhält eine Toolrunde mit redigiertem Verbindungszustand
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Abweichendes Provider-Modell bleibt als Boolean sichtbar
+    Angenommen ein lokaler Gerätecode-Anbieter und eine Responses-Gegenstelle mit abweichendem Modell sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann melden beide Providerbeobachtungen eine Modellabweichung
+    Und die öffentliche SSE nennt nur redigierte Request-IDs und das konfigurierte Modell
+    Und die Gegenstelle erhält eine Toolrunde mit redigiertem Verbindungszustand
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Fehlendes und leeres Provider-Modell bestätigen die Konfiguration nicht
+    Angenommen ein lokaler Gerätecode-Anbieter und eine Responses-Gegenstelle mit fehlendem und leerem Modell sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann melden beide Providerbeobachtungen eine Modellabweichung
+    Und die Gegenstelle erhält eine Toolrunde mit redigiertem Verbindungszustand
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Falsche Modellantwort erfüllt die feste Prüfkennung nicht
+    Angenommen ein lokaler Gerätecode-Anbieter und eine Responses-Gegenstelle mit falscher Schlussantwort sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann meldet der Abschluss eine fehlende Prüfkennung trotz Toolrunde
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Redigierter Provider-Fortschritt trifft vor kontrolliertem Providerabschluss ein
+    Angenommen ein lokaler Gerätecode-Anbieter und eine zeitlich kontrollierte Responses-Gegenstelle sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich den öffentlichen redigierten Provider-Fortschritt vor dem Providerabschluss empfange und diesen dann freigebe
+    Dann bestätigt der Abschluss Kennung und Antwortteil vor dem Providerabschluss
+    Und die Gegenstelle erhält eine Toolrunde mit redigiertem Verbindungszustand
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Fehlender Abschlussstatus belegt keine vollständige Providerfolge
+    Angenommen ein lokaler Gerätecode-Anbieter und eine Responses-Gegenstelle ohne Abschlussstatus sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann meldet der Abschluss trotz Antwortteil keinen gültigen Providerabschluss
+    Aber das echte Abo-Gate bleibt offen
+
+  @lokales_http_e2e
+  Szenario: Ungültiger Abschlussstatus belegt keine vollständige Providerfolge
+    Angenommen ein lokaler Gerätecode-Anbieter und eine Responses-Gegenstelle mit ungültigem Abschlussstatus sind eingerichtet
+    Und die Gerätecode-Anmeldung ist über HTTP abgeschlossen
+    Wenn ich die öffentliche Eino-Probe über HTTP starte
+    Dann meldet der Fehler keinen gültigen Providerabschluss
     Aber das echte Abo-Gate bleibt offen

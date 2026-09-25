@@ -22,6 +22,7 @@
       <section class="empty-state"><div class="empty-icon">✳</div><h2>Noch keine Organisation</h2><p>Legen Sie Ihren ersten Arbeitsbereich an.</p></section>
     {{end}}
     <p><a class="hero-link" href="/organisationen/neu">Organisation anlegen →</a></p>
+    <p><a class="text-link" href="/organisationswechsel">Organisation wechseln →</a></p>
   {{end}}
   {{if eq .View.Kind "form"}}
     <div class="page-heading"><div><div class="eyebrow">ORGANISATIONEN</div><h1>Organisation anlegen</h1><p>Name und Beschreibung Ihres neuen Arbeitsbereichs.</p></div></div>
@@ -38,9 +39,11 @@
   {{if eq .View.Kind "detail"}}
     <div class="page-heading"><div><div class="eyebrow">ORGANISATION</div><h1>{{.View.Organization.Name}}</h1><p>{{.View.Organization.Description}}</p></div></div>
     <section class="stat-card"><h2>Arbeitsregel</h2><p>Arbeitsübergänge: {{if .View.Organization.WorkTransitions}}{{range .View.Organization.WorkTransitions}}{{.}} {{end}}{{else}}keine freigegeben{{end}}</p><p>Delegationsübergänge: {{if .View.Organization.DelegationTransitions}}{{range .View.Organization.DelegationTransitions}}{{.}} {{end}}{{else}}keine freigegeben{{end}}</p></section>
+    <p><a class="text-link" href="/organisationen/{{.View.Organization.ID}}/arbeitsregeln">Arbeitsregeln bearbeiten →</a></p>
     <p><a class="hero-link" href="/organisationen/{{.View.Organization.ID}}/ziele">Ziele →</a></p>
     <p><a class="hero-link" href="/organisationen/{{.View.Organization.ID}}/agenten">Agenten →</a></p>
     <p><a class="hero-link" href="/organisationen/{{.View.Organization.ID}}/projekte">Projekte →</a></p>
+    <p><a class="hero-link" href="/organisationen/{{.View.Organization.ID}}/modellfreigabe/openrouter">OpenRouter-Freigaben →</a></p>
     <p><a class="text-link" href="/organisationen">Zur Organisationsübersicht →</a></p>
   {{end}}
   <p><a class="text-link" href="/settings">Settings →</a></p>

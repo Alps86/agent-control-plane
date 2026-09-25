@@ -12,7 +12,12 @@ func (p *probeRun) RecordModelResponse(observation codexabo.Observation) {
 	complete := observation.Usage != nil && observation.Usage.InputTokens != nil && observation.Usage.OutputTokens != nil && observation.Usage.TotalTokens != nil
 	p.mu.Lock()
 	defer p.mu.Unlock()
-	p.observations = append(p.observations, probeObservation{requestID: p.requestRef(observation.RequestID), status: p.safeStatus(observation.Status), usageComplete: complete})
+	p.observations = append(p.observations, probeObservation{
+		requestID:          p.requestRef(observation.RequestID),
+		status:             p.safeStatus(observation.Status),
+		usageComplete:      complete,
+		modelMatchesConfig: observation.Model != "" && observation.Model == p.modelID,
+	})
 }
 
 func (p *probeRun) requestRef(value string) string {
@@ -37,18 +42,20 @@ func (p *probeRun) snapshots() []probeObservation {
 	return append([]probeObservation(nil), p.observations...)
 }
 
-func (h *Handler) finish(w http.ResponseWriter, flusher http.Flusher, run *probeRun, transport *boundedTransport, kind string) {
+func (h *Handler) finish(w http.ResponseWriter, flusher http.Flusher, run *probeRun, transport *boundedTransport, kind string, stream streamState) {
 	called, state := run.toolSnapshot()
 	h.reportTool(w, flusher, called, state)
 	h.reportProvider(w, flusher, run)
 	kind = h.completionKind(kind, called, transport.count())
 	if kind != "" {
-		h.writeEvent(w, flusher, "error", sseEvent{Kind: kind, Requests: transport.count()})
+		h.writeEvent(w, flusher, "error", sseEvent{Kind: kind, Requests: transport.count(), AnswerMatchesExpected: h.boolRef(false), ChunkBeforeCompleted: h.boolRef(false)})
 		return
 	}
 
-	h.writeEvent(w, flusher, "done", sseEvent{State: "completed", Tool: called, Requests: transport.count()})
+	h.writeEvent(w, flusher, "done", sseEvent{State: "completed", Tool: called, Requests: transport.count(), AnswerMatchesExpected: h.boolRef(h.matchesExpected(stream)), ChunkBeforeCompleted: h.boolRef(transport.streamedBeforeCompletion())})
 }
+
+func (h *Handler) boolRef(value bool) *bool { return &value }
 
 func (h *Handler) reportTool(w http.ResponseWriter, flusher http.Flusher, called bool, state string) {
 	if called {
@@ -58,7 +65,13 @@ func (h *Handler) reportTool(w http.ResponseWriter, flusher http.Flusher, called
 
 func (h *Handler) reportProvider(w http.ResponseWriter, flusher http.Flusher, run *probeRun) {
 	for _, observation := range run.snapshots() {
-		h.writeEvent(w, flusher, "provider", sseEvent{RequestID: observation.requestID, Model: h.modelID, State: observation.status, UsageComplete: observation.usageComplete})
+		h.writeEvent(w, flusher, "provider", sseEvent{
+			RequestID:                  observation.requestID,
+			Model:                      h.modelID,
+			State:                      observation.status,
+			UsageComplete:              observation.usageComplete,
+			ProviderModelMatchesConfig: &observation.modelMatchesConfig,
+		})
 	}
 }
 
