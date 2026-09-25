@@ -17,7 +17,10 @@ func TestFeatures(t *testing.T) {
 		ScenarioInitializer: suite.InitializeScenario,
 		Options: &godog.Options{
 			Format:   "pretty",
-			Paths:    []string{"../../../features/app/architektur/story-02.feature"},
+			Paths: []string{
+				"../../../features/app/architektur/story-02.feature",
+				"../../../features/app/architektur/sqlite-fremdschluessel.feature",
+			},
 			TestingT: t,
 		},
 	}

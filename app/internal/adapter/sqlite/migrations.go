@@ -53,6 +53,29 @@ func (d *Database) initialize(ctx context.Context) error {
 		return fmt.Errorf("Datenbank konfigurieren: %w", err)
 	}
 
+	return d.verifyForeignKeys(ctx)
+}
+
+func (d *Database) verifyForeignKeys(ctx context.Context) error {
+	var enabled int
+	if err := d.db.QueryRowContext(ctx, "PRAGMA foreign_keys").Scan(&enabled); err != nil {
+		return fmt.Errorf("Fremdschlüsselstatus prüfen: %w", err)
+	}
+	if enabled != 1 {
+		return fmt.Errorf("Fremdschlüssel sind nicht aktiviert")
+	}
+
+	rows, err := d.db.QueryContext(ctx, "PRAGMA foreign_key_check")
+	if err != nil {
+		return fmt.Errorf("Fremdschlüsselbestand prüfen: %w", err)
+	}
+	defer rows.Close()
+	if rows.Next() {
+		return fmt.Errorf("Datenbank enthält verletzte Fremdschlüssel")
+	}
+	if err := rows.Err(); err != nil {
+		return fmt.Errorf("Fremdschlüsselbestand prüfen: %w", err)
+	}
 	return nil
 }
 
