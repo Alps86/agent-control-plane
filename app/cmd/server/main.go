@@ -73,7 +73,7 @@ func (b *Bootstrap) assemble(db *sqlite.Database, ui *bridge.Bridge) (*web.Serve
 	b.mountDataScope(server, db, ui)
 	b.mountCodexProfile(server, db, ui)
 	b.mountSettings(server, ui)
-	if err := b.mountModelProviders(server, ui); err != nil {
+	if err := b.mountModelProviders(server, db, ui); err != nil {
 		return nil, err
 	}
 
