@@ -233,7 +233,7 @@ func (s *Suite) ensurePausedAgent(name, org string) error {
 
 func (s *Suite) pauseAgentInStore(name, org string) error {
 	ctx := context.Background()
-	db, err := sqlite.OpenWithMigrations(ctx, s.database, sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(), sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(), sqlite.TaskMigration(), sqlite.GoalTreeMigration())
+	db, err := sqlite.OpenApplication(ctx, s.database)
 	if err != nil {
 		return err
 	}
