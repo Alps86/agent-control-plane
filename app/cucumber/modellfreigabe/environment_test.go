@@ -120,10 +120,7 @@ func (s *suite) start() error {
 	}))
 
 	var err error
-	s.db, err = sqlite.OpenWithMigrations(context.Background(), filepath.Join(s.t.TempDir(), "story24.sqlite"),
-		sqlite.RunMigration(2), sqlite.OrganizationMigration(), sqlite.GoalMigration(), sqlite.AgentMigration(),
-		sqlite.ProjectMigration(), sqlite.DataScopeMigration(), sqlite.CodexProfileMigration(),
-		sqlite.TaskMigration(), sqlite.GoalTreeMigration(), sqlite.ModellfreigabeMigration())
+	s.db, err = sqlite.OpenApplication(context.Background(), filepath.Join(s.t.TempDir(), "story24.sqlite"))
 	if err != nil {
 		return fmt.Errorf("kanonische SQLite-Migrationskette noch nicht vollständig: %w", err)
 	}
