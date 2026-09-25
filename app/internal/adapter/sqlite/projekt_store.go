@@ -41,8 +41,11 @@ func (d *Database) projectWriteResult(result sql.Result, err error) error {
 
 // ListProjects liest Projekte der angegebenen Organisation.
 func (d *Database) ListProjects(ctx context.Context, organizationID string) ([]domainprojekt.Project, error) {
-	rows, err := d.db.QueryContext(ctx, `SELECT id, organization_id, name, description, goal_id
-		FROM projects WHERE organization_id = ? ORDER BY name, id`, organizationID)
+	rows, err := d.db.QueryContext(ctx, `SELECT p.id, p.organization_id, p.name, p.description, p.goal_id
+		FROM projects p WHERE p.organization_id = ?
+		AND NOT EXISTS (SELECT 1 FROM project_archives a
+			WHERE a.organization_id = p.organization_id AND a.project_id = p.id)
+		ORDER BY p.name, p.id`, organizationID)
 	if err != nil {
 		return nil, fmt.Errorf("Projekte lesen: %w", err)
 	}

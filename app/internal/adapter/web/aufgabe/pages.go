@@ -11,10 +11,12 @@ import (
 	appaufgabe "agentcontrolplane/app/internal/app/aufgabe"
 	apporganisation "agentcontrolplane/app/internal/app/organisation"
 	appprojekt "agentcontrolplane/app/internal/app/projekt"
+	appprojektarchiv "agentcontrolplane/app/internal/app/projektarchiv"
 	domainagent "agentcontrolplane/app/internal/domain/agent"
 	domainaufgabe "agentcontrolplane/app/internal/domain/aufgabe"
 	domainorganisation "agentcontrolplane/app/internal/domain/organisation"
 	domainprojekt "agentcontrolplane/app/internal/domain/projekt"
+	domainprojektarchiv "agentcontrolplane/app/internal/domain/projektarchiv"
 )
 
 func (h *Handler) pageList(w http.ResponseWriter, r *http.Request) {
@@ -30,7 +32,18 @@ func (h *Handler) pageList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.renderTaskList(w, r, organization, project, tasks)
+}
+
+func (h *Handler) renderTaskList(w http.ResponseWriter, r *http.Request, organization domainorganisation.Organization, project domainprojekt.Project, tasks []domainaufgabe.Task) {
+	status, err := h.archive.Status(r.Context(), organization.ID, project.ID)
+	if err != nil {
+		h.pageError(w, r, err)
+		return
+	}
+
 	data := h.pageData(organization, project, "list")
+	data["View"].(map[string]any)["ProjectStatus"] = status
 	data["View"].(map[string]any)["Tasks"] = h.taskList(tasks)
 	h.render(w, r, http.StatusOK, data)
 }
@@ -39,6 +52,10 @@ func (h *Handler) pageForm(w http.ResponseWriter, r *http.Request) {
 	organization, project, err := h.context(r)
 	if err != nil {
 		h.pageError(w, r, err)
+		return
+	}
+
+	if h.rejectArchived(w, r, organization.ID, project.ID) {
 		return
 	}
 
@@ -66,21 +83,30 @@ func (h *Handler) createFormTask(w http.ResponseWriter, r *http.Request, request
 		h.formContextError(w, r, request, err)
 		return
 	}
+	if h.rejectArchived(w, r, organization.ID, project.ID) {
+		return
+	}
 
-	if fields != nil || r.PostFormValue("project_id") != project.ID || r.PostFormValue("project_name") != project.Name {
-		if fields == nil {
-			fields = map[string]string{}
-		}
-
-		if r.PostFormValue("project_id") != project.ID || r.PostFormValue("project_name") != project.Name {
-			fields["project_id"] = "Bitte wählen Sie ein gültiges Projekt aus."
-		}
-
+	fields = h.projectFields(r, project, fields)
+	if fields != nil {
 		h.renderForm(w, r, http.StatusUnprocessableEntity, organization, project, request, fields)
 		return
 	}
 
 	h.saveFormTask(w, r, organization, project, request)
+}
+
+func (h *Handler) projectFields(r *http.Request, project domainprojekt.Project, fields map[string]string) map[string]string {
+	if r.PostFormValue("project_id") == project.ID && r.PostFormValue("project_name") == project.Name {
+		return fields
+	}
+
+	if fields == nil {
+		fields = map[string]string{}
+	}
+
+	fields["project_id"] = "Bitte wählen Sie ein gültiges Projekt aus."
+	return fields
 }
 
 func (h *Handler) formContextError(w http.ResponseWriter, r *http.Request, request createRequest, err error) {
@@ -189,6 +215,11 @@ func (h *Handler) context(r *http.Request) (domainorganisation.Organization, dom
 }
 
 func (h *Handler) formError(w http.ResponseWriter, r *http.Request, organization domainorganisation.Organization, project domainprojekt.Project, request createRequest, err error) {
+	if errors.Is(err, appaufgabe.ErrProjectArchived) {
+		h.pageFailure(w, r, http.StatusConflict, "Archiviertes Projekt nimmt keine neue Arbeit an")
+		return
+	}
+
 	fields := h.fieldErrors(err)
 	if fields == nil {
 		h.pageError(w, r, err)
@@ -288,6 +319,11 @@ func (h *Handler) pageData(organization domainorganisation.Organization, project
 }
 
 func (h *Handler) pageError(w http.ResponseWriter, r *http.Request, err error) {
+	if errors.Is(err, appprojektarchiv.ErrNotFound) {
+		h.pageFailure(w, r, http.StatusNotFound, "Aufgabe oder Projekt nicht gefunden")
+		return
+	}
+
 	if errors.Is(err, appaufgabe.ErrAccessDenied) || errors.Is(err, appprojekt.ErrAccessDenied) || errors.Is(err, apporganisation.ErrAccessDenied) || errors.Is(err, appagent.ErrAccessDenied) {
 		h.pageFailure(w, r, http.StatusForbidden, "Zugriff verweigert")
 		return
@@ -299,6 +335,21 @@ func (h *Handler) pageError(w http.ResponseWriter, r *http.Request, err error) {
 	}
 
 	h.pageFailure(w, r, http.StatusInternalServerError, "Die Seite ist derzeit nicht verfügbar")
+}
+
+func (h *Handler) rejectArchived(w http.ResponseWriter, r *http.Request, organizationID, projectID string) bool {
+	status, err := h.archive.Status(r.Context(), organizationID, projectID)
+	if err != nil {
+		h.pageError(w, r, err)
+		return true
+	}
+
+	if status == domainprojektarchiv.StatusArchived {
+		h.pageFailure(w, r, http.StatusConflict, "Archiviertes Projekt nimmt keine neue Arbeit an")
+		return true
+	}
+
+	return false
 }
 
 func (h *Handler) pageFailure(w http.ResponseWriter, r *http.Request, status int, message string) {
