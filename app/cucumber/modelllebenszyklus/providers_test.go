@@ -59,6 +59,10 @@ func (p *IssuerState) count() int {
 }
 
 func (p *ProviderState) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if r.Method == http.MethodPost && r.URL.Path == "/api/v1/chat/completions" {
+		p.modelCall(w, r)
+		return
+	}
 	p.mu.Lock()
 	p.calls = append(p.calls, r.Header.Get("Authorization"))
 	p.mu.Unlock()
@@ -73,6 +77,16 @@ func (p *ProviderState) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	_, _ = w.Write([]byte(`{"data":{"label":"controlled-test-provider"}}`))
+}
+
+func (p *ProviderState) modelCall(w http.ResponseWriter, r *http.Request) {
+	p.posts.Add(1)
+	if r.Header.Get("Authorization") != "Bearer "+boundKey && r.Header.Get("Authorization") != "Bearer "+newKey {
+		http.Error(w, `{"error":"unauthorized"}`, http.StatusUnauthorized)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_, _ = w.Write([]byte(`{"choices":[{"message":{"content":"ok"}}]}`))
 }
 
 func (p *ProviderState) snapshot() []string {

@@ -6,8 +6,11 @@ import (
 	"os"
 	"os/exec"
 	"sync"
+	"sync/atomic"
 	"testing"
 
+	"agentcontrolplane/app/internal/adapter/sqlite"
+	"agentcontrolplane/app/internal/app/modellfreigabe"
 	"agentcontrolplane/app/internal/app/modellverbindung"
 	"agentcontrolplane/app/internal/app/openrouterverbindung"
 	"agentcontrolplane/app/internal/port/credentials"
@@ -30,6 +33,11 @@ type Suite struct {
 	store           credentials.Store
 	flow            *modellverbindung.Service
 	routerService   *openrouterverbindung.Service
+	grantService    *modellfreigabe.Service
+	db              *sqlite.Database
+	organizationID  string
+	agentID         string
+	invokeErr       error
 	binding         modellschluessel.Binding
 	issuer          *httptest.Server
 	provider        *httptest.Server
@@ -67,7 +75,10 @@ type IssuerState struct {
 type ProviderState struct {
 	mu    sync.Mutex
 	calls []string
+	posts atomic.Int64
 }
+
+type ControlledCaller struct{ suite *Suite }
 
 type CodexView struct {
 	State  string `json:"state"`
