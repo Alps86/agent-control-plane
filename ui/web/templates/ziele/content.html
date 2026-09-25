@@ -47,7 +47,7 @@
 {{end}}
 
 {{define "ziele/node"}}
-  <article class="stat-card" data-goal-id="{{.ID}}" data-goal-status="{{.Status}}">
+  <article class="stat-card" data-goal-id="{{.ID}}" data-parent-goal-id="{{.ParentGoalID}}" data-goal-status="{{.Status}}">
     <h2>{{.Name}}</h2>
     <p>Status: <strong>{{.StatusLabel}}</strong></p>
     <form action="/organisationen/{{.OrganizationID}}/ziele/{{.ID}}/status" method="post" data-action="status" data-goal-id="{{.ID}}">
@@ -65,6 +65,14 @@
       <label>Teilziel anlegen <input name="name" type="text" value="{{.ChildName}}" aria-describedby="ziel-child-error-{{.ID}}" required></label>
       {{if .ChildError}}<p id="ziel-child-error-{{.ID}}" role="alert">{{.ChildError}}</p>{{end}}
       <button type="submit">Teilziel speichern</button>
+    </form>
+    <form action="/organisationen/{{.OrganizationID}}/ziele/{{.ID}}/verschieben" method="post" data-action="reparent" data-goal-id="{{.ID}}">
+      <label for="ziel-parent-{{.ID}}">Übergeordnetes Ziel</label>
+      <select id="ziel-parent-{{.ID}}" name="parent_goal_id" {{if .ParentError}}aria-describedby="ziel-parent-error-{{.ID}}" aria-invalid="true"{{end}}>
+        {{range .ParentOptions}}<option value="{{.ID}}" {{if .Selected}}selected{{end}}>{{.Name}}</option>{{end}}
+      </select>
+      {{if .ParentError}}<p id="ziel-parent-error-{{.ID}}" role="alert">{{.ParentError}}</p>{{end}}
+      <button type="submit">Verschiebung speichern</button>
     </form>
     {{if .Children}}<div class="goal-children" aria-label="Teilziele von {{.Name}}">{{range .Children}}{{template "ziele/node" .}}{{end}}</div>{{end}}
   </article>

@@ -11,6 +11,7 @@ import (
 var (
 	ErrInvalidParent = errors.New("Übergeordnetes Ziel ist ungültig")
 	ErrGoalNotFound  = errors.New("Ziel nicht gefunden")
+	ErrGoalCycle     = errors.New("Zielverknüpfung bildet einen Kreis")
 )
 
 // GoalStore speichert und liest Ziele innerhalb einer Organisation.
@@ -19,6 +20,7 @@ type GoalStore interface {
 	CreateChildGoal(context.Context, domainziel.Goal) error
 	ListGoals(context.Context, string) ([]domainziel.Goal, error)
 	SetGoalStatus(context.Context, string, string, string) (domainziel.Goal, error)
+	MoveGoal(context.Context, string, string, string) (domainziel.Goal, error)
 	ListGoalProjectLinks(context.Context, string) ([]domainziel.ProjectLink, error)
 }
 
